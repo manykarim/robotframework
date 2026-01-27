@@ -1,0 +1,227 @@
+site_name: Robot Framework User Guide
+site_description: Comprehensive documentation for Robot Framework - a generic automation framework
+site_author: Robot Framework Foundation
+site_url: https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html
+repo_url: https://github.com/robotframework/robotframework
+repo_name: robotframework/robotframework
+edit_uri: edit/master/doc/userguide-mkdocs/docs/
+
+copyright: Copyright &copy; Robot Framework Foundation
+
+theme:
+  name: material
+  language: en
+
+  palette:
+    # Light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+  font:
+    text: Roboto
+    code: Roboto Mono
+
+  features:
+    - navigation.instant
+    - navigation.instant.prefetch
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.prune  # Reduces HTML size ~2-3%
+    - navigation.path
+    - navigation.indexes
+    - navigation.top
+    - navigation.footer
+    - toc.follow
+    - toc.integrate
+    - search.suggest
+    - search.highlight
+    - search.share
+    - content.tabs.link
+    - content.code.copy
+    - content.code.annotate
+    - content.action.edit
+    - content.action.view
+
+  icon:
+    repo: fontawesome/brands/github
+    logo: material/robot
+
+  favicon: assets/favicon.ico
+
+extra_css:
+  - stylesheets/extra.css
+
+extra_javascript:
+  # Legacy URL fragment redirect handler for backward compatibility
+  # Handles #AnchorName redirects from the old single-page User Guide
+  - assets/js/legacy-redirects.js
+
+extra:
+  version:
+    provider: mike
+    default: latest
+
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/robotframework/robotframework
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/robotframework
+    - icon: fontawesome/brands/slack
+      link: https://robotframework.slack.com
+
+  analytics:
+    provider: google
+    property: G-XXXXXXXXXX
+
+  generator: false
+
+plugins:
+  - search:
+      separator: '[\s\-\._]+'
+      lang:
+        - en
+  - mike:
+      alias_type: symlink
+      redirect_template: null
+      deploy_prefix: ''
+      canonical_version: latest
+      version_selector: true
+      css_dir: css
+      javascript_dir: js
+  # Redirects temporarily simplified for benchmarking
+  - redirects:
+      redirect_maps: {}
+  - minify:
+      minify_html: true
+      minify_js: true
+      minify_css: true
+      htmlmin_opts:
+        remove_comments: true
+      cache_safe: true
+
+markdown_extensions:
+  # Python Markdown
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+      permalink_title: Link to this section
+      toc_depth: 3
+
+  # PyMdown Extensions
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+      auto_title: true
+      linenums: false
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.magiclink:
+      repo_url_shorthand: true
+      user: robotframework
+      repo: robotframework
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.snippets:
+      check_paths: false
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+      combine_header_slug: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+nav:
+  - Home: index.md
+
+  - Getting Started:
+    - getting-started/index.md
+    - Introduction: getting-started/introduction.md
+    - Copyright and License: getting-started/copyright-and-license.md
+    - Demonstration: getting-started/demonstration.md
+
+  - Creating Test Data:
+    - creating-test-data/index.md
+    - Test Data Syntax: creating-test-data/test-data-syntax.md
+    - Creating Test Cases: creating-test-data/creating-test-cases.md
+    - Creating Tasks: creating-test-data/creating-tasks.md
+    - Creating Test Suites: creating-test-data/creating-test-suites.md
+    - Using Test Libraries: creating-test-data/using-test-libraries.md
+    - Variables: creating-test-data/variables.md
+    - Creating User Keywords: creating-test-data/creating-user-keywords.md
+    - Resource and Variable Files: creating-test-data/resource-and-variable-files.md
+    - Control Structures: creating-test-data/control-structures.md
+    - Advanced Features: creating-test-data/advanced-features.md
+
+  - Executing Tests:
+    - executing-tests/index.md
+    - Basic Usage: executing-tests/basic-usage.md
+    - Test Execution: executing-tests/test-execution.md
+    - Task Execution: executing-tests/task-execution.md
+    - Post-Processing: executing-tests/post-processing.md
+    - Configuring Execution: executing-tests/configuring-execution.md
+    - Output Files: executing-tests/output-files.md
+
+  - Extending Robot Framework:
+    - extending/index.md
+    - Creating Test Libraries: extending/creating-test-libraries.md
+    - Remote Library: extending/remote-library.md
+    - Listener Interface: extending/listener-interface.md
+    - Parser Interface: extending/parser-interface.md
+
+  - Supporting Tools:
+    - supporting-tools/index.md
+    - Libdoc: supporting-tools/libdoc.md
+    - Testdoc: supporting-tools/testdoc.md
+    - Tidy: supporting-tools/tidy.md
+    - Other Tools: supporting-tools/other-tools.md
+
+  - Appendices:
+    - appendices/index.md
+    - Available Settings: appendices/available-settings.md
+    - Command Line Options: appendices/command-line-options.md
+    - Translations: appendices/translations.md
+    - Documentation Formatting: appendices/documentation-formatting.md
+    - Time Format: appendices/time-format.md
+    - Boolean Arguments: appendices/boolean-arguments.md
+    - Evaluating Expressions: appendices/evaluating-expressions.md
+    - Registrations: appendices/registrations.md
+
+watch:
+  - docs
+  - includes

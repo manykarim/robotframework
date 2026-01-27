@@ -1,0 +1,605 @@
+# Robot Framework User Guide - Legacy URL Redirect Mappings
+# ============================================================================
+#
+# This file documents the comprehensive mapping from legacy single-page URLs
+# to the new multi-page MkDocs structure.
+#
+# LEGACY URL FORMAT:
+#   robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#AnchorName
+#
+# NEW URL FORMAT:
+#   robotframework.org/robotframework/latest/section/page/
+#   robotframework.org/robotframework/latest/section/page/#anchor
+#
+# IMPLEMENTATION STRATEGY:
+# ------------------------
+# 1. Server-side redirects (nginx/apache) for base document
+# 2. JavaScript-based redirects for fragment identifiers (#anchors)
+# 3. HTML anchor aliases in markdown for direct linking
+#
+# The mkdocs-redirects plugin handles full-path redirects.
+# The legacy-redirects.js script handles fragment-to-page mapping.
+#
+# ============================================================================
+
+# =============================================================================
+# SECTION: GETTING STARTED
+# =============================================================================
+
+getting-started:
+  # Introduction page anchors
+  introduction:
+    file: getting-started/introduction.md
+    legacy_anchors:
+      - Introduction
+      - WhyRobotFramework
+      - 'High-levelarchitecture'
+      - HighLevelArchitecture
+      - Screenshots
+      - Gettingmoreinformation
+      - Projectpages
+      - Mailinglists
+
+  # Installation (combined into introduction in new structure)
+  installation:
+    file: getting-started/introduction.md
+    section: '#installation'
+    legacy_anchors:
+      - Installation
+      - Installationinstructions
+      - Pythoninstallation
+      - InstallingRobotFramework
+      - Installingfromsource
+      - Verifyinginstallation
+      - Virtualenvironments
+
+  # Demonstration page anchors
+  demonstration:
+    file: getting-started/demonstration.md
+    legacy_anchors:
+      - Demonstration
+      - Ademonstration
+
+# =============================================================================
+# SECTION: CREATING TEST DATA
+# =============================================================================
+
+creating-test-data:
+  # Test Data Syntax
+  test-data-syntax:
+    file: creating-test-data/test-data-syntax.md
+    legacy_anchors:
+      - Testdatasyntax
+      - TestDataSyntax
+      - Filesanddirectories
+      - Testdatasections
+      - Testdatatables
+      - Supportedfileformats
+      - Spaceseparatedformat
+      - Pipeseparatedformat
+      - reStructuredTextformat
+      - JSONformat
+      - Rulesforparsingthedata
+      - Ignoreddata
+      - Escaping
+      - Escapingspecialcharacters
+      - Formingescapesequences
+      - Handlingemptyvalues
+      - Handlingspaces
+      - Dividingdatatoseveralrows
+      - Localization
+      - Enablinglanguages
+      - 'Built-inlanguages'
+      - Customlanguagefiles
+      - Contributingtranslations
+      - Style
+
+  # Creating Test Cases
+  creating-test-cases:
+    file: creating-test-data/creating-test-cases.md
+    legacy_anchors:
+      - Creatingtestcases
+      - CreatingTestCases
+      - Creatingtests
+      - Testcasesyntax
+      - Basicsyntax
+      - SettingsintheTestCasesection
+      - TestcaserelatedsettingsintheSettingsection
+      - Usingarguments
+      - Positionalarguments
+      - Defaultvalues
+      - Variablenumberofarguments
+      - Namedarguments
+      - Namedargumentsyntax
+      - Freenamedarguments
+      - 'Named-onlyarguments'
+      - Argumentsembeddedtokeywordnames
+      - Failures
+      - Whentestcasefails
+      - Errormessages
+      - Testcasenameanddocumentation
+      - Taggingtestcases
+      - Reservedtags
+      - Testsetupandteardown
+      - Testtemplates
+      - Templateswithmultipleiterations
+      - Templateswithembeddedarguments
+      - Differenttestcasestyles
+      - 'Keyword-drivenstyle'
+      - 'Data-drivenstyle'
+      - 'Behavior-drivenstyle'
+
+  # Creating Tasks (RPA)
+  creating-tasks:
+    file: creating-test-data/creating-tasks.md
+    legacy_anchors:
+      - Creatingtasks
+      - rpa
+
+  # Creating Test Suites
+  creating-test-suites:
+    file: creating-test-data/creating-test-suites.md
+    legacy_anchors:
+      - Creatingtestsuites
+      - Suitefiles
+      - Suitedirectories
+      - Suiteinitializationfiles
+      - Suitename
+      - Suitedocumentation
+      - Freesuitemetadata
+      - Suitesetupandteardown
+
+  # Using Test Libraries
+  using-test-libraries:
+    file: creating-test-data/using-test-libraries.md
+    legacy_anchors:
+      - Usingtestlibraries
+      - Importinglibraries
+      - Specifyinglibrarytoimpor
+      - Settingcustomnametolibrary
+      - Standardlibraries
+      - Externallibraries
+
+  # Variables
+  variables:
+    file: creating-test-data/variables.md
+    legacy_anchors:
+      - Variables
+      - Scalarvariables
+      - Listvariables
+      - Dictionaryvariables
+      - Environmentvariables
+      - Creatingvariables
+      - Variablesection
+      - Variabletable
+      - Variablefilekeyword
+      - Returnvaluesfromkeywords
+      - Commandlinevariables
+      - 'Built-invariables'
+      - Automaticvariables
+      - Operatingsystemvariables
+      - Numbervariables
+      - Booleanandnone
+      - Spaceandemptyvariables
+      - Advancedvariablefeatures
+      - Extendedvariablesyntax
+      - Assigningvariables
+      - InlinePythonevaluation
+
+  # Creating User Keywords
+  creating-user-keywords:
+    file: creating-test-data/creating-user-keywords.md
+    legacy_anchors:
+      - Creatinguserkeywords
+      - Userkeywordsyntax
+      - Settingsinthekeywordsection
+      - Userkeywordname
+      - Userkeyworddocumentation
+      - Userkeywordtags
+      - Userkeywordarguments
+      - 'Positional-onlyarguments'
+      - Freenamedargumentswithuserkeywords
+      - 'Named-onlyargumentswithuserkeywords'
+      - Embeddingargumentsintokeywordname
+      - Embeddedargumentsyntax
+      - Userkeywordreturnvalues
+      - RETURN
+      - Userkeywordteardown
+      - Userkeywordtimeout
+      - Privateuserkeywords
+
+  # Control Structures
+  control-structures:
+    file: creating-test-data/control-structures.md
+    legacy_anchors:
+      - Controlstructures
+      - FORloops
+      - for
+      - forloop
+      - WHILEloops
+      - WHILE
+      - IF/ELSEstructures
+      - if
+      - ifelse
+      - TRY/EXCEPT
+      - tryexcept
+      - BREAK
+      - CONTINUE
+      - InlineIF
+      - inlineif
+
+  # Resource and Variable Files
+  resource-and-variable-files:
+    file: creating-test-data/resource-and-variable-files.md
+    legacy_anchors:
+      - Resourceandvariablefiles
+      - Resourcefiles
+      - Takingresourcefilesintouse
+      - Resourcefilesyntax
+      - Variablefiles
+      - Takingvariablefilesintouse
+      - Creatingvariablefiles
+
+  # Advanced Features
+  advanced-features:
+    file: creating-test-data/advanced-features.md
+    legacy_anchors:
+      - Advancedfeatures
+      - Handlingenvironmentandsystemvariables
+      - Librarysearchorder
+      - Keywordshadowingwarnings
+      - Timeouts
+      - Testcasetimeout
+      - Continuingonfailure
+
+# =============================================================================
+# SECTION: EXECUTING TESTS
+# =============================================================================
+
+executing-tests:
+  # Basic Usage
+  basic-usage:
+    file: executing-tests/basic-usage.md
+    legacy_anchors:
+      - Basicusage
+      - Executingtestcases
+      - executingtestcases
+      - Startingtestexecution
+      - Specifyingtestdatatobeexecuted
+      - Usingcommandlineoptions
+      - Usingoptions
+      - Shortandlongoptions
+      - Settingoptionvalues
+      - Disablingoptionsacceptingnovalues
+      - Simplepatterns
+      - wildcards
+      - Tagpatterns
+      - Testresults
+      - Commandlineoutput
+      - Generatedoutputfiles
+      - Returncodes
+      - Errorsandwarningsduringexecution
+      - Argumentfiles
+      - Gettinghelpandversioninformation
+      - Creatingstart-upscripts
+      - 'start-upscript'
+      - 'start-upscripts'
+      - Debuggingproblems
+
+  # Test Execution
+  test-execution:
+    file: executing-tests/test-execution.md
+    legacy_anchors:
+      - Testexecution
+      - Executionflow
+      - Setups
+      - Teardowns
+      - Suitestatus
+      - Teststatus
+      - Continueononfailure
+      - Continueonfailure
+      - Skippingtests
+      - skipped
+      - Stoppingexecution
+      - Stoppingtestexecutiongracefully
+
+  # Task Execution
+  task-execution:
+    file: executing-tests/task-execution.md
+    legacy_anchors:
+      - executingtasks
+      - Taskexecution
+
+  # Post-Processing
+  post-processing:
+    file: executing-tests/post-processing.md
+    legacy_anchors:
+      - 'Post-processingoutputs'
+      - UsingRebot
+      - rebot
+      - Combiningoutputs
+      - Mergingoutputs
+
+  # Configuring Execution
+  configuring-execution:
+    file: executing-tests/configuring-execution.md
+    legacy_anchors:
+      - Configuringexecution
+      - Selectingtestcases
+      - Bytestnames
+      - Bysuitenames
+      - Bytagnames
+      - 'Re-executingfailedtestcases'
+      - Settingsuitename
+      - Settingsuitedocumentation
+      - Settingfreesuitemetadata
+      - Settingtesttags
+      - Selectingfilestoparse
+      - Randomizingexecutionorder
+      - Controllingconsoleoutput
+      - Settinglisteners
+      - Modulesearchpath
+      - 'Pre-runmodifier'
+      - 'pre-runmodifier'
+      - 'pre-runmodifiers'
+      - Dryrun
+
+  # Output Files
+  output-files:
+    file: executing-tests/output-files.md
+    legacy_anchors:
+      - Outputfiles
+      - Differentoutputfiles
+      - Outputfile
+      - 'output.xml'
+      - Logfile
+      - Reportfile
+      - XUnitcompatibleresultfile
+      - xunit
+      - xunitfile
+      - Debugfile
+      - Timestampingoutputfiles
+      - Settingtitles
+      - Settingbackgroundcolors
+      - Loglevels
+      - Settingloglevel
+      - Splittinglogs
+      - Configuringstatistics
+      - Removingandflatteningkeywords
+      - Automaticallyexpandingkeywords
+      - Systemlog
+      - 'Pre-Rebotmodifier'
+      - 'pre-Rebotmodifier'
+
+# =============================================================================
+# SECTION: EXTENDING ROBOT FRAMEWORK
+# =============================================================================
+
+extending:
+  # Creating Test Libraries
+  creating-test-libraries:
+    file: extending/creating-test-libraries.md
+    legacy_anchors:
+      - Creatingtestlibraries
+      - Supportedprogramminglanguages
+      - Differenttestlibraryapis
+      - Creatingtestlibryclassormodule
+      - Libraryname
+      - Providingargumentstolibraries
+      - Libraryscope
+      - Libraryversion
+      - Specifyingdocumentationformat
+      - Libraryactingaslistener
+      - librarydecorator
+      - Creatingkeywords
+      - Keywordnames
+      - keyworddecorator
+      - Keywordarguments
+      - Freekeywordarguments
+      - 'Keyword-onlyarguments'
+      - Positional-onlyargumentsinlibraries
+      - Embeddingargumentsintokeywordnames
+      - Asynchronouskeywords
+      - Argumenttypes
+      - Supportedconversions
+      - Specifyingargumenttypes
+      - Customargumentconverters
+      - Reportingkeywordstatus
+      - Logginginformation
+      - Errorsandwarnings
+      - HTMLinerrormessages
+      - Returningvalues
+      - CommunicatingwithRobotFramework
+      - Documentinglibraries
+      - Dynamiclibraryapi
+      - Dynamiclibrary
+      - Gettingdynamickeywordnames
+      - Runningdynamickeywords
+      - Hybridlibraryapi
+      - Extendingexistinglibraries
+
+  # Remote Library Interface
+  remote-library:
+    file: extending/remote-library.md
+    legacy_anchors:
+      - Remotelibrary
+      - Remotelibaryinterface
+      - Takingremotelibraryintouse
+      - Supportedargumentandreturntypes
+      - Remoteprotocol
+
+  # Listener Interface
+  listener-interface:
+    file: extending/listener-interface.md
+    legacy_anchors:
+      - Listenerinterface
+      - listenerinterface
+      - Listenerstructure
+      - Listenerinterfaceversions
+      - Listenerversion2
+      - Listenerversion3
+      - Takinglistenersintouse
+      - Registeringlistenersfromcommandline
+      - Librariesaslisteners
+      - librarylisteners
+      - Listenerexamples
+      - Modifyingdataandresults
+
+  # Parser Interface
+  parser-interface:
+    file: extending/parser-interface.md
+    legacy_anchors:
+      - Parserinterface
+      - Takingcustomparsersintouse
+      - Parserinterface2
+      - Parsedmodel
+      - Parserexamples
+
+# =============================================================================
+# SECTION: SUPPORTING TOOLS
+# =============================================================================
+
+supporting-tools:
+  # Libdoc
+  libdoc:
+    file: supporting-tools/libdoc.md
+    legacy_anchors:
+      - Libdoc
+      - libdoc
+      - Libdocgeneral
+      - UsingLibdoc
+      - Libdocoutputformats
+      - Viewinglibrarydocumentation
+      - Hotkeys
+      - Internallinking
+      - internallinking
+
+  # Testdoc
+  testdoc:
+    file: supporting-tools/testdoc.md
+    legacy_anchors:
+      - Testdoc
+      - testdoc
+      - UsingTestdoc
+
+  # Tidy
+  tidy:
+    file: supporting-tools/tidy.md
+    legacy_anchors:
+      - Tidy
+      - tidy
+
+  # Other Tools
+  other-tools:
+    file: supporting-tools/other-tools.md
+    legacy_anchors:
+      - Othertools
+      - Testrunnertools
+      - Testdataeditors
+      - Buildtools
+
+# =============================================================================
+# SECTION: APPENDICES
+# =============================================================================
+
+appendices:
+  # Available Settings
+  available-settings:
+    file: appendices/available-settings.md
+    legacy_anchors:
+      - Appendices
+      - Availablesettings
+      - settings
+      - Settingsinthedatasection
+      - Settingsintheinitialization
+
+  # Command Line Options
+  command-line-options:
+    file: appendices/command-line-options.md
+    legacy_anchors:
+      - Commandlineoptions
+      - Allcommandlineoptions
+      - Commandlineoptionsforexecuting
+      - Commandlineoptionsforpostprocessing
+
+  # Translations
+  translations:
+    file: appendices/translations.md
+    legacy_anchors:
+      - Translations
+
+  # Documentation Formatting
+  documentation-formatting:
+    file: appendices/documentation-formatting.md
+    legacy_anchors:
+      - Documentationformatting
+      - Documentationsyntax
+      - HTMLformatting
+      - Representingnewlines
+      - Internallinks
+
+  # Time Format
+  time-format:
+    file: appendices/time-format.md
+    legacy_anchors:
+      - Timeformat
+      - Timeformats
+
+  # Boolean Arguments
+  boolean-arguments:
+    file: appendices/boolean-arguments.md
+    legacy_anchors:
+      - Booleanarguments
+
+  # Evaluating Expressions
+  evaluating-expressions:
+    file: appendices/evaluating-expressions.md
+    legacy_anchors:
+      - Evaluatingexpressions
+
+# =============================================================================
+# MKDOCS-REDIRECTS PLUGIN CONFIGURATION
+# =============================================================================
+#
+# Copy these mappings to mkdocs.yml under plugins > redirects > redirect_maps:
+#
+# redirect_maps:
+#   # Main document redirect
+#   'RobotFrameworkUserGuide.html': 'index.md'
+#
+# Note: Fragment-based redirects (#anchors) are handled by legacy-redirects.js
+# =============================================================================
+
+# =============================================================================
+# COMMON INTERNAL REFERENCE ALIASES
+# =============================================================================
+# These are commonly-used internal references from the RST documentation
+# that users might have linked to directly:
+
+common_aliases:
+  # Test data concepts
+  testdata: creating-test-data/test-data-syntax.md
+  testcase: creating-test-data/creating-test-cases.md
+  testsuite: creating-test-data/creating-test-suites.md
+  userkeyword: creating-test-data/creating-user-keywords.md
+  variable: creating-test-data/variables.md
+
+  # Test execution
+  output: executing-tests/output-files.md
+  log: executing-tests/output-files.md#log-file
+  report: executing-tests/output-files.md#report-file
+  syslog: executing-tests/output-files.md#system-log
+
+  # Library development
+  libraryAPI: extending/creating-test-libraries.md
+  listener: extending/listener-interface.md
+
+  # Tools
+  BuiltIn: 'https://robotframework.org/robotframework/latest/libraries/BuiltIn.html'
+  Collections: 'https://robotframework.org/robotframework/latest/libraries/Collections.html'
+  String: 'https://robotframework.org/robotframework/latest/libraries/String.html'
+  DateTime: 'https://robotframework.org/robotframework/latest/libraries/DateTime.html'
+  Process: 'https://robotframework.org/robotframework/latest/libraries/Process.html'
+  OperatingSystem: 'https://robotframework.org/robotframework/latest/libraries/OperatingSystem.html'
+  XML: 'https://robotframework.org/robotframework/latest/libraries/XML.html'
+  Telnet: 'https://robotframework.org/robotframework/latest/libraries/Telnet.html'

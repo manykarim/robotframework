@@ -1,0 +1,27 @@
+# Build output
+site/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+
+# Local state
+.claude-flow/
+.swarm/
+
+# Temporary files
+*.log
+build-output.txt
+test-report.md
+
+# Reports (generated)
+reports/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
