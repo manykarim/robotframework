@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block outdated %}
+  {% if config.extra.version %}
+    <div class="md-banner" data-md-component="outdated" hidden>
+      <div class="md-banner__inner md-grid md-typeset">
+        You're viewing documentation for an <strong>older version</strong> of Robot Framework.
+        <a href="{{ config.site_url }}">
+          <strong>Click here to view the latest documentation.</strong>
+        </a>
+      </div>
+    </div>
+  {% endif %}
+{% endblock %}
