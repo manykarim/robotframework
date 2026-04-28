@@ -1,7 +1,5 @@
-
-
+<a id="testdoc"></a>
 # Test data documentation tool (Testdoc)
-
 
 Testdoc is Robot Framework's built-in tool for generating high level
 documentation based on test cases. The created documentation is in HTML
@@ -9,27 +7,19 @@ format and it includes name, documentation and other metadata of each
 test suite and test case, as well as the top-level keywords and their
 arguments.
 
-
 !!! note
     The built-in Testdoc tool is deprecated and will be removed in Robot
-    Framework 8.0. Use the new and enhanced [external Testdoc](#external-testdoc) instead.
-
+    Framework 8.0. Use the new and enhanced [external Testdoc](https://github.com/MarvKler/robotframework-testdoc) instead.
 
 ## General usage
 
-
-## Synopsis
-
-
-:
+### Synopsis
 
 ```
 python -m robot.testdoc [options] data_sources output_file
 ```
 
-
-## Options
-
+### Options
 
  -T, --title <title>           Set the title of the generated documentation.
                                Underscores in the title are converted to spaces.
@@ -48,11 +38,9 @@ python -m robot.testdoc [options] data_sources output_file
  -h, --help                    Print this help in the console.
 
 All options except `--title` have exactly the same semantics as same
-options have when [executing test cases](#executing-test-cases).
-
+options have when [executing test cases](https://github.com/MarvKler/robotframework-testdoc).
 
 ## Generating documentation
-
 
 Data can be given as a single file, directory, or as multiple files and
 directories. In all these cases, the last argument must be the file where
@@ -64,7 +52,6 @@ Testdoc can be executed as an installed module like
 Examples:
 
 ```
+python -m robot.testdoc my_test.robot testdoc.html
+python path/to/robot/testdoc.py --name "Smoke tests" --include smoke path/to/tests smoke.html
 ```
-
-  python -m robot.testdoc my_test.robot testdoc.html
-  python path/to/robot/testdoc.py --name "Smoke tests" --include smoke path/to/tests smoke.html

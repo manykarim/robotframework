@@ -1,6 +1,4 @@
-
 # External tools
-
 
 There are plenty of external tools that can be used with Robot Framework.
 These tools include plugins for various IDEs and text editors, tools for

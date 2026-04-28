@@ -1,0 +1,456 @@
+{
+  "_comment": "Data-driven reference mappings for RST\u2192MkDocs conversion pipeline. Edit this file to fix link targets without changing script logic.",
+  "rst_to_md_files": {
+    "_comment": "Maps RST source filenames to MkDocs output paths (relative to docs/)",
+    "GettingStarted/Introduction.rst": "getting-started/introduction.md",
+    "GettingStarted/CopyrightAndLicense.rst": "getting-started/copyright-and-license.md",
+    "GettingStarted/Demonstration.rst": "getting-started/demonstration.md",
+    "CreatingTestData/TestDataSyntax.rst": "creating-test-data/test-data-syntax.md",
+    "CreatingTestData/CreatingTestCases.rst": "creating-test-data/creating-test-cases.md",
+    "CreatingTestData/CreatingTasks.rst": "creating-test-data/creating-tasks.md",
+    "CreatingTestData/CreatingTestSuites.rst": "creating-test-data/creating-test-suites.md",
+    "CreatingTestData/UsingTestLibraries.rst": "creating-test-data/using-test-libraries.md",
+    "CreatingTestData/Variables.rst": "creating-test-data/variables.md",
+    "CreatingTestData/CreatingUserKeywords.rst": "creating-test-data/creating-user-keywords.md",
+    "CreatingTestData/ResourceAndVariableFiles.rst": "creating-test-data/resource-and-variable-files.md",
+    "CreatingTestData/ControlStructures.rst": "creating-test-data/control-structures.md",
+    "CreatingTestData/AdvancedFeatures.rst": "creating-test-data/advanced-features.md",
+    "ExecutingTestCases/BasicUsage.rst": "executing-tests/basic-usage.md",
+    "ExecutingTestCases/TestExecution.rst": "executing-tests/test-execution.md",
+    "ExecutingTestCases/TaskExecution.rst": "executing-tests/task-execution.md",
+    "ExecutingTestCases/PostProcessing.rst": "executing-tests/post-processing.md",
+    "ExecutingTestCases/ConfiguringExecution.rst": "executing-tests/configuring-execution.md",
+    "ExecutingTestCases/OutputFiles.rst": "executing-tests/output-files.md",
+    "ExtendingRobotFramework/CreatingTestLibraries.rst": "extending/creating-test-libraries.md",
+    "ExtendingRobotFramework/RemoteLibrary.rst": "extending/remote-library.md",
+    "ExtendingRobotFramework/ListenerInterface.rst": "extending/listener-interface.md",
+    "ExtendingRobotFramework/ParserInterface.rst": "extending/parser-interface.md",
+    "SupportingTools/Libdoc.rst": "supporting-tools/libdoc.md",
+    "SupportingTools/Testdoc.rst": "supporting-tools/testdoc.md",
+    "SupportingTools/Tidy.rst": "supporting-tools/tidy.md",
+    "SupportingTools/OtherTools.rst": "supporting-tools/other-tools.md",
+    "Appendices/AvailableSettings.rst": "appendices/available-settings.md",
+    "Appendices/CommandLineOptions.rst": "appendices/command-line-options.md",
+    "Appendices/Translations.rst": "appendices/translations.md",
+    "Appendices/DocumentationFormatting.rst": "appendices/documentation-formatting.md",
+    "Appendices/TimeFormat.rst": "appendices/time-format.md",
+    "Appendices/BooleanArguments.rst": "appendices/boolean-arguments.md",
+    "Appendices/EvaluatingExpressions.rst": "appendices/evaluating-expressions.md",
+    "Appendices/Registrations.rst": "appendices/registrations.md"
+  },
+  "section_dirs": {
+    "_comment": "Maps RST section directory names to MkDocs output directory names",
+    "GettingStarted": "getting-started",
+    "CreatingTestData": "creating-test-data",
+    "ExecutingTestCases": "executing-tests",
+    "ExtendingRobotFramework": "extending",
+    "SupportingTools": "supporting-tools",
+    "Appendices": "appendices"
+  },
+  "filename_corrections": {
+    "_comment": "Wrong filenames generated during conversion \u2192 correct filenames. Applied as post-processing.",
+    "test-case.md": "creating-test-cases.md",
+    "test-suite.md": "creating-test-suites.md",
+    "creating-test-library.md": "creating-test-libraries.md",
+    "standard-libraries.md": "using-test-libraries.md"
+  },
+  "bare_word_refs": {
+    "_comment": "RST bare word_ references \u2192 Markdown link targets. Keys are lowercase. Value is URL or relative path (use {from_dir} placeholder for relative path adjustment).",
+    "libdoc": {
+      "text": "Libdoc",
+      "target": "supporting-tools/libdoc.md"
+    },
+    "testdoc": {
+      "text": "Testdoc",
+      "target": "supporting-tools/testdoc.md"
+    },
+    "tidy": {
+      "text": "Tidy",
+      "target": "supporting-tools/tidy.md"
+    },
+    "rebot": {
+      "text": "Rebot",
+      "target": "executing-tests/post-processing.md"
+    },
+    "builtin": {
+      "text": "BuiltIn",
+      "target": "https://robotframework.org/robotframework/latest/libraries/BuiltIn.html"
+    },
+    "collections": {
+      "text": "Collections",
+      "target": "https://robotframework.org/robotframework/latest/libraries/Collections.html"
+    },
+    "string": {
+      "text": "String",
+      "target": "https://robotframework.org/robotframework/latest/libraries/String.html"
+    },
+    "operatingsystem": {
+      "text": "OperatingSystem",
+      "target": "https://robotframework.org/robotframework/latest/libraries/OperatingSystem.html"
+    },
+    "process": {
+      "text": "Process",
+      "target": "https://robotframework.org/robotframework/latest/libraries/Process.html"
+    },
+    "datetime": {
+      "text": "DateTime",
+      "target": "https://robotframework.org/robotframework/latest/libraries/DateTime.html"
+    },
+    "telnet": {
+      "text": "Telnet",
+      "target": "https://robotframework.org/robotframework/latest/libraries/Telnet.html"
+    },
+    "xml": {
+      "text": "XML",
+      "target": "https://robotframework.org/robotframework/latest/libraries/XML.html"
+    },
+    "screenshot": {
+      "text": "Screenshot",
+      "target": "https://robotframework.org/robotframework/latest/libraries/Screenshot.html"
+    },
+    "dialogs": {
+      "text": "Dialogs",
+      "target": "https://robotframework.org/robotframework/latest/libraries/Dialogs.html"
+    },
+    "browser": {
+      "text": "Browser",
+      "target": "https://robotframework.org/robotframework/latest/libraries/Browser.html"
+    },
+    "variables": {
+      "text": "Variables",
+      "target": "creating-test-data/variables.md"
+    },
+    "translations": {
+      "text": "Translations",
+      "target": "appendices/translations.md"
+    },
+    "rpa": {
+      "text": "RPA",
+      "target": "creating-test-data/creating-tasks.md"
+    },
+    "timeouts": {
+      "text": "Timeouts",
+      "target": "creating-test-data/creating-test-cases.md#test-case-timeout"
+    },
+    "restructuredtext": {
+      "text": "reStructuredText",
+      "target": "https://docutils.sourceforge.io/rst.html"
+    },
+    "python": {
+      "text": "Python",
+      "target": "https://python.org"
+    },
+    "sequence": {
+      "text": "Sequence",
+      "target": "https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence"
+    },
+    "mutablesequence": {
+      "text": "MutableSequence",
+      "target": "https://docs.python.org/3/library/collections.abc.html#collections.abc.MutableSequence"
+    },
+    "mapping": {
+      "text": "Mapping",
+      "target": "https://docs.python.org/3/library/collections.abc.html#collections.abc.Mapping"
+    },
+    "set": {
+      "text": "Set",
+      "target": "https://docs.python.org/3/library/collections.abc.html#collections.abc.Set"
+    },
+    "none": {
+      "text": "None",
+      "target": "https://docs.python.org/3/library/constants.html#None"
+    },
+    "integral": {
+      "text": "Integral",
+      "target": "https://docs.python.org/3/library/numbers.html#numbers.Integral"
+    },
+    "real": {
+      "text": "Real",
+      "target": "https://docs.python.org/3/library/numbers.html#numbers.Real"
+    },
+    "decimal": {
+      "text": "Decimal",
+      "target": "https://docs.python.org/3/library/decimal.html#decimal.Decimal"
+    },
+    "pathlike": {
+      "text": "PathLike",
+      "target": "https://docs.python.org/3/library/os.html#os.PathLike"
+    },
+    "enum": {
+      "text": "Enum",
+      "target": "https://docs.python.org/3/library/enum.html#enum.Enum"
+    },
+    "flag": {
+      "text": "Flag",
+      "target": "https://docs.python.org/3/library/enum.html#enum.Flag"
+    },
+    "intenum": {
+      "text": "IntEnum",
+      "target": "https://docs.python.org/3/library/enum.html#enum.IntEnum"
+    },
+    "intflag": {
+      "text": "IntFlag",
+      "target": "https://docs.python.org/3/library/enum.html#enum.IntFlag"
+    },
+    "literal": {
+      "text": "Literal",
+      "target": "https://docs.python.org/3/library/typing.html#typing.Literal"
+    },
+    "any": {
+      "text": "Any",
+      "target": "https://docs.python.org/3/library/typing.html#typing.Any"
+    },
+    "union": {
+      "text": "Union",
+      "target": "https://docs.python.org/3/library/typing.html#typing.Union"
+    },
+    "typeddict": {
+      "text": "TypedDict",
+      "target": "https://docs.python.org/3/library/typing.html#typing.TypedDict"
+    },
+    "pathlib": {
+      "text": "pathlib",
+      "target": "https://docs.python.org/3/library/pathlib.html"
+    },
+    "listenerv2": {
+      "text": "ListenerV2",
+      "target": "https://robot-framework.readthedocs.io/en/latest/autodoc/robot.api.html#robot.api.interfaces.ListenerV2"
+    },
+    "listenerv3": {
+      "text": "ListenerV3",
+      "target": "https://robot-framework.readthedocs.io/en/latest/autodoc/robot.api.html#robot.api.interfaces.ListenerV3"
+    },
+    "secret": {
+      "text": "Secret",
+      "target": "extending/creating-test-libraries.md#secret-type"
+    },
+    "seleniumlibrary": {
+      "text": "SeleniumLibrary",
+      "target": "https://robotframework.org/SeleniumLibrary/SeleniumLibrary.html"
+    },
+    "swinglibrary": {
+      "text": "SwingLibrary",
+      "target": "https://github.com/robotframework/SwingLibrary"
+    },
+    "tags": {
+      "text": "Tags",
+      "target": "creating-test-data/creating-test-cases.md#tagging-test-cases"
+    },
+    "escaping": {
+      "text": "Escaping",
+      "target": "creating-test-data/test-data-syntax.md#escaping"
+    },
+    "listeners": {
+      "text": "Listeners",
+      "target": "extending/listener-interface.md"
+    },
+    "log": {
+      "text": "Log",
+      "target": "executing-tests/output-files.md#log-file"
+    },
+    "parser": {
+      "text": "Parser",
+      "target": "extending/parser-interface.md"
+    },
+    "testdefaults": {
+      "text": "TestDefaults",
+      "target": "https://robot-framework.readthedocs.io/en/latest/autodoc/robot.running.html#robot.running.builder.TestDefaults"
+    },
+    "urls": {
+      "text": "URLs",
+      "target": "appendices/documentation-formatting.md#urls"
+    },
+    "sphinx": {
+      "text": "Sphinx",
+      "target": "https://www.sphinx-doc.org/"
+    },
+    "pygments": {
+      "text": "Pygments",
+      "target": "https://pygments.org/"
+    },
+    "bool": {
+      "text": "bool",
+      "target": "https://docs.python.org/3/library/functions.html#bool"
+    },
+    "int": {
+      "text": "int",
+      "target": "https://docs.python.org/3/library/functions.html#int"
+    },
+    "float": {
+      "text": "float",
+      "target": "https://docs.python.org/3/library/functions.html#float"
+    },
+    "str": {
+      "text": "str",
+      "target": "https://docs.python.org/3/library/stdtypes.html#str"
+    },
+    "bytes": {
+      "text": "bytes",
+      "target": "https://docs.python.org/3/library/stdtypes.html#bytes"
+    },
+    "bytearray": {
+      "text": "bytearray",
+      "target": "https://docs.python.org/3/library/stdtypes.html#bytearray"
+    },
+    "list": {
+      "text": "list",
+      "target": "https://docs.python.org/3/library/stdtypes.html#list"
+    },
+    "tuple": {
+      "text": "tuple",
+      "target": "https://docs.python.org/3/library/stdtypes.html#tuple"
+    },
+    "dict": {
+      "text": "dict",
+      "target": "https://docs.python.org/3/library/stdtypes.html#dict"
+    },
+    "frozenset": {
+      "text": "frozenset",
+      "target": "https://docs.python.org/3/library/stdtypes.html#frozenset"
+    },
+    "date": {
+      "text": "date",
+      "target": "https://docs.python.org/3/library/datetime.html#datetime.date"
+    },
+    "timedelta": {
+      "text": "timedelta",
+      "target": "https://docs.python.org/3/library/datetime.html#datetime.timedelta"
+    },
+    "object": {
+      "text": "object",
+      "target": "https://docs.python.org/3/library/functions.html#object"
+    },
+    "collection": {
+      "text": "Collection",
+      "target": "https://docs.python.org/3/library/collections.abc.html#collections.abc.Collection"
+    },
+    "mutablemapping": {
+      "text": "MutableMapping",
+      "target": "https://docs.python.org/3/library/collections.abc.html#collections.abc.MutableMapping"
+    },
+    "typing": {
+      "text": "typing",
+      "target": "https://docs.python.org/3/library/typing.html"
+    },
+    "pip": {
+      "text": "pip",
+      "target": "https://pip.pypa.io/"
+    },
+    "docutils": {
+      "text": "docutils",
+      "target": "https://docutils.sourceforge.io/"
+    },
+    "json": {
+      "text": "JSON",
+      "target": "https://json.org"
+    },
+    "glob": {
+      "text": "Glob",
+      "target": "https://en.wikipedia.org/wiki/Glob_(programming)"
+    },
+    "return": {
+      "text": "RETURN",
+      "target": "creating-test-data/creating-user-keywords.md#using-return-statement"
+    },
+    "for": {
+      "text": "FOR",
+      "target": "creating-test-data/control-structures.md#for-loops"
+    },
+    "while": {
+      "text": "WHILE",
+      "target": "creating-test-data/control-structures.md#while-loops"
+    },
+    "if": {
+      "text": "IF",
+      "target": "creating-test-data/control-structures.md#ifelse-syntax"
+    },
+    "pass": {
+      "text": "PASS",
+      "target": "executing-tests/test-execution.md#pass"
+    },
+    "fail": {
+      "text": "FAIL",
+      "target": "executing-tests/test-execution.md#fail"
+    },
+    "skip": {
+      "text": "SKIP",
+      "target": "executing-tests/test-execution.md#skip"
+    },
+    "xunit": {
+      "text": "xUnit",
+      "target": "executing-tests/output-files.md#xunit-compatible-result-file"
+    },
+    "report": {
+      "text": "report",
+      "target": "executing-tests/output-files.md#report-file"
+    },
+    "syslog": {
+      "text": "syslog",
+      "target": "executing-tests/output-files.md#system-log"
+    }
+  },
+  "api_references": {
+    "_comment": "Robot Framework API documentation links. Pattern: running.ClassName_ or result.ClassName_",
+    "base_url": "https://robot-framework.readthedocs.io/en/latest/autodoc/",
+    "running.TestSuite": "robot.running.html#robot.running.model.TestSuite",
+    "running.TestCase": "robot.running.html#robot.running.model.TestCase",
+    "running.Keyword": "robot.running.html#robot.running.model.Keyword",
+    "running.TestLibrary": "robot.running.html#robot.running.model.TestLibrary",
+    "running.ResourceFile": "robot.running.html#robot.running.model.ResourceFile",
+    "running.Import": "robot.running.html#robot.running.model.Import",
+    "running.UserKeyword": "robot.running.html#robot.running.model.UserKeyword",
+    "running.LibraryKeyword": "robot.running.html#robot.running.model.LibraryKeyword",
+    "running.InvalidKeyword": "robot.running.html#robot.running.model.InvalidKeyword",
+    "result.TestSuite": "robot.result.html#robot.result.model.TestSuite",
+    "result.TestCase": "robot.result.html#robot.result.model.TestCase",
+    "result.Keyword": "robot.result.html#robot.result.model.Keyword",
+    "result.Message": "robot.result.html#robot.result.model.Message"
+  },
+  "split_pages": {
+    "_comment": "Splits one converted MD into multiple files at H2 boundaries. Driven by scripts/split_pages.py. Each entry: source MD path under docs/ → splits[] with from_heading (## title to slice from), target (output MD path under docs/), h1_title (promoted heading). delete_source removes the original combined file after splitting.",
+    "creating-test-data/resource-and-variable-files.md": {
+      "splits": [
+        {
+          "from_heading": "Resource files",
+          "target": "creating-test-data/resource-files.md",
+          "h1_title": "Resource files"
+        },
+        {
+          "from_heading": "Variable files",
+          "target": "creating-test-data/variable-files.md",
+          "h1_title": "Variable files"
+        }
+      ],
+      "delete_source": true
+    }
+  },
+  "ignore_bare_refs": [
+    "_comment: Python constants and identifiers that look like RST refs but aren't",
+    "ROBOT_LIBRARY_SCOPE",
+    "ROBOT_LIBRARY_VERSION",
+    "ROBOT_LIBRARY_DOC_FORMAT",
+    "ROBOT_LIBRARY_LISTENER",
+    "ROBOT_LIBRARY_CONVERTERS",
+    "ROBOT_AUTO_KEYWORDS",
+    "TEST_NAME",
+    "TEST_STATUS",
+    "TEST_MESSAGE",
+    "TEST_TAGS",
+    "SUITE_NAME",
+    "SUITE_STATUS",
+    "SUITE_MESSAGE",
+    "SUITE_SOURCE",
+    "KEYWORD_NAME",
+    "KEYWORD_STATUS",
+    "KEYWORD_MESSAGE",
+    "LOG_LEVEL",
+    "LOG_FILE",
+    "OUTPUT_DIR",
+    "OUTPUT_FILE",
+    "CURDIR",
+    "EXECDIR",
+    "TEMPDIR",
+    "PROCESS_",
+    "STATUS_"
+  ]
+}

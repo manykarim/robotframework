@@ -22,6 +22,75 @@ from typing import Tuple
 DOCS_DIR = Path(__file__).parent.parent / "docs"
 
 
+# Known RST role names handled by this pipeline. Restricted set so that URL
+# schemes (http:, mailto:) are never mistaken for roles.
+ROLE_NAMES = ('setting', 'name', 'option', 'file', 'codesc', 'opt')
+
+# Prefix form: :role:`text` (text may span lines). DOTALL so newlines match.
+PREFIX_ROLE_PATTERN = re.compile(
+    r':(' + '|'.join(ROLE_NAMES) + r'):`([^`\n]+(?:\n[^`\n]+)?)`',
+    re.DOTALL,
+)
+
+# Postfix form: `text`:role: (text may span lines). DOTALL.
+POSTFIX_ROLE_PATTERN = re.compile(
+    r'`([^`\n]+(?:\n[^`\n]+)?)`:(' + '|'.join(ROLE_NAMES) + r'):',
+    re.DOTALL,
+)
+
+
+def _mask_fenced_blocks_for_roles(text: str) -> str:
+    """Mask fenced-block content with spaces of the same length, preserving
+    byte offsets so regex match indices on the masked string remain valid
+    against the original content. Honours CommonMark closer rules.
+    """
+    out = []
+    in_fence = False
+    fence_char = None
+    fence_count = 0
+    for line in text.split('\n'):
+        m = re.match(r'^(`{3,}|~{3,})(.*)$', line)
+        opening_now = False
+        closing_now = False
+        if m:
+            run = m.group(1)
+            info = m.group(2).strip()
+            if not in_fence:
+                in_fence = True
+                fence_char = run[0]
+                fence_count = len(run)
+                opening_now = True
+            elif run[0] == fence_char and len(run) >= fence_count and not info:
+                in_fence = False
+                closing_now = True
+        if (in_fence and not opening_now) or closing_now:
+            out.append(' ' * len(line))
+        else:
+            out.append(line)
+    return '\n'.join(out)
+
+
+def strip_postfix_roles(content: str) -> str:
+    """Convert `text`:role: -> `text` outside fenced blocks.
+
+    Operates by splice: scan masked text for matches, substitute on the
+    matching slice in the original content. Idempotent (no role left after).
+    """
+    masked = _mask_fenced_blocks_for_roles(content)
+    result = []
+    last = 0
+    for m in POSTFIX_ROLE_PATTERN.finditer(masked):
+        start, end = m.start(), m.end()
+        result.append(content[last:start])
+        text = m.group(1)
+        # Collapse internal newlines/whitespace in the captured backtick text.
+        normalized = ' '.join(text.split())
+        result.append(f'`{normalized}`')
+        last = end
+    result.append(content[last:])
+    return ''.join(result)
+
+
 def convert_rst_labels(content: str) -> str:
     """
     Convert RST label definitions to HTML anchors.
@@ -342,6 +411,22 @@ def process_file(filepath: Path, dry_run: bool = False) -> Tuple[int, list]:
     original_content = filepath.read_text(encoding='utf-8')
     content = original_content
     warnings = []
+
+    # Fix multi-line RST roles first (these span line breaks)
+    # :name:`Copy\nFile` → *Copy File*
+    # :setting:`Test\nTeardown` → `Test Teardown`
+    for role, (prefix, suffix) in [('name', ('*', '*')), ('setting', ('`', '`')),
+                                     ('option', ('`', '`')), ('file', ('*', '*')),
+                                     ('codesc', ('`', '`')), ('opt', ('`', '`'))]:
+        content = re.sub(
+            rf':{role}:`([^`]+(?:\n[^`]+)?)`',
+            lambda m, p=prefix, s=suffix: f'{p}{" ".join(m.group(1).split())}{s}',
+            content,
+            flags=re.DOTALL
+        )
+
+    # Postfix-form roles: `text`:role: → `text` (outside fenced blocks).
+    content = strip_postfix_roles(content)
 
     # Apply conversions in order
     content = convert_rst_labels(content)

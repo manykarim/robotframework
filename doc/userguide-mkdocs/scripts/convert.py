@@ -37,7 +37,10 @@ class ConversionStats:
     admonitions_converted: int = 0
     cross_refs_converted: int = 0
     tables_converted: int = 0
+    simple_tables_converted: int = 0
     figures_converted: int = 0
+    literal_blocks_converted: int = 0
+    raw_html_blocks_dedented: int = 0
     warnings: List[str] = field(default_factory=list)
 
 
@@ -49,7 +52,14 @@ class RstToMarkdownConverter:
     TARGET_DIR = Path(__file__).parent.parent / "docs"
 
     # RST section level characters (in order of nesting as used in RF docs)
-    SECTION_CHARS = ['=', '-', '~', '^', '"', "'"]
+    SECTION_CHARS = ['=', '-', '~', '^', '"', "'", '`']
+
+    # Known RST role names defined in userguide/src/roles.rst (plus standard roles).
+    # Used for postfix-form `text`:role: handling and bounded role-stripping.
+    KNOWN_ROLES = (
+        'setting', 'name', 'option', 'file', 'codesc', 'opt',
+        'code', 'literal', 'emphasis', 'strong', 'ref',
+    )
 
     # Custom role mappings for Robot Framework User Guide
     # :setting:`value` -> `value` (code) - 110 usages
@@ -145,6 +155,29 @@ class RstToMarkdownConverter:
 
         return content
 
+    def convert_postfix_roles(self, content: str) -> str:
+        """
+        Convert RST postfix-form roles `text`:role: to Markdown.
+
+        RST also allows the postfix form for inline roles (for example
+        `[Tags]`:setting:). Restricted to known role names so URL schemes
+        like ``http:`` or ``mailto:`` are never matched. Skipped inside
+        fenced code blocks.
+        """
+        roles_alt = '|'.join(re.escape(r) for r in self.KNOWN_ROLES)
+        pattern = re.compile(
+            rf'`([^`\n]+)`:(?:{roles_alt}):',
+            re.DOTALL,
+        )
+
+        def transform(text: str) -> str:
+            def repl(match):
+                self.stats.custom_roles_converted += 1
+                return f'`{match.group(1)}`'
+            return pattern.sub(repl, text)
+
+        return self._apply_outside_fences(content, transform)
+
     def convert_inline_code(self, content: str) -> str:
         """
         Convert RST inline literals to Markdown code.
@@ -152,8 +185,10 @@ class RstToMarkdownConverter:
         RST: ``code``
         MD:  `code`
         """
-        # Double backticks to single backticks
-        content = re.sub(r'``([^`]+)``', r'`\1`', content)
+        # Double backticks to single backticks. The character class excludes
+        # newlines so the match cannot span paragraphs and accidentally swallow
+        # backtick-underlined RST headings (issue #6 root cause).
+        content = re.sub(r'``([^`\n]+)``', r'`\1`', content)
         return content
 
     def convert_admonitions(self, content: str) -> str:
@@ -353,7 +388,13 @@ class RstToMarkdownConverter:
 
         RST: `text <target>`_
         MD:  [text](#slug) or [text](url)
+
+        Fenced code blocks are skipped so Python dunders like ``__init__``
+        and other code identifiers are not misinterpreted as RST refs.
         """
+        return self._apply_outside_fences(content, self._convert_cross_references_text)
+
+    def _convert_cross_references_text(self, content: str) -> str:
         # Pattern for `text <target>`_ style references
         explicit_pattern = r'`([^<`]+)\s+<([^>]+)>`_'
 
@@ -410,7 +451,25 @@ class RstToMarkdownConverter:
         # Don't match across lines, don't match dunder methods
         word_pattern = r'(?<![`\w_])(\w+)_(?![_\w`])'
 
+        # Pre-compute regions that already form a Markdown link target so we
+        # don't inject a nested link inside an existing URL (e.g. Wikipedia
+        # `Shebang_(Unix)` URLs would otherwise become `[Shebang](#shebang)(Unix)`
+        # — issue #8 follow-up).
+        link_target_spans = [
+            (m.start(), m.end())
+            for m in re.finditer(r'\]\([^\s\)]*(?:\([^\)]*\))?[^\)]*\)', content)
+        ]
+
+        def _in_link_target(pos: int) -> bool:
+            for s, e in link_target_spans:
+                if s < pos < e:
+                    return True
+            return False
+
         def replace_word_ref(match):
+            if _in_link_target(match.start()):
+                return match.group(0)
+
             text = match.group(1).strip()
 
             # Skip if it looks like a Python dunder or internal name
@@ -491,9 +550,37 @@ class RstToMarkdownConverter:
         lines = content.split('\n')
         result = []
         i = 0
+        in_fence = False
+        fence_char = ''
+        fence_len = 0
 
         while i < len(lines):
             line = lines[i]
+            stripped = line.lstrip()
+            fence_match = re.match(r'^(`{3,}|~{3,})', stripped)
+            if fence_match:
+                token = fence_match.group(1)
+                prev_line = lines[i - 1] if i > 0 else ''
+                if not in_fence:
+                    if i == 0 or prev_line.strip() == '':
+                        in_fence = True
+                        fence_char = token[0]
+                        fence_len = len(token)
+                        result.append(line)
+                        i += 1
+                        continue
+                elif token[0] == fence_char and len(token) >= fence_len and stripped[len(token):].strip() == '':
+                    in_fence = False
+                    fence_char = ''
+                    fence_len = 0
+                    result.append(line)
+                    i += 1
+                    continue
+
+            if in_fence:
+                result.append(line)
+                i += 1
+                continue
 
             # Check for overline + title + underline pattern
             if i + 2 < len(lines):
@@ -543,37 +630,64 @@ class RstToMarkdownConverter:
         """
         Convert RST tables to Markdown tables.
 
-        Handles grid tables with +---+ borders, optionally indented.
+        Handles grid tables with ``+---+`` borders and simple tables with
+        ``=====`` separators. Also recognises ``.. table::`` directives that
+        precede either form. All conversions skip regions inside fenced code
+        blocks via :py:meth:`_apply_outside_fences`.
         """
-        # Find grid tables by looking for the characteristic +---+ pattern
-        # A grid table consists of:
-        # 1. A top border line: +---+---+
-        # 2. Content lines: | x | y |
-        # 3. Separator lines: +---+---+ or +===+===+
-        # 4. A bottom border line: +---+---+
+        def transform(text: str) -> str:
+            lines = text.split('\n')
+            result: List[str] = []
+            i = 0
+            simple_sep = re.compile(r'^\s*=+(\s+=+)+\s*$')
+            table_directive = re.compile(r'^\s*\.\.[ \t]+table::[ \t]*[^\n]*$')
 
-        lines = content.split('\n')
-        result = []
-        i = 0
+            while i < len(lines):
+                line = lines[i]
+                stripped = line.lstrip()
 
-        while i < len(lines):
-            line = lines[i]
-            stripped = line.lstrip()
+                if table_directive.match(line):
+                    skip = i + 1
+                    while skip < len(lines) and re.match(r'^[ \t]+:[^:\n]+:[^\n]*$', lines[skip]):
+                        skip += 1
+                    while skip < len(lines) and lines[skip].strip() == '':
+                        skip += 1
+                    if skip < len(lines) and simple_sep.match(lines[skip]):
+                        md_table, end = self._convert_simple_table(lines, skip)
+                        if md_table is not None:
+                            result.append(md_table)
+                            i = end
+                            continue
+                    if skip < len(lines):
+                        next_stripped = lines[skip].lstrip()
+                        if next_stripped.startswith('+') and re.match(r'^\+[-=+]+\+$', next_stripped):
+                            table_lines, table_end = self._extract_grid_table(lines, skip)
+                            if table_lines:
+                                result.append(self._parse_grid_table_v2(table_lines))
+                                i = table_end
+                                continue
 
-            # Check if this looks like the start of a grid table
-            if stripped.startswith('+') and re.match(r'^\+[-=+]+\+$', stripped):
-                # Try to parse as a grid table
-                table_lines, table_end = self._extract_grid_table(lines, i)
-                if table_lines:
-                    md_table = self._parse_grid_table_v2(table_lines)
-                    result.append(md_table)
-                    i = table_end
-                    continue
+                if stripped.startswith('+') and re.match(r'^\+[-=+]+\+$', stripped):
+                    table_lines, table_end = self._extract_grid_table(lines, i)
+                    if table_lines:
+                        md_table = self._parse_grid_table_v2(table_lines)
+                        result.append(md_table)
+                        i = table_end
+                        continue
 
-            result.append(line)
-            i += 1
+                if simple_sep.match(line):
+                    md_table, end = self._convert_simple_table(lines, i)
+                    if md_table is not None:
+                        result.append(md_table)
+                        i = end
+                        continue
 
-        return '\n'.join(result)
+                result.append(line)
+                i += 1
+
+            return '\n'.join(result)
+
+        return self._apply_outside_fences(content, transform)
 
     def _extract_grid_table(self, lines: List[str], start: int) -> Tuple[List[str], int]:
         """Extract a complete grid table from lines starting at given index."""
@@ -799,6 +913,379 @@ class RstToMarkdownConverter:
 
         return content
 
+    def _apply_outside_fences(self, content: str, transform) -> str:
+        """
+        Apply ``transform(text)`` only to regions outside fenced code blocks.
+
+        Recognises GFM fences using three or more backticks or tildes. A line is
+        only treated as an opening fence when the previous line is blank or
+        absent — this prevents RST section underlines (``~~~~`` directly under
+        a title) from being misread as fence openers.
+        """
+        lines = content.split('\n')
+        chunks: List[str] = []
+        buffer: List[str] = []
+        in_fence = False
+        fence_char = ''
+        fence_len = 0
+        prev_line = ''
+        first_line = True
+
+        def flush_buffer():
+            if buffer:
+                chunks.append(transform('\n'.join(buffer)))
+                buffer.clear()
+
+        # Tracks whether the previous emitted line was a fence delimiter so we
+        # can recognise back-to-back fences (a closer immediately followed by
+        # a new opener with no blank line in between).
+        prev_was_fence_delim = False
+        for line in lines:
+            stripped = line.lstrip()
+            fence_match = re.match(r'^(`{3,}|~{3,})', stripped)
+            if fence_match:
+                token = fence_match.group(1)
+                if not in_fence:
+                    if first_line or prev_line.strip() == '' or prev_was_fence_delim:
+                        flush_buffer()
+                        chunks.append(line)
+                        in_fence = True
+                        fence_char = token[0]
+                        fence_len = len(token)
+                        prev_line = line
+                        first_line = False
+                        prev_was_fence_delim = True
+                        continue
+                elif token[0] == fence_char and len(token) >= fence_len and stripped[len(token):].strip() == '':
+                    chunks.append(line)
+                    in_fence = False
+                    fence_char = ''
+                    fence_len = 0
+                    prev_line = line
+                    first_line = False
+                    prev_was_fence_delim = True
+                    continue
+            if in_fence:
+                chunks.append(line)
+            else:
+                buffer.append(line)
+            prev_line = line
+            first_line = False
+            prev_was_fence_delim = False
+
+        flush_buffer()
+        return '\n'.join(chunks)
+
+    def convert_literal_blocks(self, content: str) -> str:
+        """
+        Convert RST literal-block markers (``paragraph::`` and bare ``::``)
+        followed by an indented block into fenced code blocks.
+
+        RST rule for the trailing ``::``:
+        - ``::`` alone on a line is dropped entirely.
+        - ``::`` preceded by whitespace drops both colons and the whitespace.
+        - ``::`` attached directly to text becomes a single ``:``.
+
+        The following block is recognised when every non-blank line is indented
+        by at least two spaces consistently. The shared indent is removed and
+        the body is wrapped in a triple-backtick fence. Skipped inside existing
+        fenced code blocks so the pass is idempotent.
+        """
+        def transform(text: str) -> str:
+            blocks = self._split_blocks(text)
+            i = 0
+            output: List[str] = []
+            while i < len(blocks):
+                kind, block_text, trailing = blocks[i]
+                if kind == 'blank':
+                    output.append(block_text + trailing)
+                    i += 1
+                    continue
+
+                rewritten, has_marker = self._strip_literal_marker(block_text)
+                if has_marker and i + 2 < len(blocks):
+                    blank_kind, blank_text, blank_trailing = blocks[i + 1]
+                    next_kind, next_text, next_trailing = blocks[i + 2]
+                    if blank_kind == 'blank' and next_kind == 'text':
+                        dedented = self._dedent_block(next_text)
+                        if dedented is not None:
+                            body, language = dedented
+                            if rewritten.strip():
+                                output.append(rewritten + trailing)
+                                output.append(blank_text + blank_trailing)
+                            fence_open = f'```{language}' if language else '```'
+                            output.append(f'{fence_open}\n{body}\n```')
+                            output.append(next_trailing)
+                            self.stats.literal_blocks_converted += 1
+                            i += 3
+                            continue
+
+                if has_marker:
+                    output.append(rewritten + trailing)
+                else:
+                    output.append(block_text + trailing)
+                i += 1
+
+            return ''.join(output)
+
+        return self._apply_outside_fences(content, transform)
+
+    def _split_blocks(self, text: str) -> List[Tuple[str, str, str]]:
+        """
+        Split text into blocks separated by blank lines.
+
+        Each tuple is ``(kind, body, trailing)`` where ``kind`` is ``'text'`` or
+        ``'blank'``, ``body`` is the content of the block (without trailing
+        newlines) and ``trailing`` is the run of newline characters that
+        terminated the block. Concatenating ``body + trailing`` over all blocks
+        reconstructs the input verbatim.
+        """
+        blocks: List[Tuple[str, str, str]] = []
+        lines = text.split('\n')
+        i = 0
+        n = len(lines)
+        last_index = n - 1
+        while i < n:
+            if lines[i].strip() == '':
+                start = i
+                while i < n and lines[i].strip() == '':
+                    i += 1
+                blank_count = i - start
+                if i == n and start == last_index:
+                    blocks.append(('blank', '', ''))
+                else:
+                    blocks.append(('blank', '', '\n' * blank_count))
+            else:
+                start = i
+                while i < n and lines[i].strip() != '':
+                    i += 1
+                body = '\n'.join(lines[start:i])
+                trailing = '\n' if i < n else ''
+                blocks.append(('text', body, trailing))
+        return blocks
+
+    def _strip_literal_marker(self, block_text: str) -> Tuple[str, bool]:
+        """
+        Strip a trailing ``::`` literal-block marker from a paragraph block.
+
+        Returns the rewritten block and a flag indicating whether a marker was
+        present. The block_text passed in MUST be a non-blank text block.
+        """
+        lines = block_text.split('\n')
+        last = lines[-1].rstrip()
+        if not last.endswith('::'):
+            return block_text, False
+
+        if last.strip() == '::':
+            lines = lines[:-1]
+            return '\n'.join(lines), True
+
+        prefix = last[:-2]
+        if prefix and prefix[-1].isspace():
+            prefix = prefix.rstrip()
+        else:
+            prefix = prefix + ':'
+        lines[-1] = prefix
+        return '\n'.join(lines), True
+
+    def _dedent_block(self, block_text: str) -> Optional[Tuple[str, str]]:
+        """
+        Return ``(dedented_body, language)`` if every non-blank line of
+        ``block_text`` is indented by two or more spaces. Otherwise ``None``.
+
+        The smallest common leading-space count is removed. If the first
+        non-blank line begins with a shell prompt (``$``) the inferred language
+        is ``bash``; otherwise the language is empty.
+        """
+        lines = block_text.split('\n')
+        indents: List[int] = []
+        for line in lines:
+            if line.strip() == '':
+                continue
+            stripped = line.lstrip(' ')
+            indent = len(line) - len(stripped)
+            if indent < 2 or line[:indent] != ' ' * indent:
+                return None
+            indents.append(indent)
+
+        if not indents:
+            return None
+
+        min_indent = min(indents)
+        body_lines = [line[min_indent:] if len(line) >= min_indent else line.lstrip(' ')
+                      for line in lines]
+        while body_lines and body_lines[-1].strip() == '':
+            body_lines.pop()
+
+        first_non_blank = next((ln for ln in body_lines if ln.strip()), '')
+        language = ''
+        if first_non_blank.lstrip().startswith('$'):
+            language = 'bash'
+
+        return '\n'.join(body_lines), language
+
+    def convert_raw_html(self, content: str) -> str:
+        """
+        Dedent ``.. raw:: html`` blocks so MkDocs renders the inline HTML.
+
+        RST indents the body by at least one space; an indented block of HTML
+        is rendered as ``<pre>`` by CommonMark. Stripping the leading common
+        indent lets ``md_in_html`` / ``pymdownx`` extensions interpret the HTML
+        natively.
+        """
+        pattern = re.compile(
+            r'^(?P<indent>[ \t]*)\.\.[ \t]+raw::[ \t]+html[ \t]*\n'
+            r'(?P<options>(?:[ \t]*:[^\n]*\n)*)'
+            r'[ \t]*\n'
+            r'(?P<body>(?:[ \t]+[^\n]*\n?|[ \t]*\n)+)',
+            re.MULTILINE,
+        )
+
+        def replace(match):
+            body = match.group('body')
+            body_lines = body.split('\n')
+            non_blank = [ln for ln in body_lines if ln.strip()]
+            if not non_blank:
+                return ''
+            min_indent = min(len(ln) - len(ln.lstrip(' \t')) for ln in non_blank)
+            dedented = []
+            for line in body_lines:
+                if line.strip() == '':
+                    dedented.append('')
+                elif len(line) >= min_indent:
+                    dedented.append(line[min_indent:])
+                else:
+                    dedented.append(line.lstrip(' \t'))
+            while dedented and dedented[-1].strip() == '':
+                dedented.pop()
+            self.stats.raw_html_blocks_dedented += 1
+            return '\n'.join(dedented) + '\n'
+
+        return pattern.sub(replace, content)
+
+    def _convert_simple_table(self, lines: List[str], start: int) -> Tuple[Optional[str], int]:
+        """
+        Try to parse an RST simple table starting at ``lines[start]``.
+
+        On success returns ``(markdown_table, end_index)`` where ``end_index``
+        is the index of the line *after* the closing separator. On failure
+        returns ``(None, start)`` so the caller can leave the line untouched.
+        """
+        sep_re = re.compile(r'^(\s*)=+(\s+=+)+\s*$')
+        top = lines[start]
+        top_match = sep_re.match(top)
+        if not top_match:
+            return None, start
+        indent = top_match.group(1)
+
+        col_ranges: List[Tuple[int, int]] = []
+        in_col = False
+        col_start = 0
+        for idx, ch in enumerate(top):
+            if ch == '=' and not in_col:
+                in_col = True
+                col_start = idx
+            elif ch != '=' and in_col:
+                col_ranges.append((col_start, idx))
+                in_col = False
+        if in_col:
+            col_ranges.append((col_start, len(top)))
+
+        if len(col_ranges) < 2:
+            return None, start
+
+        i = start + 1
+        n = len(lines)
+        header_rows: List[List[str]] = []
+        while i < n:
+            line = lines[i]
+            if sep_re.match(line) and line.startswith(indent):
+                break
+            if line.strip() == '':
+                i += 1
+                continue
+            if not line.startswith(indent):
+                return None, start
+            header_rows.append(self._slice_columns(line, col_ranges))
+            i += 1
+        else:
+            return None, start
+
+        if not header_rows:
+            return None, start
+
+        i += 1
+        body_rows: List[List[str]] = []
+        current: List[List[str]] = []
+        while i < n:
+            line = lines[i]
+            if sep_re.match(line) and line.startswith(indent):
+                if current:
+                    body_rows.append(self._merge_row(current))
+                    current = []
+                i += 1
+                end = i
+                break
+            if line.strip() == '':
+                if current:
+                    body_rows.append(self._merge_row(current))
+                    current = []
+                i += 1
+                continue
+            if not line.startswith(indent):
+                return None, start
+            row = self._slice_columns(line, col_ranges)
+            # In RST simple tables a new row begins whenever the first column
+            # has content; lines whose first column is empty are continuation
+            # lines belonging to the previous row.
+            if row and row[0].strip() and current:
+                body_rows.append(self._merge_row(current))
+                current = []
+            current.append(row)
+            i += 1
+        else:
+            return None, start
+
+        header = self._merge_row(header_rows)
+        md_lines = []
+        md_lines.append(indent + '| ' + ' | '.join(header) + ' |')
+        md_lines.append(indent + '| ' + ' | '.join(['---'] * len(header)) + ' |')
+        for row in body_rows:
+            row = (row + [''] * len(header))[:len(header)]
+            md_lines.append(indent + '| ' + ' | '.join(row) + ' |')
+
+        self.stats.simple_tables_converted += 1
+        self.stats.tables_converted += 1
+        return '\n'.join(md_lines), end
+
+    def _slice_columns(self, line: str, col_ranges: List[Tuple[int, int]]) -> List[str]:
+        """Slice ``line`` by the given column ranges, padding short lines."""
+        cells = []
+        for idx, (start, end) in enumerate(col_ranges):
+            if idx == len(col_ranges) - 1:
+                cell = line[start:] if start < len(line) else ''
+            else:
+                cell = line[start:end] if start < len(line) else ''
+            cells.append(cell.strip())
+        return cells
+
+    def _merge_row(self, rows: List[List[str]]) -> List[str]:
+        """Merge multi-line simple-table cells with single-space joins."""
+        if not rows:
+            return []
+        width = len(rows[0])
+        merged = ['' for _ in range(width)]
+        for row in rows:
+            for idx in range(width):
+                cell = row[idx] if idx < len(row) else ''
+                if not cell:
+                    continue
+                if merged[idx]:
+                    merged[idx] += ' ' + cell
+                else:
+                    merged[idx] = cell
+        return merged
+
     def _is_section_line(self, line: str) -> bool:
         """Check if line is a section underline/overline."""
         line = line.rstrip()
@@ -844,12 +1331,15 @@ class RstToMarkdownConverter:
 
         # Apply conversions in order
         content = self.extract_link_targets(content)
+        content = self.convert_postfix_roles(content)
         content = self.convert_custom_roles(content)
         content = self.convert_inline_code(content)
         content = self.convert_code_blocks(content)
+        content = self.convert_literal_blocks(content)
         content = self.convert_admonitions(content)
         content = self.convert_sections(content)
         content = self.convert_figures(content)
+        content = self.convert_raw_html(content)
         content = self.convert_tables(content)
         content = self.convert_cross_references(content)
         content = self.convert_substitutions(content)
@@ -1006,6 +1496,9 @@ def main():
         print(f"Admonitions converted: {converter.stats.admonitions_converted}")
         print(f"Cross-references converted: {converter.stats.cross_refs_converted}")
         print(f"Tables converted: {converter.stats.tables_converted}")
+        print(f"  - Simple tables: {converter.stats.simple_tables_converted}")
+        print(f"Literal blocks converted: {converter.stats.literal_blocks_converted}")
+        print(f"Raw HTML blocks dedented: {converter.stats.raw_html_blocks_dedented}")
         print(f"Figures converted: {converter.stats.figures_converted}")
 
         if converter.stats.warnings:

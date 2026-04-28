@@ -70,6 +70,7 @@ Reference documentation including all settings, command line options, and format
 | Creating Libraries | [Extending > Creating Test Libraries](extending/creating-test-libraries.md) |
 | Command Line Options | [Appendices > CLI Options](appendices/command-line-options.md) |
 
+<a id="usage-instructions"></a>
 ## Version Information
 
 This documentation is for Robot Framework version 7.0. For documentation of other versions, use the version selector in the header.

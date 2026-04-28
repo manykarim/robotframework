@@ -1,7 +1,7 @@
 site_name: Robot Framework User Guide
 site_description: Comprehensive documentation for Robot Framework - a generic automation framework
 site_author: Robot Framework Foundation
-site_url: https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html
+site_url: https://robotframework.org/robotframework/latest/
 repo_url: https://github.com/robotframework/robotframework
 repo_name: robotframework/robotframework
 edit_uri: edit/master/doc/userguide-mkdocs/docs/
@@ -105,7 +105,8 @@ plugins:
       javascript_dir: js
   # Redirects temporarily simplified for benchmarking
   - redirects:
-      redirect_maps: {}
+      redirect_maps:
+        'RobotFrameworkUserGuide.md': 'index.md'
   - minify:
       minify_html: true
       minify_js: true
@@ -184,7 +185,8 @@ nav:
     - Using Test Libraries: creating-test-data/using-test-libraries.md
     - Variables: creating-test-data/variables.md
     - Creating User Keywords: creating-test-data/creating-user-keywords.md
-    - Resource and Variable Files: creating-test-data/resource-and-variable-files.md
+    - Resource files: creating-test-data/resource-files.md
+    - Variable files: creating-test-data/variable-files.md
     - Control Structures: creating-test-data/control-structures.md
     - Advanced Features: creating-test-data/advanced-features.md
 
