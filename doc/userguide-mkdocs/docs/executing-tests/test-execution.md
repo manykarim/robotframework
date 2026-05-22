@@ -303,14 +303,18 @@ Suite status is determined solely based on statuses of the tests it contains:
 <a id="continue-on-failure"></a>
 ## Continuing on failure
 
-Normally test cases are stopped immediately when any of their keywords
-fail. This behavior shortens test execution time and prevents
+Normally tests are stopped immediately if any of their keywords
+fail. This behavior shortens execution time and prevents
 subsequent keywords hanging or otherwise causing problems if the
-system under test is in unstable state. This has a drawback that often
+system under test is in unstable state. This has a drawback that sometimes
 subsequent keywords would give more information about the state of the
 system, though, and in some cases those subsequent keywords would actually
 take care of the needed cleanup activities. Hence Robot Framework offers
 several features to continue even if there are failures.
+
+!!! note
+    Tests are marked failed in the end also when execution is allowed
+    to continue after a failure.
 
 ### Execution continues on teardowns automatically
 
@@ -616,7 +620,7 @@ parsing errors encountered before execution even starts, this means that no
 tests are actually run.
 
 !!! note
-    Also logging something with the `ERROR` [log level](output-files.md#log-level) is considered
+    Also logging something with the `ERROR` [log level](result-files.md#log-level) is considered
     an error and stops the execution if the `--exitonerror` option
     is used.
 

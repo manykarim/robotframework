@@ -91,7 +91,7 @@ splitting to multiple lines, and other features as [test case documentation](cre
 This setting documents the user keyword in the test data. It is also shown
 in a more formal keyword documentation, which the [Libdoc](../supporting-tools/libdoc.md#libdoc) tool can create
 from [resource files](resource-files.md#resource-files). Finally, the first logical row of the documentation,
-until the first empty row, is shown as a keyword documentation in [test logs](../executing-tests/output-files.md#log).
+until the first empty row, is shown as a keyword documentation in [test logs](../executing-tests/result-files.md#log).
 
 ```robotframework
 *** Keywords ***
@@ -184,7 +184,7 @@ Similarly as with [test case tags](creating-test-cases.md#test-case-tags), user 
 prefix are [reserved](https://docs.python.org/3/library/re.html#regular-expression-syntax) for special features by Robot Framework
 itself. Users should thus not use any tag with these prefixes unless actually
 activating the special functionality. Starting from Robot Framework 6.1,
-[flattening keyword during execution time](../executing-tests/output-files.md#flattening-keyword-during-execution-time) can be taken into use using
+[flattening keyword during execution time](../executing-tests/result-files.md#flattening-keyword-during-execution-time) can be taken into use using
 reserved tag `robot:flatten`.
 
 !!! note

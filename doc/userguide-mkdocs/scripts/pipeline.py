@@ -6,12 +6,15 @@ This is the MASTER ORCHESTRATOR. Run it to regenerate all Markdown documentation
 from the RST source files. The output is a complete, clean MkDocs site.
 
 Usage:
-    python pipeline.py                     # Full conversion from scratch
-    python pipeline.py --skip-convert      # Re-run only post-processing fixes
-    python pipeline.py --validate-only     # Only run validation (no conversion)
-    python pipeline.py --dry-run           # Show what would be done
+    python pipeline.py                              # Fetch upstream + full conversion
+    python pipeline.py --skip-fetch                 # Skip fetch, use local RST source
+    python pipeline.py --upstream-ref v7.2.1        # Fetch a specific branch/tag/commit
+    python pipeline.py --skip-convert               # Re-run only post-processing fixes
+    python pipeline.py --validate-only              # Only run validation (no conversion)
+    python pipeline.py --dry-run                    # Show what would be done
 
 The pipeline stages are:
+    0. FETCH   - Pull latest RST source from upstream GitHub (skipped with --skip-fetch)
     1. CLEAN   - Remove old generated output
     2. CONVERT - RST → raw Markdown via convert.py
     3. FIX     - Apply all post-processing fix scripts
@@ -73,9 +76,33 @@ def run_script(script_name: str, args: list = None, dry_run: bool = False) -> Tu
     return result.returncode, result.stdout + result.stderr
 
 
+def stage_fetch(ref: str, dry_run: bool = False) -> bool:
+    """Stage 0: Fetch latest RST source from upstream GitHub."""
+    print(f"\n[0/?] FETCH - Pulling RST source from upstream (ref: {ref})")
+
+    fetch_script = SCRIPT_DIR / "fetch_upstream.py"
+    if not fetch_script.exists():
+        print(f"  ERROR: fetch_upstream.py not found at {fetch_script}")
+        return False
+
+    if dry_run:
+        print(f"  → [DRY RUN] Would run fetch_upstream.py --ref {ref}")
+        return True
+
+    import subprocess as _sp
+    result = _sp.run(
+        [sys.executable, str(fetch_script), "--ref", ref],
+        cwd=str(SCRIPT_DIR),
+    )
+    if result.returncode != 0:
+        print(f"  ERROR: fetch_upstream.py exited with code {result.returncode}")
+        return False
+    return True
+
+
 def stage_clean(dry_run: bool = False):
     """Stage 1: Clean output directory (preserve structure)."""
-    print("\n[1/5] CLEAN - Removing old generated Markdown files")
+    print("\n[1/6] CLEAN - Removing old generated Markdown files")
 
     if dry_run:
         print("  → [DRY RUN] Would remove all .md files from docs/")
@@ -101,7 +128,7 @@ def stage_clean(dry_run: bool = False):
 
 def stage_convert(dry_run: bool = False):
     """Stage 2: Convert RST to raw Markdown."""
-    print("\n[2/5] CONVERT - RST → raw Markdown")
+    print("\n[2/6] CONVERT - RST → raw Markdown")
 
     if not RST_SOURCE_DIR.exists():
         print(f"  ERROR: RST source directory not found: {RST_SOURCE_DIR}")
@@ -137,7 +164,7 @@ def stage_convert(dry_run: bool = False):
 
 def stage_fix(dry_run: bool = False):
     """Stage 3: Apply all post-processing fix scripts in order."""
-    print("\n[3/5] FIX - Applying post-processing fixes")
+    print("\n[3/6] FIX - Applying post-processing fixes")
 
     # Fix scripts in dependency order - each is idempotent
     fix_scripts = [
@@ -183,7 +210,7 @@ def stage_fix(dry_run: bool = False):
 
 def stage_assets(dry_run: bool = False):
     """Stage 4: Copy images and static assets from RST source."""
-    print("\n[4/5] ASSETS - Copying images and static files")
+    print("\n[4/6] ASSETS - Copying images and static files")
 
     ref_map = load_reference_map()
     copied = 0
@@ -218,7 +245,7 @@ def stage_assets(dry_run: bool = False):
 
 def stage_validate(dry_run: bool = False) -> Tuple[int, int]:
     """Stage 5: Validate the generated site."""
-    print("\n[5/5] VALIDATE - Building and checking MkDocs site")
+    print("\n[5/6] VALIDATE - Building and checking MkDocs site")
 
     if dry_run:
         print("  → [DRY RUN] Would run mkdocs build --strict")
@@ -304,6 +331,10 @@ def main():
     parser = argparse.ArgumentParser(
         description="Reusable RST→MkDocs conversion pipeline for Robot Framework User Guide"
     )
+    parser.add_argument("--skip-fetch", action="store_true",
+                        help="Skip Stage 0; use existing local RST source (old behavior)")
+    parser.add_argument("--upstream-ref", default="master", metavar="REF",
+                        help="Branch, tag, or commit to fetch from upstream (default: master)")
     parser.add_argument("--skip-convert", action="store_true",
                         help="Skip conversion, only run post-processing fixes")
     parser.add_argument("--skip-clean", action="store_true",
@@ -326,6 +357,12 @@ def main():
         strict_w, info_w = stage_validate(args.dry_run)
         print_summary(strict_w, info_w, time.time() - start_time)
         sys.exit(0 if strict_w == 0 else 1)
+
+    # Stage 0: fetch upstream RST source (skipped for fix-only, validate-only, or --skip-fetch)
+    if not args.skip_fetch and not args.fix_only:
+        if not stage_fetch(args.upstream_ref, args.dry_run):
+            print("\nERROR: Fetch failed. Aborting pipeline.")
+            sys.exit(3)
 
     if not args.skip_clean and not args.fix_only:
         stage_clean(args.dry_run)

@@ -36,7 +36,9 @@
     "Appendices/TimeFormat.rst": "appendices/time-format.md",
     "Appendices/BooleanArguments.rst": "appendices/boolean-arguments.md",
     "Appendices/EvaluatingExpressions.rst": "appendices/evaluating-expressions.md",
-    "Appendices/Registrations.rst": "appendices/registrations.md"
+    "Appendices/Registrations.rst": "appendices/registrations.md",
+    "ExecutingTestCases/ResultFiles.rst": "executing-tests/result-files.md",
+    "ExtendingRobotFramework/DynamicLibraryAPI.rst": "extending/dynamic-library-api.md"
   },
   "section_dirs": {
     "_comment": "Maps RST section directory names to MkDocs output directory names",
@@ -407,7 +409,7 @@
     "result.Message": "robot.result.html#robot.result.model.Message"
   },
   "split_pages": {
-    "_comment": "Splits one converted MD into multiple files at H2 boundaries. Driven by scripts/split_pages.py. Each entry: source MD path under docs/ → splits[] with from_heading (## title to slice from), target (output MD path under docs/), h1_title (promoted heading). delete_source removes the original combined file after splitting.",
+    "_comment": "Splits one converted MD into multiple files at H2 boundaries. Driven by scripts/split_pages.py. Each entry: source MD path under docs/ \u2192 splits[] with from_heading (## title to slice from), target (output MD path under docs/), h1_title (promoted heading). delete_source removes the original combined file after splitting.",
     "creating-test-data/resource-and-variable-files.md": {
       "splits": [
         {

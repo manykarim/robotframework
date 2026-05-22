@@ -20,25 +20,25 @@ are listed.
   -t, --test <name>       [Selects the test cases by name](../creating-test-data/creating-test-cases.md#test-case).
   --task <name>           Alias for `--test` that can be used when [executing tasks](../executing-tests/task-execution.md#executing-tasks).
   -s, --suite <name>      [Selects the test suites](../creating-test-data/creating-test-suites.md#test-suite) by name.
-  -R, --rerunfailed <file>  [Selects failed tests](../executing-tests/test-execution.md#fail) from an earlier [output file](../executing-tests/output-files.md#output-file)
+  -R, --rerunfailed <file>  [Selects failed tests](../executing-tests/test-execution.md#fail) from an earlier [output file](../executing-tests/result-files.md#output-file)
                           to be re-executed.
   -S, --rerunfailedsuites <file>  [Selects failed test suites](../executing-tests/test-execution.md#fail) from an earlier
-                          [output file](../executing-tests/output-files.md#output-file) to be re-executed.
+                          [output file](../executing-tests/result-files.md#output-file) to be re-executed.
   -i, --include <tag>     [Selects the test cases](../creating-test-data/creating-test-cases.md#test-case) by tag.
   -e, --exclude <tag>     [Selects the test cases](../creating-test-data/creating-test-cases.md#test-case) by tag.
   --skip <tag>            Tests having given tag will be [skipped](../executing-tests/test-execution.md#skipped). Tag can be a pattern.
   --skiponfailure <tag>   Tests having given tag will be [skipped](../executing-tests/test-execution.md#skipped) if they fail.
   -v, --variable <name:value>   Sets [individual variables](../creating-test-data/variables.md#variable).
   -V, --variablefile <path:args>  Sets variables using [variable files](../creating-test-data/variable-files.md#variable-files).
-  -d, --outputdir <dir>   Defines where to [create output files](../executing-tests/output-files.md#output).
-  -o, --output <file>     Sets the path to the generated [output file](../executing-tests/output-files.md#output-file).
+  -d, --outputdir <dir>   Defines where to [create result files](../executing-tests/result-files.md#result-file).
+  -o, --output <file>     Sets the path to the generated [output file](../executing-tests/result-files.md#output-file).
   --legacyoutput          Creates output file in [Robot Framework 6.x compatible format](../creating-test-data/control-structures.md#for).
-  -l, --log <file>        Sets the path to the generated [log file](../executing-tests/output-files.md#log-file).
-  -r, --report <file>     Sets the path to the generated [report file](../executing-tests/output-files.md#report-file).
-  -x, --xunit <file>      Sets the path to the generated [xUnit compatible result file](../executing-tests/output-files.md#xunit-compatible-result-file).
-  -b, --debugfile <file>  A [debug file](../executing-tests/output-files.md#debug-file) that is written during execution.
-  -T, --timestampoutputs  [Adds a timestamp](#adds-a-timestamp) to [output files](../executing-tests/output-files.md#output-files) listed above.
-  --splitlog              [Split log file](../executing-tests/output-files.md#log) into smaller pieces that open in
+  -l, --log <file>        Sets the path to the generated [log file](../executing-tests/result-files.md#log-file).
+  -r, --report <file>     Sets the path to the generated [report file](../executing-tests/result-files.md#report-file).
+  -x, --xunit <file>      Sets the path to the generated [xUnit compatible result file](../executing-tests/result-files.md#xunit-compatible-result-file).
+  -b, --debugfile <file>  A [debug file](../executing-tests/result-files.md#debug-file) that is written during execution.
+  -T, --timestampoutputs  [Adds a timestamp](#adds-a-timestamp) to [result files](../executing-tests/result-files.md#result-files) listed above.
+  --splitlog              [Split log file](../executing-tests/result-files.md#log) into smaller pieces that open in
                           browser transparently.
   --logtitle <title>      [Sets a title](#sets-a-title) for the generated test log.
   --reporttitle <title>   [Sets a title](#sets-a-title) for the generated test report.
@@ -47,7 +47,7 @@ are listed.
   --maxassignlength <characters>  Sets the number of characters shown in log when
                            [variables are assigned](../creating-test-data/variables.md#automatically-logging-assigned-variable-value)_.
   -L, --loglevel <level>  [Sets the threshold level](#sets-the-threshold-level) for logging. Optionally
-                          the default [visible log level](../executing-tests/output-files.md#visible-log-level) can be given
+                          the default [visible log level](../executing-tests/result-files.md#visible-log-level) can be given
                           separated with a colon (:).
   --suitestatlevel <level>  Defines how many [levels to show](#levels-to-show) in the
                            *Statistics by Suite* table in outputs.
@@ -75,7 +75,7 @@ are listed.
                           if any error occurs when parsing test data, importing libraries, and so on.
   --skipteardownonexit    [Skips teardowns](../executing-tests/test-execution.md#skip) if test execution is prematurely stopped.
   --prerunmodifier <name:args>    Activate [programmatic modification of test data](../executing-tests/configuring-execution.md#programmatic-modification-of-test-data).
-  --prerebotmodifier <name:args>  Activate [programmatic modification of results](../executing-tests/output-files.md#programmatic-modification-of-results).
+  --prerebotmodifier <name:args>  Activate [programmatic modification of results](../executing-tests/result-files.md#programmatic-modification-of-results).
   --randomize <all|suites|tests|none>  [Randomizes](#randomizes) test execution order.
   --console <verbose|dotted|quiet|none>  [Console output type](../executing-tests/configuring-execution.md#console-output-type).
   --dotted                Shortcut for `--console dotted`.
@@ -93,7 +93,7 @@ are listed.
 ## Command line options for post-processing outputs
 
   --rpa                   Turn on [generic automation](../executing-tests/task-execution.md#generic-automation-mode) mode.
-  -R, --merge             Changes result combining behavior to [merging](../executing-tests/post-processing.md#merging-outputs)_.
+  -R, --merge             Changes result combining behavior to [merging](../executing-tests/post-processing.md#merging-results)_.
   -N, --name <name>       [Sets the name](#sets-the-name) of the top level test suite.
   -D, --doc <document>    [Sets the documentation](#sets-the-documentation) of the top-level test suite.
   -M, --metadata <name:value>  [Sets free metadata](#sets-free-metadata) for the top-level test suite.
@@ -103,20 +103,20 @@ are listed.
   -s, --suite <name>      [Selects the test suites](../creating-test-data/creating-test-suites.md#test-suite) by name.
   -i, --include <tag>     [Selects the test cases](../creating-test-data/creating-test-cases.md#test-case) by tag.
   -e, --exclude <tag>     [Selects the test cases](../creating-test-data/creating-test-cases.md#test-case) by tag.
-  -d, --outputdir <dir>   Defines where to [create output files](../executing-tests/output-files.md#output).
-  -o, --output <file>     Sets the path to the generated [output file](../executing-tests/output-files.md#output-file).
+  -d, --outputdir <dir>   Defines where to [create result files](../executing-tests/result-files.md#result-file).
+  -o, --output <file>     Sets the path to the generated [output file](../executing-tests/result-files.md#output-file).
   --legacyoutput          Creates output file in [Robot Framework 6.x compatible format](../creating-test-data/control-structures.md#for).
-  -l, --log <file>        Sets the path to the generated [log file](../executing-tests/output-files.md#log-file).
-  -r, --report <file>     Sets the path to the generated [report file](../executing-tests/output-files.md#report-file).
-  -x, --xunit <file>      Sets the path to the generated [xUnit compatible result file](../executing-tests/output-files.md#xunit-compatible-result-file).
-  -T, --timestampoutputs  [Adds a timestamp](#adds-a-timestamp) to [output files](../executing-tests/output-files.md#output-files) listed above.
-  --splitlog              [Split log file](../executing-tests/output-files.md#log) into smaller pieces that open in
+  -l, --log <file>        Sets the path to the generated [log file](../executing-tests/result-files.md#log-file).
+  -r, --report <file>     Sets the path to the generated [report file](../executing-tests/result-files.md#report-file).
+  -x, --xunit <file>      Sets the path to the generated [xUnit compatible result file](../executing-tests/result-files.md#xunit-compatible-result-file).
+  -T, --timestampoutputs  [Adds a timestamp](#adds-a-timestamp) to [result files](../executing-tests/result-files.md#result-files) listed above.
+  --splitlog              [Split log file](../executing-tests/result-files.md#log) into smaller pieces that open in
                           browser transparently.
   --logtitle <title>      [Sets a title](#sets-a-title) for the generated test log.
   --reporttitle <title>   [Sets a title](#sets-a-title) for the generated test report.
   --reportbackground <colors>  [Sets background colors](#sets-background-colors) of the generated report.
   -L, --loglevel <level>  [Sets the threshold level](#sets-the-threshold-level) to select log messages.
-                          Optionally the default [visible log level](../executing-tests/output-files.md#visible-log-level) can be given
+                          Optionally the default [visible log level](../executing-tests/result-files.md#visible-log-level) can be given
                           separated with a colon (:).
   --suitestatlevel <level>  Defines how many [levels to show](#levels-to-show) in the
                            *Statistics by Suite* table in outputs.
@@ -138,7 +138,7 @@ are listed.
                           in test cases. Error codes are returned normally.
   --processemptysuite     Processes output files even if files contain
                           [empty test suites](../creating-test-data/creating-test-suites.md#test-suite).
-  --prerebotmodifier <name:args>  Activate [programmatic modification of results](../executing-tests/output-files.md#programmatic-modification-of-results).
+  --prerebotmodifier <name:args>  Activate [programmatic modification of results](../executing-tests/result-files.md#programmatic-modification-of-results).
   -C, --consolecolors <auto|on|ansi|off>  [Specifies are colors](../creating-test-data/control-structures.md#if) used on the console.
   --consolelinks <auto|off>  Controls [making paths to results files hyperlinks](../executing-tests/configuring-execution.md#console-links).
   -P, --pythonpath <path>   Additional locations to add to the [module search path](../executing-tests/configuring-execution.md#module-search-path).
@@ -158,12 +158,12 @@ are listed.
     [in front of any explicit options](../supporting-tools/libdoc.md#options) on the command line.
 
 `ROBOT_SYSLOG_FILE`
-: Path to a [syslog](../executing-tests/output-files.md#syslog) file where Robot Framework writes internal
+: Path to a [syslog](../executing-tests/result-files.md#syslog) file where Robot Framework writes internal
     information about parsing test case files and running
     tests.
 
 `ROBOT_SYSLOG_LEVEL`
-: Log level to use when writing to the [syslog](../executing-tests/output-files.md#syslog) file.
+: Log level to use when writing to the [syslog](../executing-tests/result-files.md#syslog) file.
 
 `ROBOT_INTERNAL_TRACES`
 : When set to any non-empty value, Robot Framework's

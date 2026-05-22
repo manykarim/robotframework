@@ -5,7 +5,6 @@
 This document describes the migration of the Robot Framework User Guide from reStructuredText (docutils) to Material for MkDocs. The migration modernizes the documentation platform while preserving content accuracy and maintaining backward compatibility with existing URLs.
 
 ## Migration Summary
-
 | Aspect | Before | After |
 |--------|--------|-------|
 | Source Format | reStructuredText (.rst) | Markdown (.md) |
@@ -81,7 +80,6 @@ docs/
 #### Custom Roles to Markdown
 
 The original documentation used custom reST roles defined in `roles.rst`. These have been converted to standard Markdown formatting:
-
 | Original reST | Markdown Equivalent | Usage |
 |---------------|---------------------|-------|
 | `:setting:\`Library\`` | `*Library*` | Setting names |
@@ -157,7 +155,6 @@ plugins:
 ### High-Value Anchors Preserved
 
 The following commonly-linked anchors have explicit aliases in the new documentation:
-
 | Legacy Anchor | New Location |
 |---------------|--------------|
 | `#Installation` | `getting-started/installation.md` |
@@ -215,7 +212,6 @@ The documentation is built using:
 - **Pygments** (2.17+) - Syntax highlighting with Robot Framework lexer
 
 ### Configuration Files
-
 | File | Purpose |
 |------|---------|
 | `mkdocs.yml` | MkDocs configuration and navigation |
@@ -231,7 +227,6 @@ Documentation is automatically built and deployed via GitHub Actions:
 - Git tags (`v*`) deploy versioned documentation
 
 ## Migration Timeline
-
 | Phase | Duration | Status |
 |-------|----------|--------|
 | Analysis and Planning | 2 weeks | Complete |
@@ -246,7 +241,6 @@ Documentation is automatically built and deployed via GitHub Actions:
 ### Complete Anchor Mapping
 
 The following table lists major legacy anchors and their new locations:
-
 | Legacy Anchor | New Path |
 |---------------|----------|
 | `#Introduction` | `getting-started/introduction/` |

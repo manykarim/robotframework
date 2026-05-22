@@ -15,7 +15,6 @@ This report documents the cross-reference and navigation issues found when compa
 ## 1. Duplicate Directory Structure (CRITICAL)
 
 Both PascalCase and kebab-case directory versions exist in `/docs/`:
-
 | PascalCase | kebab-case |
 |------------|------------|
 | Appendices/ | appendices/ |
@@ -37,7 +36,6 @@ Both PascalCase and kebab-case directory versions exist in `/docs/`:
 ## 2. Missing Image Files
 
 The following images are referenced but not found:
-
 | File | Missing Image |
 |------|---------------|
 | ExecutingTestCases/OutputFiles.md | log_passed.png, log_failed.png, log_skipped.png |
@@ -107,7 +105,6 @@ The following images are referenced but not found:
 ## 5. Broken Links to API Documentation
 
 The following references to Robot Framework API objects are broken:
-
 | Pattern | Files Affected |
 |---------|----------------|
 | `running.TestSuite_` | listener-interface.md, parser-interface.md, configuring-execution.md |
@@ -184,7 +181,6 @@ All section index files properly link to child pages using relative paths.
 ---
 
 ## Appendix: File Locations
-
 | Resource | Path |
 |----------|------|
 | MkDocs config | `/home/many/workspace/robotframework/doc/userguide-mkdocs/mkdocs.yml` |

@@ -72,7 +72,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 None. All existing URLs redirect to their new locations.
 
 ## Version History
-
 | Version | Date | Description |
 |---------|------|-------------|
 | 1.0.0 | 2026-01-27 | Initial MkDocs migration release |

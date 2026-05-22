@@ -144,9 +144,52 @@ containing Robot Framework data are ignored as well.
    |                   | Directory Should Exist | ${path} |
 ```
 
+### Resource files using Markdown format
+
+The [Markdown format](test-data-syntax.md#markdown-format) that can be used with [suite files](creating-test-suites.md#suite-files) works also with
+resource files. Such resource files can use either *.md* or
+*.markdown* extension and they are otherwise imported exactly as normal
+resource files:
+
+```robotframework
+*** Settings ***
+Resource         example.md
+```
+When parsing resource files using the Markdown format, Robot Framework
+ignores all data outside fenced code blocks with the `robotframework` or `robot`
+language tag exactly the same way as when parsing [Markdown suite files](https://packaging.python.org/en/latest/guides/distributing-packages-using-setuptools/#package-data).
+For example, the following resource file imports *OperatingSystem* library,
+defines `${MESSAGE}` variable and creates *My Keyword* keyword:
+
+```markdown
+# Resource file using Markdown
+
+This text is outside code blocks and thus ignored.
+
+```robotframework
+*** Settings ***
+Library          OperatingSystem
+
+*** Variables ***
+${MESSAGE}       Hello, world!
+```
+
+Also this text is outside code blocks and ignored. Code blocks not
+containing Robot Framework data are ignored as well.
+
+```robotframework
+# Both space and pipe separated formats are supported.
+
+| *** Keywords ***  |                        |         |
+| My Keyword        | [Arguments]            | ${path} |
+|                   | Directory Should Exist | ${path} |
+```
+```
+```
+
 ### Resource files using JSON format
 
-Resource files can be created using [JSON](test-data-syntax.md#json-format) the [same way as suite files](https://packaging.python.org/en/latest/guides/distributing-packages-using-setuptools/#package-data).
+Resource files can be created using JSON_ the [same way as suite files](#same-way-as-suite-files).
 Such JSON resource files must use either the standard *.json* extension
 or the custom *.rsrc* extension. They are otherwise imported exactly as
 normal resource files:

@@ -11,6 +11,7 @@ venv/
 # Local state
 .claude-flow/
 .swarm/
+# .upstream-lock.json is intentionally tracked (records upstream commit used for conversion)
 
 # Temporary files
 *.log

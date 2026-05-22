@@ -2,7 +2,7 @@
 
 This section explains different command line options that can be used
 for configuring the [test execution](test-execution.md#test-execution) or [post-processing
-outputs](post-processing.md#post-processing-outputs). Options related to generated [output files](output-files.md#output-files) are discussed in
+outputs](post-processing.md#post-processing-outputs). Options related to generated [result files](result-files.md#result-files) are discussed in
 the next section.
 
 ## Selecting files to parse
@@ -16,8 +16,9 @@ on the extension:
 - *.robot* files and files that are not recognized are parsed using
   the normal [Robot Framework parser](https://github.com/robotframework/robotframework/issues/5023).
 - *.rst* and *.rest* files are parsed using the [reStructuredText parser](https://en.wikipedia.org/wiki/Glob_(programming)).
-- *.rbt* and *.json* files are parsed using the [JSON parser](http://docs.python.org/library/sys.html#sys.path).
-- Files supported by [custom parsers](http://en.wikipedia.org/wiki/ANSI_escape_code) are parsed by a matching parser.
+- *.md* and *.markdown* files are parsed using the [Markdown parser](http://docs.python.org/library/sys.html#sys.path).
+- *.rbt* and *.json* files are parsed using the [JSON parser](http://en.wikipedia.org/wiki/ANSI_escape_code).
+- Files supported by [custom parsers](https://github.com/Alhadis/OSC8-Adoption) are parsed by a matching parser.
 
 Examples:
 
@@ -25,6 +26,7 @@ Examples:
 robot example.robot    # Standard Robot Framework parser.
 robot example.tsv      # Must be compatible with the standard parser.
 robot example.rst      # reStructuredText parser.
+robot example.md       # Markdown parser.
 robot x.robot y.rst    # Parse both files using an appropriate parser.
 ```
 
@@ -37,8 +39,9 @@ the following rules:
   (*_*) are ignored.
 - *.robot* files are parsed using the normal [Robot Framework parser](https://en.wikipedia.org/wiki/Glob_(programming)).
 - *.robot.rst* files are parsed using the [reStructuredText parser](http://docs.python.org/library/sys.html#sys.path).
-- *.rbt* files are parsed using the [JSON parser](http://en.wikipedia.org/wiki/ANSI_escape_code).
-- Files supported by [custom parsers](https://github.com/Alhadis/OSC8-Adoption) are parsed by a matching parser.
+- *.robot.md* files are parsed using the [Markdown parser](http://en.wikipedia.org/wiki/ANSI_escape_code).
+- *.rbt* files are parsed using the [JSON parser](https://github.com/Alhadis/OSC8-Adoption).
+- Files supported by [custom parsers](https://en.wikipedia.org/wiki/Windows_Console) are parsed by a matching parser.
 - Other files are ignored unless parsing them has been enabled by using
   the `--parseinclude` or `--extension` options discussed
   in the subsequent sections.
@@ -82,8 +85,9 @@ even if they by [default would not be](https://github.com/robotframework/robotfr
 the used extension:
 
 - *.rst* and *.rest* files are parsed using the [reStructuredText parser](https://en.wikipedia.org/wiki/Glob_(programming)).
-- *.json* files are parsed using the [JSON parser](http://docs.python.org/library/sys.html#sys.path).
-- Other files are parsed using the normal [Robot Framework parser](http://en.wikipedia.org/wiki/ANSI_escape_code).
+- *.md* and *.markdown* files are parsed using the [Markdown parser](http://docs.python.org/library/sys.html#sys.path).
+- *.json* files are parsed using the [JSON parser](http://en.wikipedia.org/wiki/ANSI_escape_code).
+- Other files are parsed using the normal [Robot Framework parser](https://github.com/Alhadis/OSC8-Adoption).
 
 Notice that when you use a pattern like `*.robot` and there exists a file that
 matches the pattern in the execution directory, the shell may resolve
@@ -98,7 +102,7 @@ to quote or escape the pattern like `'*.robot'` or `\*.robot`.
 
 In addition to using the `--parseinclude` option discussed in the
 previous section, it is also possible to enable parsing files that are [not
-parsed by default](https://github.com/Alhadis/OSC8-Adoption) by using the `--extension (-F)` option.
+parsed by default](https://en.wikipedia.org/wiki/Windows_Console) by using the `--extension (-F)` option.
 Matching extensions is case insensitive and the leading dot can be omitted.
 If there is a need to parse more than one kind of files, it is possible to
 use a colon `:` to separate extensions:
@@ -318,7 +322,7 @@ In that case tests that are selected must match all selection criteria:
 ### Re-executing failed test cases
 
 Command line option `--rerunfailed (-R)` can be used to select all failed
-tests from an earlier [output file](output-files.md#output-file) for re-execution. This option is useful,
+tests from an earlier [output file](result-files.md#output-file) for re-execution. This option is useful,
 for example, if running all tests takes a lot of time and one wants to
 iteratively fix failing test cases.
 
@@ -345,7 +349,7 @@ same as not specifying this option at all.
 ### Re-executing failed test suites
 
 Command line option `--rerunfailedsuites (-S)` can be used to select all
-failed suites from an earlier [output file](output-files.md#output-file) for re-execution. Like
+failed suites from an earlier [output file](result-files.md#output-file) for re-execution. Like
 `--rerunfailed (-R)`, this option is useful when full test execution
 takes a lot of time. Note that all tests from a failed test suite will be
 re-executed, even passing ones. This option is useful when the tests in
@@ -643,7 +647,7 @@ as keywords do.
 If more than one pre-run modifier is needed, they can be specified by using
 the `--prerunmodifier` option multiple times. If similar modifying
 is needed before creating logs and reports, [programmatic modification of
-results](output-files.md#programmatic-modification-of-results) can be enabled using the `--prerebotmodifier` option.
+results](result-files.md#programmatic-modification-of-results) can be enabled using the `--prerebotmodifier` option.
 
 Pre-run modifiers are executed before other configuration affecting the
 executed test suite and test cases. Most importantly, options related to

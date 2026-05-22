@@ -22,7 +22,6 @@ The migration from RST to MkDocs Markdown is approximately 95% complete. The doc
 None. The documentation builds and all content is accessible.
 
 ### 2. High Priority (Should Fix) - 49 Issues
-
 | Issue Type | Count | Impact |
 |------------|-------|--------|
 | Broken image links (CamelCase files) | 13 | Images don't display in orphan files |
@@ -30,7 +29,6 @@ None. The documentation builds and all content is accessible.
 | Duplicate CamelCase directories | 36 files | Confusion, maintenance burden |
 
 ### 3. Medium Priority (Nice to Fix) - ~20 Issues
-
 | Issue Type | Count | Impact |
 |------------|-------|--------|
 | RST-style internal references | ~15 | INFO warnings, some broken links |
@@ -96,7 +94,6 @@ mkdocs build 2>&1 | grep -c "WARNING"
 **Problem**: 9 RST-style external API reference links were not converted to proper Markdown URLs.
 
 **Affected Files and Lines:**
-
 | File | Line | RST Reference | Correct URL |
 |------|------|---------------|-------------|
 | `executing-tests/configuring-execution.md` | 754-755 | `running.TestSuite_`, `running.TestCase_`, `running.Keyword_` | Robot Framework API docs |
@@ -161,7 +158,6 @@ grep -r "running\.\(TestSuite\|TestCase\|Keyword\|TestLibrary\|ResourceFile\|Imp
 **Problem**: Multiple RST-style internal references (`name_` syntax) were not fully converted.
 
 **Affected Files (sample):**
-
 | File | Issue |
 |------|-------|
 | `appendices/command-line-options.md` | `Translations_`, `merging outputs_`, `Console links_` |
@@ -392,7 +388,6 @@ linkchecker http://127.0.0.1:8000/
 ---
 
 ## Success Criteria
-
 | Metric | Current | Target |
 |--------|---------|--------|
 | Build Warnings | 22+ | 0 |

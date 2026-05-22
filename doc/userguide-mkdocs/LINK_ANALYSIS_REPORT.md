@@ -185,7 +185,6 @@ re.sub(r'\[#(\d+)\]\(##\1\)',
 ---
 
 ## Files Requiring Most Work
-
 | Rank | File | Issues |
 |------|------|--------|
 | 1 | extending/creating-test-libraries.md | ~100+ |

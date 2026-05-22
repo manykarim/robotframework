@@ -27,6 +27,44 @@ from pathlib import Path
 
 from translations import update_translations
 
+
+# =============================================================================
+# SECURITY: Path Traversal Prevention
+# =============================================================================
+# This function prevents path traversal attacks by ensuring that resolved
+# file paths remain within an allowed root directory. Without this validation,
+# malicious input like "../../../etc/passwd" could read arbitrary system files.
+# =============================================================================
+def secure_path(user_path, allowed_root):
+    """Validate that a path stays within the allowed root directory.
+
+    Args:
+        user_path: The user-supplied file path to validate
+        allowed_root: The root directory that paths must stay within
+
+    Returns:
+        The resolved absolute path if valid
+
+    Raises:
+        ValueError: If the path attempts to traverse outside allowed_root
+    """
+    # Resolve both paths to absolute, normalized forms
+    root = Path(allowed_root).resolve()
+    # Join user path with root and resolve to catch traversal attempts
+    target = (root / user_path).resolve()
+
+    # Verify the resolved path is still under the allowed root
+    # This catches ../ traversal and symlink attacks
+    try:
+        target.relative_to(root)
+    except ValueError:
+        raise ValueError(
+            f"Security: Path traversal detected. Path '{user_path}' "
+            f"resolves outside allowed directory '{root}'"
+        )
+
+    return target
+
 # First part of this file is Pygments configuration and actual
 # documentation generation follows it.
 #
@@ -118,8 +156,17 @@ def pygments_directive(name, arguments, options, content, lineno,
     filtered = [line for line in content if line.strip()]
     if len(filtered) == 1:
         path = filtered[0].replace('/', os.sep)
-        if os.path.isfile(path):
-            content = open(path, encoding="utf-8").read().splitlines()
+        # SECURITY FIX: Validate path to prevent directory traversal attacks.
+        # Only allow reading files within the doc/userguide directory tree.
+        # This prevents malicious RST content from reading arbitrary system files
+        # via paths like "../../../etc/passwd".
+        try:
+            validated_path = secure_path(path, CURDIR)
+            if validated_path.is_file():
+                content = validated_path.read_text(encoding="utf-8").splitlines()
+        except ValueError as e:
+            # Log security violation but continue with inline content
+            print(f"Warning: {e}", file=sys.stderr)
     parsed = highlight(u'\n'.join(content), lexer, formatter)
     return [nodes.raw('', parsed, format='html')]
 
@@ -250,9 +297,21 @@ def create_distribution():
         print(f'Copying {source!r} -> {dest!r}')
         shutil.copy(source, dest)
 
+    # =========================================================================
+    # SECURITY FIX: ReDoS Prevention
+    # =========================================================================
+    # Original pattern: (<(a|img)\s+.*?)(\s+(href|src)="(.*?)"|>)
+    # Risk: The .*? combined with alternation and backtracking could cause
+    # exponential time complexity (ReDoS) on crafted malicious input.
+    #
+    # Fixed pattern uses:
+    # 1. [^>]* instead of .*? - Cannot match past tag boundary, limiting backtrack
+    # 2. [^"]* instead of .*? for attribute values - Bounded by quote character
+    # 3. Atomic-like behavior through character class negation
+    # =========================================================================
     link_regexp = re.compile(r'''
-(<(a|img)\s+.*?)
-(\s+(href|src)="(.*?)"|>)
+(<(a|img)\s[^>]*?)        # Group 1: Tag start with attributes (bounded by >)
+(\s+(href|src)="([^"]*)"|>)  # Group 3: href/src attribute or tag end (bounded by ")
 ''', re.VERBOSE | re.DOTALL | re.IGNORECASE)
 
     with open(ugpath, encoding="utf-8") as infile:

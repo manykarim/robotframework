@@ -23,7 +23,7 @@ mode even if executed files contain tasks. If neither of these options are
 used, it is an error to execute multiple files so that some have tests and
 others have tasks.
 
-The execution mode is stored in the generated [output file](output-files.md#output-file) and read by
+The execution mode is stored in the generated [output file](result-files.md#output-file) and read by
 [Rebot](post-processing.md#rebot) if outputs are post-processed. The mode can also [be set when
 using Rebot](../creating-test-data/creating-tasks.md#creating-tasks) if necessary.
 

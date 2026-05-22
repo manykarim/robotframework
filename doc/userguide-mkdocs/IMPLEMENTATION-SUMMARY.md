@@ -5,7 +5,6 @@
 Migration of the Robot Framework User Guide from reStructuredText (docutils) to Material for MkDocs. This modernization effort replaces the custom build pipeline with a standard static site generator, enabling multi-page navigation, full-text search, version management, and mobile-responsive design.
 
 ## Timeline
-
 | Phase | Description | Date |
 |-------|-------------|------|
 | Phase 1 | Analysis and Planning | 2026-01-27 |
@@ -15,7 +14,6 @@ Migration of the Robot Framework User Guide from reStructuredText (docutils) to 
 | Phase 5 | Documentation Finalization | 2026-01-27 |
 
 ## Conversion Metrics
-
 | Metric | Value |
 |--------|-------|
 | Source files converted | 37 RST to 42 MD |
@@ -31,7 +29,6 @@ Migration of the Robot Framework User Guide from reStructuredText (docutils) to 
 ## Content Structure
 
 ### Source Files by Section
-
 | Section | RST Files | MD Files | Pages |
 |---------|-----------|----------|-------|
 | Getting Started | 4 | 5 | 4 |
@@ -142,7 +139,6 @@ markdown_extensions:
 ```
 
 ### Performance Optimizations
-
 | Optimization | Impact |
 |--------------|--------|
 | navigation.prune | 2% size reduction |
@@ -198,7 +194,6 @@ uv run mike delete 7.1
 ## Quality Assurance
 
 ### Build Status
-
 | Check | Status |
 |-------|--------|
 | Non-strict build | PASSES |
@@ -210,7 +205,6 @@ uv run mike delete 7.1
 | Mobile responsive | Working |
 
 ### Known Warnings
-
 | Warning Type | Count | Priority |
 |--------------|-------|----------|
 | External API links | 9 | High |
@@ -220,7 +214,6 @@ uv run mike delete 7.1
 ## Legacy Compatibility
 
 ### URL Redirect Coverage
-
 | Coverage Type | Count |
 |---------------|-------|
 | Major section anchors | 66 |
@@ -234,7 +227,6 @@ uv run mike delete 7.1
 - **Anchor aliases**: HTML `<a id="">` tags for backward compatibility
 
 ## Technology Stack
-
 | Component | Version | Purpose |
 |-----------|---------|---------|
 | Python | 3.10+ | Runtime |

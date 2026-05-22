@@ -1,0 +1,3 @@
+Item #8: Sometimes the code block is missing
+It seems that sometimes code blocks are not created, in this case I see :: but no code block.
+(guide) also for terminal output example.

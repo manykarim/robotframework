@@ -1452,12 +1452,12 @@ can be changed dynamically using keywords from the [BuiltIn](using-test-librarie
 | ${SUITE MESSAGE} | The full message of the current test suite, including statistics. | [Suite teardown](../executing-tests/test-execution.md#suite-teardown) |
 | ${KEYWORD STATUS} | The status of the current keyword, either PASS or FAIL. | [User keyword teardown](../executing-tests/test-execution.md#user-keyword-teardown) |
 | ${KEYWORD MESSAGE} | The possible error message of the current keyword. | [User keyword teardown](../executing-tests/test-execution.md#user-keyword-teardown) |
-| ${LOG LEVEL} | Current [log level](../executing-tests/output-files.md#log-level). | Everywhere |
-| ${OUTPUT DIR} | An absolute path to the [output directory](../executing-tests/output-files.md#output-directory) as a string. | Everywhere |
-| ${OUTPUT FILE} | An absolute path to the [output file](../executing-tests/output-files.md#output-file) as a string or a string `NONE` if the output file is not created. | Everywhere |
-| ${LOG FILE} | An absolute path to the [log file](../executing-tests/output-files.md#log-file) as a string or a string `NONE` if the log file is not created. | Everywhere |
-| ${REPORT FILE} | An absolute path to the [report file](../executing-tests/output-files.md#report-file) as a string or a string `NONE` if the report file is not created. | Everywhere |
-| ${DEBUG FILE} | An absolute path to the [debug file](../executing-tests/output-files.md#debug-file) as a string or a string `NONE` if the debug file is not created. | Everywhere |
+| ${LOG LEVEL} | Current [log level](../executing-tests/result-files.md#log-level). | Everywhere |
+| ${OUTPUT DIR} | An absolute path to the [output directory](../executing-tests/result-files.md#output-directory) as a string. | Everywhere |
+| ${OUTPUT FILE} | An absolute path to the [output file](../executing-tests/result-files.md#output-file) as a string or a string `NONE` if the output file is not created. | Everywhere |
+| ${LOG FILE} | An absolute path to the [log file](../executing-tests/result-files.md#log-file) as a string or a string `NONE` if the log file is not created. | Everywhere |
+| ${REPORT FILE} | An absolute path to the [report file](../executing-tests/result-files.md#report-file) as a string or a string `NONE` if the report file is not created. | Everywhere |
+| ${DEBUG FILE} | An absolute path to the [debug file](../executing-tests/result-files.md#debug-file) as a string or a string `NONE` if the debug file is not created. | Everywhere |
 | &{OPTIONS} | A dictionary exposing command line options. The dictionary keys match the command line options and can be accessed both like `${OPTIONS}[key]` and `${OPTIONS.key}`. Available options:  - `${OPTIONS.exclude}` (`--exclude`) - `${OPTIONS.include}` (`--include`) - `${OPTIONS.skip}` (`--skip`) - `${OPTIONS.skip_on_failure}` (`--skip-on-failure`) - `${OPTIONS.console_width}` (integer, `--console-width`) - `${OPTIONS.rpa}` (boolean, `--rpa`)  `${OPTIONS}` itself was added in RF 5.0, `${OPTIONS.console_width}` in RF 7.1 and `${OPTIONS.rpa}` in RF 7.3. More options can be exposed later. | Everywhere |
 
 Suite related variables `${SUITE SOURCE}`, `${SUITE NAME}`, `${SUITE DOCUMENTATION}`

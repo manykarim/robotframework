@@ -54,7 +54,7 @@ contains are processed recursively as follows:
 - Other files are ignored.
 
 If a file or directory that is processed does not contain any test
-cases, it is silently ignored (a message is written to the [syslog](../executing-tests/output-files.md#syslog))
+cases, it is silently ignored (a message is written to the [syslog](../executing-tests/result-files.md#syslog))
 and the processing continues.
 
 <a id="initialization-file"></a>

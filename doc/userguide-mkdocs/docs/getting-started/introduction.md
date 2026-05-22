@@ -33,7 +33,7 @@ Robot Framework is open source software released under the [Apache License
 - Provides ability to create reusable [higher-level keywords](../creating-test-data/creating-user-keywords.md) from the
   existing keywords.
 
-- Provides easy-to-read result [reports](../executing-tests/output-files.md#report) and [logs](../executing-tests/output-files.md#log) in HTML format.
+- Provides easy-to-read result [reports](../executing-tests/result-files.md#report) and [logs](../executing-tests/result-files.md#log) in HTML format.
 
 - Is platform and application independent.
 
@@ -85,7 +85,7 @@ interfaces directly or use lower level test tools as drivers.
 ## Screenshots
 
 Following screenshots show examples of the [test data](../creating-test-data/test-data-syntax.md#test-data-syntax) and created
-[reports](../executing-tests/output-files.md#report) and [logs](../executing-tests/output-files.md#log).
+[reports](../executing-tests/result-files.md#report) and [logs](../executing-tests/result-files.md#log).
 
 ![Test case file](testdata_screenshots.png)
 

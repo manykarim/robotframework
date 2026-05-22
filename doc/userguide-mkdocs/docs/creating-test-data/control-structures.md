@@ -516,7 +516,7 @@ Variable conversion
 ### Removing unnecessary keywords from outputs
 
 `FOR` loops with multiple iterations often create lots of output and
-considerably increase the size of the generated [output](../executing-tests/output-files.md#output) and [log](../executing-tests/output-files.md#log) files.
+considerably increase the size of the generated [output](../executing-tests/result-files.md#output) and [log](../executing-tests/result-files.md#log) files.
 It is possible to [remove or flatten unnecessary keywords](http://docs.python.org/library/functions.html#func-range) using
 `--removekeywords` and `--flattenkeywords` command line options.
 
@@ -577,7 +577,7 @@ This is interpreted as the condition always being true, which may be useful with
 
 With `WHILE` loops, there is always a possibility to achieve an infinite loop,
 either by intention or by mistake. This happens when the loop condition never
-becomes false. While infinite loops have some utility in application programming,
+becomes false. Although infinite loops have some utility in application programming,
 in automation an infinite loop is rarely a desired outcome. If such a loop occurs
 with Robot Framework, the execution must be forcefully stopped and no log or report
 can be created. For this reason, `WHILE` loops in Robot Framework have a default
@@ -683,7 +683,7 @@ Nesting WHILE
 ### Removing unnecessary keywords from outputs
 
 `WHILE` loops with multiple iterations often create lots of output and
-considerably increase the size of the generated [output](../executing-tests/output-files.md#output) and [log](../executing-tests/output-files.md#log) files.
+considerably increase the size of the generated [output](../executing-tests/result-files.md#output) and [log](../executing-tests/result-files.md#log) files.
 It is possible to [remove or flatten unnecessary keywords](http://docs.python.org/library/functions.html#func-range) using
 `--removekeywords` and `--flattenkeywords` command line options.
 
@@ -764,7 +764,7 @@ Invalid BREAK
 Sometimes there is a need to execute some keywords conditionally. Starting
 from Robot Framework 4.0 there is a separate `IF/ELSE` syntax, but
 there are also [other ways to execute keywords conditionally](#other-ways-to-execute-keywords-conditionally). Notice that if
-the logic gets complicated, it is typically better to move it into a [test library](../extending/creating-test-libraries.md#different-test-library-apis).
+the logic gets complicated, it is typically better to move it into a [test library](../extending/creating-test-libraries.md#creating-test-library-class-or-module).
 
 ### Basic `IF` syntax
 
@@ -880,7 +880,7 @@ As the latter example above demonstrates, inline `IF` with several `ELSE IF`
 and `ELSE` branches starts to get hard to understand. Long inline `IF`
 structures can be [split into multiple lines](http://docs.python.org/library/functions.html#func-range) using the common `...`
 continuation syntax, but using a normal `IF/ELSE` structure or moving the logic
-into a [test library](../extending/creating-test-libraries.md#different-test-library-apis) is probably a better idea. Each inline `IF` branch can
+into a [test library](../extending/creating-test-libraries.md#creating-test-library-class-or-module) is probably a better idea. Each inline `IF` branch can
 contain only one statement. If more statements are needed, normal `IF/ELSE`
 structure needs to be used instead.
 

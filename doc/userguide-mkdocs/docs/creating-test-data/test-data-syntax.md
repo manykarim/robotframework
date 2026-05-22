@@ -95,7 +95,12 @@ the *.robot.rst* extension are parsed by default. If you would
 rather use just *.rst* or *.rest* extension, that needs to be
 configured separately.
 
-Robot Framework data can also be created in the [JSON format](#json-format) that is targeted
+Robot Framework supports also [Markdown](https://en.wikipedia.org/wiki/Markdown) files so that normal Robot Framework
+data is [embedded into code blocks](https://robot-framework.readthedocs.io/en/master/autodoc/robot.running.html#robot.running.model.TestSuite.to_dict). Only files with the *.robot.md*
+extension are parsed by default. If you would rather use just *.md* or
+*.markdown* extension, that needs to be configured separately.
+
+Robot Framework data can also be created in the [JSON format](control-structures.md#for) that is targeted
 more for tool developers than normal Robot Framework users. Only JSON files
 with the custom *.rbt* extension are parsed by default.
 
@@ -283,9 +288,75 @@ when processing files using reStructuredText tooling normally.
     Parsing *.robot.rst* files automatically is new in
     Robot Framework 6.1.
 
+### Markdown format
+
+[Markdown](https://en.wikipedia.org/wiki/Markdown) is a lightweight plain text markup syntax that is widely used for
+documentation, README files, and technical content across the software
+development industry. Because of its natural fit for narrative documentation,
+using Markdown with Robot Framework allows you to create test data in a format
+that is easy to read, write and preview using standard editors and tools.
+
+When Robot Framework parses Markdown files, it searches for code blocks
+starting with fences of at least three backticks `\`\`\`` or tildes
+`~~~` and the `robotframework` or `robot` language tag.
+All content outside such blocks is ignored. The parser follows the [CommonMark](https://spec.commonmark.org)
+specification for fenced code blocks, which means that the opening and closing
+fences must match and the closing fence must be at least as long as the
+opening one. If a code block is not closed properly, the rest of the file
+will be considered as part of the code block itself.
+
+```markdown
+# Markdown example
+
+This text is outside code blocks and thus ignored.
+
+```robotframework
+*** Settings ***
+Documentation    Example using the Markdown format.
+Library          OperatingSystem
+
+*** Variables ***
+${MESSAGE}       Hello, world!
+
+*** Test Cases ***
+My Test
+    [Documentation]    Example test.
+    Log    ${MESSAGE}
+    My Keyword    ${CURDIR}
+
+*** Keywords ***
+My Keyword
+    [Arguments]    ${path}
+    Directory Should Exist    ${path}
+```
+
+More free text here. There could be additional code blocks with more
+Robot Framework data as well.
+
+```python
+# This code block is ignored.
+def example():
+    print('Hello, world!')
+```
+```
+Robot Framework supports Markdown files using *.robot.md*,
+*.md* and *.markdown* extensions. To avoid parsing unrelated
+Markdown files, only files with the *.robot.md* extension
+are parsed by default when executing a directory. Parsing files with
+the *.md* or *.markdown* extension [can be enabled](../executing-tests/configuring-execution.md#selecting-files-to-parse) by using
+either `--parseinclude` or `--extension` option.
+
+!!! note
+    Using Markdown_ files with Robot Framework does not require any
+    external Python module to be installed.
+
+!!! note
+    Markdown support is new in Robot Framework 7.5.
+```
+
 ### JSON format
 
-Robot Framework supports data also in the [JSON](../executing-tests/post-processing.md#json-output-files) format. This format is designed
+Robot Framework supports data also in the JSON_ format. This format is designed
 more for tool developers than for regular Robot Framework users and it is not
 meant to be edited manually. Its most important use cases are:
 
@@ -298,12 +369,12 @@ meant to be edited manually. Its most important use cases are:
 !!! note
     The JSON data support is new in Robot Framework 6.1 and it can be
     enhanced in future Robot Framework versions. If you have an enhancement
-    idea or believe you have encountered a bug, please submit an [issue](https://robot-framework.readthedocs.io/en/master/autodoc/robot.running.html#robot.running.model.TestSuite.to_json)
-    or start a discussion thread on the `#devel` channel on our [Slack](http://slack.robotframework.org).
+    idea or believe you have encountered a bug, please submit an issue__
+    or start a discussion thread on the `#devel` channel on our Slack_.
 
 #### Converting suite to JSON
 
-A suite structure can be serialized into JSON by using the [TestSuite.to_json](https://robot-framework.readthedocs.io/en/master/autodoc/robot.running.html#robot.running.model.TestSuite.to_dict)
+A suite structure can be serialized into JSON by using the [TestSuite.to_json](https://robot-framework.readthedocs.io/en/master/autodoc/robot.result.html#robot.result.model.TestSuite.to_json)
 method. When used without arguments, it returns JSON data as a string, but
 it also accepts a path or an open file where to write JSON data along with
 configuration options related to JSON formatting:

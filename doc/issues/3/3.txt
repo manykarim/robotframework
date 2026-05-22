@@ -1,0 +1,6 @@
+item #3: When it comes to readability, it could potentially use either bullet points or indentation
+In some cases where you see in the user guide 'indentation' happening to improve readability, this doesn't seem to result in anything of the sort after the conversion.
+
+A clear example would be the 'reserved tags' where you see the tag and the definition read behind one another.  Another is the initialisation file description. See screenshots for how it's served right now, and the link for how it looks like in the guide.
+
+Edit: I noticed that this is inconsistent in the guide as well. In some cases bullet points are used, and sometimes indentation is preferred. We may wish to make this consistent to make things easier for the AI. (edited)

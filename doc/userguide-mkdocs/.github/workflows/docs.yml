@@ -1,0 +1,234 @@
+name: User Guide CI/CD
+
+on:
+  push:
+    branches: [master]
+    tags: ['v*']
+    paths:
+      - 'doc/userguide-mkdocs/**'
+      - '.github/workflows/docs.yml'
+  pull_request:
+    branches: [master]
+    paths:
+      - 'doc/userguide-mkdocs/**'
+      - '.github/workflows/docs.yml'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to deploy (e.g., 7.0)'
+        required: false
+        type: string
+      alias:
+        description: 'Alias for the version (e.g., latest)'
+        required: false
+        type: string
+        default: 'latest'
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: docs-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PYTHON_VERSION: '3.12'
+  MKDOCS_DIR: doc/userguide-mkdocs
+  DOCDIFF_DIR: doc/userguide-mkdocs/docdiff
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # Job 1: Build the MkDocs site and verify it compiles without warnings
+  # ---------------------------------------------------------------------------
+  build-check:
+    name: Build docs (strict)
+    runs-on: ubuntu-latest
+    # Runs on PRs (validation gate), tag pushes (pre-deploy gate), and manual dispatch
+    if: >-
+      github.event_name == 'pull_request'
+      || (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v'))
+      || github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          cache-dependency-glob: '${{ env.MKDOCS_DIR }}/pyproject.toml'
+
+      - name: Install dependencies
+        working-directory: ${{ env.MKDOCS_DIR }}
+        run: uv sync
+
+      - name: Build docs (strict mode)
+        working-directory: ${{ env.MKDOCS_DIR }}
+        run: uv run mkdocs build --strict
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: docs-site
+          path: ${{ env.MKDOCS_DIR }}/site/
+          retention-days: 14
+          if-no-files-found: error
+
+  # ---------------------------------------------------------------------------
+  # Job 2: Run docdiff unit tests and (optionally) the comparison tool
+  # ---------------------------------------------------------------------------
+  docdiff-check:
+    name: DocDiff tests
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          cache-dependency-glob: '${{ env.DOCDIFF_DIR }}/pyproject.toml'
+
+      - name: Install docdiff dependencies
+        working-directory: ${{ env.DOCDIFF_DIR }}
+        run: uv sync --extra dev
+
+      - name: Run docdiff unit tests
+        working-directory: ${{ env.DOCDIFF_DIR }}
+        run: uv run python -m pytest tests/ -q --tb=short
+
+      - name: Build old HTML user guide (for comparison)
+        id: build-html
+        working-directory: doc/userguide
+        continue-on-error: true
+        run: |
+          # The old RST-based user guide must be built before docdiff can
+          # compare it against the new Markdown docs.  If the build tooling
+          # is not available in CI the step is skipped gracefully.
+          if command -v python3 &>/dev/null && python3 ug2html.py 2>/dev/null; then
+            echo "html_available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "html_available=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Old HTML build skipped -- ug2html.py dependencies not available"
+          fi
+
+      - name: Run docdiff comparison
+        if: steps.build-html.outputs.html_available == 'true'
+        working-directory: ${{ env.DOCDIFF_DIR }}
+        run: |
+          set +e
+          uv run python -m docdiff.cli \
+            --old-html ../../userguide/RobotFrameworkUserGuide.html \
+            --new-md-dir ../docs/ \
+            --format markdown \
+            --out /tmp/docdiff-report.md \
+            --strict
+          exit_code=$?
+          set -e
+          if [ $exit_code -eq 2 ]; then
+            echo "::error::DocDiff found critical findings (P0/P1). See the report artifact."
+          elif [ $exit_code -eq 1 ]; then
+            echo "::warning::DocDiff found warnings (P2). See the report artifact."
+          fi
+          exit $exit_code
+
+      - name: Upload docdiff report
+        if: always() && steps.build-html.outputs.html_available == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: docdiff-report
+          path: /tmp/docdiff-report.md
+          retention-days: 14
+          if-no-files-found: ignore
+
+  # ---------------------------------------------------------------------------
+  # Job 3: Deploy versioned docs with mike on tag pushes
+  # ---------------------------------------------------------------------------
+  deploy:
+    name: Deploy docs
+    runs-on: ubuntu-latest
+    needs: [build-check]
+    if: |
+      (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v'))
+      || github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          cache-dependency-glob: '${{ env.MKDOCS_DIR }}/pyproject.toml'
+
+      - name: Install dependencies
+        working-directory: ${{ env.MKDOCS_DIR }}
+        run: uv sync
+
+      - name: Configure git for mike
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Determine version
+        id: version
+        run: |
+          if [ -n "${{ inputs.version }}" ]; then
+            VERSION="${{ inputs.version }}"
+            ALIAS="${{ inputs.alias }}"
+          elif [[ "${{ github.ref }}" == refs/tags/v* ]]; then
+            VERSION="${GITHUB_REF#refs/tags/v}"
+            ALIAS="latest"
+          else
+            VERSION="dev"
+            ALIAS=""
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "alias=$ALIAS"    >> "$GITHUB_OUTPUT"
+          echo "Deploying version: $VERSION (alias: ${ALIAS:-none})"
+
+      - name: Deploy docs with mike
+        working-directory: ${{ env.MKDOCS_DIR }}
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          ALIAS="${{ steps.version.outputs.alias }}"
+
+          if [ -n "$ALIAS" ]; then
+            uv run mike deploy --push --update-aliases "$VERSION" "$ALIAS"
+          else
+            uv run mike deploy --push "$VERSION"
+          fi
+
+      - name: Set default version
+        if: startsWith(github.ref, 'refs/tags/v')
+        working-directory: ${{ env.MKDOCS_DIR }}
+        run: uv run mike set-default --push latest
+
+      - name: List deployed versions
+        working-directory: ${{ env.MKDOCS_DIR }}
+        run: uv run mike list

@@ -1,0 +1,3 @@
+Item #9: Tables are not always recognised
+I've seen this work in some instances, but here in 'Return codes' (guide) I see it not being recognised.
+Same in the table for Errors and Warnings (guide)

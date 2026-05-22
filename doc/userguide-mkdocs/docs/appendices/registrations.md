@@ -13,6 +13,9 @@ associated with Robot Framework.
 *.robot.rst*
     Suite file using the [reStructuredText format](../creating-test-data/test-data-syntax.md#restructuredtext-format).
 
+*.robot.md*
+    Suite file using the [Markdown format](../creating-test-data/test-data-syntax.md#markdown-format).
+
 *.rbt*
     Suite file using the [JSON format](../creating-test-data/test-data-syntax.md#json-format).
 
@@ -31,6 +34,9 @@ Using other extensions is possible, but it requires [separate configuration](htt
 
 *.rst* and *.rest*
     Resource file using the [reStructuredText format](../creating-test-data/test-data-syntax.md#restructuredtext-format).
+
+*.md* and *.markdown*
+    Resource file using the [Markdown format](../creating-test-data/test-data-syntax.md#markdown-format).
 
 *.rsrc* and *.json*
     Resource file using the [JSON format](../creating-test-data/test-data-syntax.md#json-format).

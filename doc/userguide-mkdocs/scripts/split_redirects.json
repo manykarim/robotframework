@@ -21,5 +21,6 @@
   "creating-test-data/resource-and-variable-files.md#implementation": "creating-test-data/variable-files.md#implementation",
   "creating-test-data/resource-and-variable-files.md#examples": "creating-test-data/variable-files.md#examples",
   "creating-test-data/resource-and-variable-files.md#variable-file-as-yaml": "creating-test-data/variable-files.md#variable-file-as-yaml",
-  "creating-test-data/resource-and-variable-files.md#variable-file-as-json": "creating-test-data/variable-files.md#variable-file-as-json"
+  "creating-test-data/resource-and-variable-files.md#variable-file-as-json": "creating-test-data/variable-files.md#variable-file-as-json",
+  "creating-test-data/resource-and-variable-files.md#resource-files-using-markdown-format": "creating-test-data/resource-files.md#resource-files-using-markdown-format"
 }

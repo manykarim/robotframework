@@ -102,7 +102,7 @@ python path/to/robot/libdoc.py ExampleLibrary ExampleLibrary.html
 #### Python libraries and dynamic libraries with name or path
 
 When documenting libraries implemented with Python or that use the
-[dynamic library API](../extending/creating-test-libraries.md#dynamic-library-api), it is possible to specify the library either by
+[dynamic library API](../extending/dynamic-library-api.md#dynamic-library-api), it is possible to specify the library either by
 using just the library name or path to the library source code:
 
 ```
@@ -328,7 +328,7 @@ and `getKeywordDocumentation[). Libraries can also support
 general library documentation via special ](http://www.python.org/dev/peps/pep-0257)intro__[ and
 ](../creating-test-data/variable-files.md#command-line)init__` values to the `get_keyword_documentation[ method.
 
-See the [Dynamic library API](../extending/creating-test-libraries.md#dynamic-library-api) section for more information about how to
+See the [Dynamic library API](../extending/dynamic-library-api.md#dynamic-library-api) section for more information about how to
 create these methods.
 
 ### Importing section

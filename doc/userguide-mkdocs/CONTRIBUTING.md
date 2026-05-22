@@ -124,7 +124,6 @@ robot --outputdir results tests/
 ````
 
 #### Inline Code and Formatting
-
 | Element | Syntax | Renders As |
 |---------|--------|------------|
 | Inline code | `` `robot` `` | `robot` |
@@ -224,7 +223,6 @@ External links:
 ### Code Block Language Conventions
 
 Always specify a language identifier for code blocks. Use these standard identifiers:
-
 | Language | Identifier | Usage |
 |----------|------------|-------|
 | Robot Framework | `robot` or `robotframework` | Test cases, keywords, resource files |
@@ -274,7 +272,6 @@ settings:
 ### Admonition Usage
 
 Use admonitions to highlight important information. Available types:
-
 | Type | Usage | Color |
 |------|-------|-------|
 | `note` | General information, additional context | Blue |
@@ -410,7 +407,8 @@ nav:
 
 4. **Add to section index** (docs/creating-test-data/index.md):
    ```markdown
-   | [New Topic](new-topic.md) | Description of the new topic |
+| [New Topic](new-topic.md) | Description of the new topic |
+|---|---|
    ```
 
 5. **Build and verify**:
@@ -438,11 +436,10 @@ nav:
    Overview of this section.
 
    ## Topics
-
-   | Topic | Description |
-   |-------|-------------|
-   | [First Topic](first-topic.md) | Description |
-   | [Second Topic](second-topic.md) | Description |
+| Topic | Description |
+|-------|-------------|
+| [First Topic](first-topic.md) | Description |
+| [Second Topic](second-topic.md) | Description |
    ```
 
 4. **Create topic pages**:

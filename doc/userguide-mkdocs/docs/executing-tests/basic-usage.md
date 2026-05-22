@@ -1,8 +1,8 @@
 # Basic usage
 
 Robot Framework test cases are executed from the command line, and the
-end result is, by default, an [output file](output-files.md#output-file) in XML format and an HTML
-[report](output-files.md#report) and [log](output-files.md#log). After the execution, output files can be combined and
+end result is, by default, an [output file](result-files.md#output-file) in XML format and an HTML
+[report](result-files.md#report) and [log](result-files.md#log). After the execution, output files can be combined and
 otherwise [post-processed](http://en.wikipedia.org/wiki/Glob_(programming)) with the Rebot tool.
 
 <a id="executing-test-cases"></a>
@@ -193,17 +193,20 @@ be escaped.
 ### Tag patterns
 
 Most tag related options accept arguments as *tag patterns*. They support same
-wildcards as [simple patterns](#simple-patterns) (e.g. `examp??`, `ex*le`), but they also support `AND`,
-`OR` and `NOT` operators explained below. These operators can be
-used for combining two or more individual tags or patterns together.
+wildcards as [simple patterns](#simple-patterns) (e.g. `examp??`, `ex*le`), but they also support
+Boolean operators `AND`, `OR` and `NOT` (case-sensitive) that can be used for
+combining two or more individual tags or patterns together.
 
-`AND` or `&`
-: The whole pattern matches if all individual patterns match. `AND` and
-   `&` are equivalent:
+To avoid ambiguity with tags containing `AND`, `OR` or `NOT`, tags used in patterns
+should be given in lower case like `port OR handover`. Because matching tags is
+case-insensitive, this works even if tags themselves would be upper case like `PORT`.
+
+`AND`
+: The whole pattern matches if all individual patterns match:
 
 ```
 --include fooANDbar     # Matches tests containing tags 'foo' and 'bar'.
---exclude xx&yy&zz      # Matches tests containing tags 'xx', 'yy', and 'zz'.
+--exclude xANDyANDz     # Matches tests containing tags 'x', 'y', and 'z'.
 ```
 
 `OR`
@@ -211,46 +214,46 @@ used for combining two or more individual tags or patterns together.
 
 ```
 --include fooORbar      # Matches tests containing either tag 'foo' or tag 'bar'.
---exclude xxORyyORzz    # Matches tests containing any of tags 'xx', 'yy', or 'zz'.
+--exclude xORyORz       # Matches tests containing any of tags 'x', 'y', or 'z'.
 ```
 
 `NOT`
-: The whole pattern matches if the pattern on the left side matches but
-   the one on the right side does not. If used multiple times, none of
-   the patterns after the first `NOT` must not match:
+: The whole pattern matches if the pattern on the left side of `NOT` matches,
+   but the pattern on the right side does not. If used multiple times, none of
+   the patterns after the first `NOT` can match:
 
 ```
 --include fooNOTbar     # Matches tests containing tag 'foo' but not tag 'bar'.
---exclude xxNOTyyNOTzz  # Matches tests containing tag 'xx' but not tag 'yy' or tag 'zz'.
+--exclude xNOTyNOTz     # Matches tests containing tag 'x' but not tag 'y' or tag 'z'.
 ```
 
-   The pattern can also start with `NOT`
-   in which case the pattern matches if the pattern after `NOT` does not match:
+   The pattern can also start with `NOT`. In that case the pattern matches
+   if the pattern after `NOT` does not match:
 
 ```
---include NOTfoo        # Matches tests not containing tag 'foo'
---include NOTfooANDbar  # Matches tests not containing tags 'foo' and 'bar'
+--include NOTfoo        # Matches tests not containing tag 'foo'.
+--include NOTxANDy      # Matches tests not containing tags 'x' and 'y'.
 ```
 
 The above operators can also be used together. The operator precedence,
 from highest to lowest, is `AND`, `OR` and `NOT`:
 
 ```
---include xANDyORz      # Matches tests containing either tags 'x' and 'y', or tag 'z'.
---include xORyNOTz      # Matches tests containing either tag 'x' or 'y', but not tag 'z'.
---include xNOTyANDz     # Matches tests containing tag 'x', but not tags 'y' and 'z'.
+--include xANDyORz        # Matches tests containing either tags 'x' and 'y', or tag 'z'.
+--include xORyNOTz        # Matches tests containing either tag 'x' or 'y', but not tag 'z'.
+--include xNOTyANDz       # Matches tests containing tag 'x', but not tags 'y' and 'z'.
 ```
 
-Although tag matching itself is case-insensitive, all operators are
-case-sensitive and must be written with upper case letters. If tags themselves
-happen to contain upper case `AND`, `OR` or `NOT`, they need to specified
-using lower case letters to avoid accidental operator usage:
+!!! note
+    Starting from Robot Framework 8.0, operators need to be separated from
+    tags with spaces like `X OR Y` or tags must be used in lower case like
+    `xORy`. Using patterns like `XORY` still works with Robot Framework 7.5,
+    but such usages are deprecated.
 
-```
---include port          # Matches tests containing tag 'port', case-insensitively
---include PORT          # Matches tests containing tag 'P' or 'T', case-insensitively
---exclude handoverORportNOTnotification
-```
+!!! note
+    Older Robot Framework versions support `&` operator as an alias for `AND`.
+    This was deprecated in Robot Framework 7.5 and the support will be removed
+    in Robot Framework 8.0.
 
 ### `ROBOT_OPTIONS` and `REBOT_OPTIONS` environment variables
 
@@ -301,15 +304,15 @@ a keyword passes and a red F if it fails. These markers are written to the end
 of line and they are overwritten by the test status when the test itself ends.
 Writing the markers is disabled if console output is redirected to a file.
 
-### Generated output files
+### Generated result files
 
-The command line output is very limited, and separate output files are
+The command line output is very limited, and separate result files are
 normally needed for investigating the test results. As the example
-above shows, three output files are generated by default. The first
+above shows, three result files are generated by default. The first
 one is in XML format and contains all the information about test
 execution. The second is a higher-level report and the third is a more
-detailed log file. These files and other possible output files are
-discussed in more detail in the section [Different output files](output-files.md#different-output-files).
+detailed log file. These files and other possible result files are
+discussed in more detail in the [Different result files](result-files.md#different-result-files) section.
 
 <a id="return-code"></a>
 
@@ -360,7 +363,7 @@ failing to import a library or a resource file or a keyword being
 as errors or warnings and they are written into the console (using the
 standard error stream), shown on a separate *Test Execution Errors*
 section in log files, and also written into Robot Framework's own
-[system log](output-files.md#system-log). Normally these errors and warnings are generated by Robot
+[system log](result-files.md#system-log). Normally these errors and warnings are generated by Robot
 Framework itself, but libraries can also log [errors and warnings](../extending/creating-test-libraries.md#errors-and-warnings).
 Example below illustrates how errors and warnings look like in the log file.
 
@@ -628,9 +631,9 @@ executing a single file. It is probably more often useful when
 A test case can fail because the system under test does not work
 correctly, in which case the test has found a bug, or because the test
 itself is buggy. The error message explaining the failure is shown on
-the [command line output](#command-line-output) and in the [report file](output-files.md#report-file), and sometimes
+the [command line output](#command-line-output) and in the [report file](result-files.md#report-file), and sometimes
 the error message alone is enough to pinpoint the problem. More often
-that not, however, [log files](output-files.md#log) are needed because they have also
+that not, however, [log files](result-files.md#log) are needed because they have also
 other log messages and they show which keyword actually failed.
 
 When a failure is caused by the tested application, the error message
@@ -650,7 +653,7 @@ the log file. For example, an error about a failed test library import
 may well explain why a test has failed due to a missing keyword.
 
 If the log file does not provide enough information by default, it is
-possible to execute tests with a lower [log level](output-files.md#log-level). For example
+possible to execute tests with a lower [log level](result-files.md#log-level). For example
 tracebacks showing where in the code the failure occurred are logged
 using the `DEBUG` level, and this information is invaluable when
 the problem is in an individual library keyword.
@@ -661,7 +664,7 @@ you can enable showing internal traces by setting environment variable
 `ROBOT_INTERNAL_TRACES` to any non-empty value.
 
 If the log file still does not have enough information, it is a good
-idea to enable the [syslog](output-files.md#syslog) and see what information it provides. It is
+idea to enable the [syslog](result-files.md#syslog) and see what information it provides. It is
 also possible to add some keywords to the test cases to see what is
 going on. Especially [BuiltIn](../creating-test-data/using-test-libraries.md#builtin) keywords *Log* and *Log
 Variables* are useful. If nothing else works, it is always possible to

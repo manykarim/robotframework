@@ -28,7 +28,7 @@ Should Be True keyword
     Should Be True    ${x} > 0
 ```
 Notice that instead of creating complicated
-expressions, it is often better to move the logic into a [test library](../extending/creating-test-libraries.md#different-test-library-apis).
+expressions, it is often better to move the logic into a [test library](../extending/creating-test-libraries.md#creating-test-library-class-or-module).
 That typically eases maintenance and also enhances execution speed.
 
 ## Evaluation namespace

@@ -1,0 +1,2 @@
+Item 6: In some cases, code block, notes and regular text get somewhat confused
+This can be fixed manually as well, but if we can tighten the bolts on these instances that might be worth having a peek at. Example here is a chapter where we have a number of python blocks and they get all roped into one big code block.

@@ -1,15 +1,15 @@
 <a id="testdoc"></a>
 # Test data documentation tool (Testdoc)
 
+!!! warning
+    The built-in Testdoc tool is deprecated and will be removed in Robot
+    Framework 8.0. Use the [external Testdoc tool](https://marvkler.github.io/robotframework-testdoc) instead.
+
 Testdoc is Robot Framework's built-in tool for generating high level
 documentation based on test cases. The created documentation is in HTML
 format and it includes name, documentation and other metadata of each
 test suite and test case, as well as the top-level keywords and their
 arguments.
-
-!!! note
-    The built-in Testdoc tool is deprecated and will be removed in Robot
-    Framework 8.0. Use the new and enhanced [external Testdoc](https://github.com/MarvKler/robotframework-testdoc) instead.
 
 ## General usage
 
@@ -38,7 +38,7 @@ python -m robot.testdoc [options] data_sources output_file
  -h, --help                    Print this help in the console.
 
 All options except `--title` have exactly the same semantics as same
-options have when [executing test cases](https://github.com/MarvKler/robotframework-testdoc).
+options have when [executing test cases](https://marvkler.github.io/robotframework-testdoc).
 
 ## Generating documentation
 

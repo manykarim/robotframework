@@ -426,8 +426,8 @@ some keywords allow configuring them.
 In some circumstances, for example when continuable failures are used,
 a test case can fail multiple times. In that case the final error message
 is got by combining the individual errors. Very long error messages are
-[automatically cut from the middle](https://github.com/robotframework/robotframework/issues/5250) to keep [reports](../executing-tests/output-files.md#report) easier to read, but
-full error messages are always visible in [log files](../executing-tests/output-files.md#log) as messages of
+[automatically cut from the middle](https://github.com/robotframework/robotframework/issues/5250) to keep [reports](../executing-tests/result-files.md#report) easier to read, but
+full error messages are always visible in [log files](../executing-tests/result-files.md#log) as messages of
 the failed keywords.
 
 By default error messages are normal text, but
@@ -523,7 +523,7 @@ Robot Framework itself has no special meaning for them except for the
 [reserved tags](#reserved-tags) discussed below. Tags can be used at least for the following
 purposes:
 
-- They are shown in test [reports](../executing-tests/output-files.md#report), [logs](../executing-tests/output-files.md#log) and, of course, in the test
+- They are shown in test [reports](../executing-tests/result-files.md#report), [logs](../executing-tests/result-files.md#log) and, of course, in the test
   data, so they provide metadata to test cases.
 - [Statistics](http://docs.python.org/tutorial/controlflow.html#keyword-arguments) about test cases (total, passed, failed and skipped) are
   automatically collected based on them.
@@ -720,7 +720,7 @@ to be added in the future.
 : Added to tests automatically when [execution is stopped gracefully](http://en.wikipedia.org/wiki/Specification_by_example).
 
 `robot:flatten`
-: Enable [flattening keyword during execution time](../executing-tests/output-files.md#flattening-keyword-during-execution-time).
+: Enable [flattening keyword during execution time](../executing-tests/result-files.md#flattening-keyword-during-execution-time).
 
 As of RobotFramework 4.1, reserved tags are suppressed by default in
 [tag statistics](http://en.wikipedia.org/wiki/Behavior_Driven_Development). They will be shown when they are explicitly

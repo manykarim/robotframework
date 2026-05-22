@@ -24,7 +24,7 @@ two different approaches for creating variables:
 Alternatively variable files can be implemented as [classes](https://robot-framework.readthedocs.io/en/master/autodoc/robot.running.html#robot.running.model.ResourceFile.to_json)
 that the framework will instantiate. Also in this case it is possible to create
 variables as attributes or get them dynamically from the `get_variables`
-method. Variable files can also be created as [YAML](https://robot-framework.readthedocs.io/en/master/autodoc/robot.running.html#robot.running.model.ResourceFile.from_json) and [JSON](test-data-syntax.md#json-format).
+method. Variable files can also be created as [YAML](https://robot-framework.readthedocs.io/en/master/autodoc/robot.running.html#robot.running.model.ResourceFile.from_json) and [JSON](test-data-syntax.md#json-structure).
 
 ### Taking variable files into use
 

@@ -1,0 +1,2 @@
+Item #7: In rare cases, grouping of sections is different
+The chapter 'variable files' is empty in the manual. Instead its content is squirrelled away under 'Resource Files'. This might be because we have decided to change it manually, and want to make it a separate chapter and the source hasn't gotten this change yet.

@@ -3,7 +3,7 @@
 <a id="post-process-outputs"></a>
 # Post-processing outputs
 
-[XML output files](../creating-test-data/using-test-libraries.md#xml) that are generated during the test execution can be
+[XML output files](output-files.md#xml-output-files) that are generated during the test execution can be
 post-processed afterwards by the Rebot tool, which is an integral
 part of Robot Framework. It is used automatically when test
 reports and logs are generated during the test execution, and using it
@@ -34,7 +34,7 @@ interpreter.
 The basic syntax for using Rebot is exactly the same as when
 [starting test execution](basic-usage.md#starting-test-execution) and also most of the command line options are
 identical. The main difference is that arguments to Rebot are
-[XML output files](../creating-test-data/using-test-libraries.md#xml) instead of test data files or directories.
+[XML output files](output-files.md#xml-output-files) instead of test data files or directories.
 
 ### Return codes with Rebot
 
@@ -80,12 +80,12 @@ are created by default, but they can be disabled by using value `NONE`
 rebot --include smoke --output smoke.xml --log none --report none original.xml
 ```
 
-## Combining outputs
+## Combining results
 
 An important feature in Rebot is its ability to combine
-outputs from different test execution rounds. This capability allows,
+results from different execution rounds. This capability allows,
 for example, running the same test cases on different environments and
-generating an overall report from all outputs. Combining outputs is
+generating an overall report from all outputs. Combining results is
 extremely easy, all that needs to be done is giving several output
 files as arguments:
 
@@ -94,7 +94,7 @@ rebot output1.xml output2.xml
 rebot outputs/*.xml
 ```
 
-When outputs are combined, a new top-level test suite is created so
+When results are combined, a new top-level test suite is created so
 that test suites in the given output files are its child suites. This
 works the same way when [multiple test data files or directories are
 executed](test-execution.md#test-execution), and also in this case the name of the top-level test
@@ -104,11 +104,11 @@ it is often a good idea to use `--name` to give a more
 meaningful name:
 
 ```
-rebot --name Browser_Compatibility firefox.xml opera.xml safari.xml ie.xml
-rebot --include smoke --name Smoke_Tests c:\results\*.xml
+rebot --name "Browser Compatibility" firefox.xml opera.xml safari.xml ie.xml
+rebot --include smoke --name Smoke c:\results\*.xml
 ```
 
-## Merging outputs
+## Merging results
 
 If same tests are re-executed or a single test suite executed in pieces,
 combining results like discussed above creates an unnecessary top-level
@@ -142,7 +142,7 @@ accomplished by [selecting test cases](configuring-execution.md#selecting-test-c
 or by previous status (`--rerunfailed` or `--rerunfailedsuites`).
 
 Combining re-execution results with the original results using the default
-[combining outputs](#combining-outputs) approach does not work too well. The main problem is
+[combining results](#combining-results) approach does not work too well. The main problem is
 that you get separate test suites and possibly already fixed failures are
 also shown. In this situation it is better to use `--merge (-R)`
 option to tell Rebot to merge the results instead. In practice this
@@ -190,7 +190,7 @@ be same in all outputs.
 
 ## JSON output files
 
-Rebot can create and process output files also in the [JSON](../creating-test-data/test-data-syntax.md#json-format) format.
+Rebot can create and process output files also in the [JSON](../creating-test-data/test-data-syntax.md#json-structure) format.
 Creating JSON output files is done using the normal `--output` option
 so that the specified file has a *.json* extension:
 
@@ -219,5 +219,5 @@ The JSON output file structure is documented in the *result.json* [schema file](
     Support for JSON output files is new in Robot Framework 7.0.
     Prior to Robot Framework 7.2 JSON output files contained only
     information about the executed suite, but nowadays they contain
-    the same result data as [XML output files](../creating-test-data/using-test-libraries.md#xml).
+    the same result data as [XML output files](output-files.md#xml-output-files).
 

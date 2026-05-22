@@ -1,0 +1,4 @@
+Item #2 When discussing [settings] formatted tekst :setting: is printed after
+When a setting is printed, the notation :setting: is following straight after in most cases. As an example I've included a pair of screenshots.  In some cases you also see :name: as well.
+
+That being said, in some cases it does NOT actually do this, it seems rather inconsistent.

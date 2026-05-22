@@ -168,7 +168,7 @@ There are two possibilities how remote servers can provide information about
 the keywords they contain. They are briefly explained below and documented
 more thoroughly in the subsequent sections.
 
-1. Remote servers can implement the same methods as the [dynamic library API](creating-test-libraries.md#dynamic-library-api)
+1. Remote servers can implement the same methods as the [dynamic library API](dynamic-library-api.md#dynamic-library-api)
    has. This means `get_keyword_names` method and optional `get_keyword_arguments`,
    `get_keyword_types`, `get_keyword_tags` and `get_keyword_documentation` methods.
    Notice that using "camel-case names" like `getKeywordNames` is not
@@ -222,7 +222,7 @@ and what they must return is explained in the table below.
 Type information used for [argument conversion](creating-test-libraries.md#argument-conversion) can be returned either as
 a list mapping type names to arguments based on position or as a dictionary
 mapping argument names to type names directly. In practice this works the same
-way as when [specifying types using the @keyword decorator](creating-test-libraries.md#getting-keyword-arguments) with normal
+way as when [specifying types using the @keyword decorator](dynamic-library-api.md#getting-keyword-arguments) with normal
 libraries. The difference is that because the XML-RPC protocol does not support
 arbitrary values, type information needs to be specified using type names
 or aliases like `'int'` or `'integer'`, not using actual types like `int`.
@@ -237,9 +237,9 @@ as with dynamic libraries](creating-test-libraries.md#implicit-argument-types-ba
 argument information is returned like `[('count', 1), ('caseless', True)]`
 but not if it is `['count=1', 'caseless=True']`.
 
-Remote servers can also provide [general library documentation](creating-test-libraries.md#getting-keyword-arguments) to
+Remote servers can also provide [general library documentation](dynamic-library-api.md#getting-keyword-arguments) to
 be used when generating documentation with the [Libdoc](../supporting-tools/libdoc.md#libdoc) tool. This information
-is got by calling `get_keyword_documentation[ with special values ](creating-test-libraries.md#getting-general-library-documentation)intro__[
+is got by calling `get_keyword_documentation[ with special values ](dynamic-library-api.md#getting-general-library-documentation)intro__[
 and ](#different-argument-syntaxes)init__`.
 
 !!! note
@@ -321,11 +321,11 @@ others can be omitted if they are not applicable.
 
 ### Different argument syntaxes
 
-The Remote library is a [dynamic library](creating-test-libraries.md#dynamic-library), and in general it handles
-different argument syntaxes [according to the same rules](creating-test-libraries.md#named-argument-syntax-with-dynamic-libraries) as any other
+The Remote library is a [dynamic library](dynamic-library-api.md#dynamic-library), and in general it handles
+different argument syntaxes [according to the same rules](dynamic-library-api.md#named-argument-syntax-with-dynamic-libraries) as any other
 dynamic library.
 This includes mandatory arguments, default values, varargs, as well
-as [named argument syntax](creating-test-libraries.md#free-named-arguments-with-dynamic-libraries).
+as [named argument syntax](dynamic-library-api.md#free-named-arguments-with-dynamic-libraries).
 
 Also free named arguments (`**kwargs`) works mostly the [same way
 as with other dynamic libraries](../supporting-tools/libdoc.md#dynamic-libraries). First of all, the
@@ -395,7 +395,7 @@ public Map run_keyword(String name, List args, Map kwargs) {
 
 <a id="individual-variables"></a>
 
-<a id="create-output-files"></a>
+<a id="create-result-files"></a>
 
 <a id="robot-framework-6x-compatible-format"></a>
 
@@ -491,7 +491,7 @@ public Map run_keyword(String name, List args, Map kwargs) {
 
 <a id="individual-variables"></a>
 
-<a id="create-output-files"></a>
+<a id="create-result-files"></a>
 
 <a id="robot-framework-6x-compatible-format"></a>
 
