@@ -218,6 +218,18 @@
   }
 }
 
+/* Definition list spacing — reduce Material theme's 1em margins so that
+   each term and its definition read as a tight unit */
+.md-typeset dl dt {
+  margin-top: 0.5em;
+  margin-bottom: 0;
+}
+
+.md-typeset dl dd {
+  margin-top: 0;
+  margin-bottom: 0.5em;
+}
+
 /* Print styles */
 @media print {
   .md-typeset a::after {
