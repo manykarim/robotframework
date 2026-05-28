@@ -2,182 +2,182 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://robotframework.org/robotframework/latest/latest/</loc>
-         <lastmod>2026-05-22</lastmod>
+         <lastmod>2026-05-28</lastmod>
     </url>
     <url>
          <loc>https://robotframework.org/robotframework/latest/latest/appendices/</loc>
-         <lastmod>2026-05-22</lastmod>
+         <lastmod>2026-05-28</lastmod>
     </url>
     <url>
          <loc>https://robotframework.org/robotframework/latest/latest/appendices/available-settings/</loc>
-         <lastmod>2026-05-22</lastmod>
+         <lastmod>2026-05-28</lastmod>
     </url>
     <url>
          <loc>https://robotframework.org/robotframework/latest/latest/appendices/boolean-arguments/</loc>
-         <lastmod>2026-05-22</lastmod>
+         <lastmod>2026-05-28</lastmod>
     </url>
     <url>
          <loc>https://robotframework.org/robotframework/latest/latest/appendices/command-line-options/</loc>
-         <lastmod>2026-05-22</lastmod>
+         <lastmod>2026-05-28</lastmod>
     </url>
     <url>
          <loc>https://robotframework.org/robotframework/latest/latest/appendices/documentation-formatting/</loc>
-         <lastmod>2026-05-22</lastmod>
+         <lastmod>2026-05-28</lastmod>
     </url>
     <url>
          <loc>https://robotframework.org/robotframework/latest/latest/appendices/evaluating-expressions/</loc>
-         <lastmod>2026-05-22</lastmod>
+         <lastmod>2026-05-28</lastmod>
     </url>
     <url>
          <loc>https://robotframework.org/robotframework/latest/latest/appendices/registrations/</loc>
-         <lastmod>2026-05-22</lastmod>
+         <lastmod>2026-05-28</lastmod>
     </url>
     <url>
          <loc>https://robotframework.org/robotframework/latest/latest/appendices/time-format/</loc>
-         <lastmod>2026-05-22</lastmod>
+         <lastmod>2026-05-28</lastmod>
     </url>
     <url>
          <loc>https://robotframework.org/robotframework/latest/latest/appendices/translations/</loc>
-         <lastmod>2026-05-22</lastmod>
+         <lastmod>2026-05-28</lastmod>
     </url>
     <url>
          <loc>https://robotframework.org/robotframework/latest/latest/creating-test-data/</loc>
-         <lastmod>2026-05-22</lastmod>
+         <lastmod>2026-05-28</lastmod>
     </url>
     <url>
          <loc>https://robotframework.org/robotframework/latest/latest/creating-test-data/advanced-features/</loc>
-         <lastmod>2026-05-22</lastmod>
+         <lastmod>2026-05-28</lastmod>
     </url>
     <url>
          <loc>https://robotframework.org/robotframework/latest/latest/creating-test-data/control-structures/</loc>
-         <lastmod>2026-05-22</lastmod>
+         <lastmod>2026-05-28</lastmod>
     </url>
     <url>
          <loc>https://robotframework.org/robotframework/latest/latest/creating-test-data/creating-tasks/</loc>
-         <lastmod>2026-05-22</lastmod>
+         <lastmod>2026-05-28</lastmod>
     </url>
     <url>
          <loc>https://robotframework.org/robotframework/latest/latest/creating-test-data/creating-test-cases/</loc>
-         <lastmod>2026-05-22</lastmod>
+         <lastmod>2026-05-28</lastmod>
     </url>
     <url>
          <loc>https://robotframework.org/robotframework/latest/latest/creating-test-data/creating-test-suites/</loc>
-         <lastmod>2026-05-22</lastmod>
+         <lastmod>2026-05-28</lastmod>
     </url>
     <url>
          <loc>https://robotframework.org/robotframework/latest/latest/creating-test-data/creating-user-keywords/</loc>
-         <lastmod>2026-05-22</lastmod>
+         <lastmod>2026-05-28</lastmod>
     </url>
     <url>
          <loc>https://robotframework.org/robotframework/latest/latest/creating-test-data/resource-files/</loc>
-         <lastmod>2026-05-22</lastmod>
+         <lastmod>2026-05-28</lastmod>
     </url>
     <url>
          <loc>https://robotframework.org/robotframework/latest/latest/creating-test-data/test-data-syntax/</loc>
-         <lastmod>2026-05-22</lastmod>
+         <lastmod>2026-05-28</lastmod>
     </url>
     <url>
          <loc>https://robotframework.org/robotframework/latest/latest/creating-test-data/using-test-libraries/</loc>
-         <lastmod>2026-05-22</lastmod>
+         <lastmod>2026-05-28</lastmod>
     </url>
     <url>
          <loc>https://robotframework.org/robotframework/latest/latest/creating-test-data/variable-files/</loc>
-         <lastmod>2026-05-22</lastmod>
+         <lastmod>2026-05-28</lastmod>
     </url>
     <url>
          <loc>https://robotframework.org/robotframework/latest/latest/creating-test-data/variables/</loc>
-         <lastmod>2026-05-22</lastmod>
+         <lastmod>2026-05-28</lastmod>
     </url>
     <url>
          <loc>https://robotframework.org/robotframework/latest/latest/executing-tests/</loc>
-         <lastmod>2026-05-22</lastmod>
+         <lastmod>2026-05-28</lastmod>
     </url>
     <url>
          <loc>https://robotframework.org/robotframework/latest/latest/executing-tests/basic-usage/</loc>
-         <lastmod>2026-05-22</lastmod>
+         <lastmod>2026-05-28</lastmod>
     </url>
     <url>
          <loc>https://robotframework.org/robotframework/latest/latest/executing-tests/configuring-execution/</loc>
-         <lastmod>2026-05-22</lastmod>
+         <lastmod>2026-05-28</lastmod>
     </url>
     <url>
          <loc>https://robotframework.org/robotframework/latest/latest/executing-tests/output-files/</loc>
-         <lastmod>2026-05-22</lastmod>
+         <lastmod>2026-05-28</lastmod>
     </url>
     <url>
          <loc>https://robotframework.org/robotframework/latest/latest/executing-tests/post-processing/</loc>
-         <lastmod>2026-05-22</lastmod>
+         <lastmod>2026-05-28</lastmod>
     </url>
     <url>
          <loc>https://robotframework.org/robotframework/latest/latest/executing-tests/result-files/</loc>
-         <lastmod>2026-05-22</lastmod>
+         <lastmod>2026-05-28</lastmod>
     </url>
     <url>
          <loc>https://robotframework.org/robotframework/latest/latest/executing-tests/task-execution/</loc>
-         <lastmod>2026-05-22</lastmod>
+         <lastmod>2026-05-28</lastmod>
     </url>
     <url>
          <loc>https://robotframework.org/robotframework/latest/latest/executing-tests/test-execution/</loc>
-         <lastmod>2026-05-22</lastmod>
+         <lastmod>2026-05-28</lastmod>
     </url>
     <url>
          <loc>https://robotframework.org/robotframework/latest/latest/extending/</loc>
-         <lastmod>2026-05-22</lastmod>
+         <lastmod>2026-05-28</lastmod>
     </url>
     <url>
          <loc>https://robotframework.org/robotframework/latest/latest/extending/creating-test-libraries/</loc>
-         <lastmod>2026-05-22</lastmod>
+         <lastmod>2026-05-28</lastmod>
     </url>
     <url>
          <loc>https://robotframework.org/robotframework/latest/latest/extending/dynamic-library-api/</loc>
-         <lastmod>2026-05-22</lastmod>
+         <lastmod>2026-05-28</lastmod>
     </url>
     <url>
          <loc>https://robotframework.org/robotframework/latest/latest/extending/listener-interface/</loc>
-         <lastmod>2026-05-22</lastmod>
+         <lastmod>2026-05-28</lastmod>
     </url>
     <url>
          <loc>https://robotframework.org/robotframework/latest/latest/extending/parser-interface/</loc>
-         <lastmod>2026-05-22</lastmod>
+         <lastmod>2026-05-28</lastmod>
     </url>
     <url>
          <loc>https://robotframework.org/robotframework/latest/latest/extending/remote-library/</loc>
-         <lastmod>2026-05-22</lastmod>
+         <lastmod>2026-05-28</lastmod>
     </url>
     <url>
          <loc>https://robotframework.org/robotframework/latest/latest/getting-started/</loc>
-         <lastmod>2026-05-22</lastmod>
+         <lastmod>2026-05-28</lastmod>
     </url>
     <url>
          <loc>https://robotframework.org/robotframework/latest/latest/getting-started/copyright-and-license/</loc>
-         <lastmod>2026-05-22</lastmod>
+         <lastmod>2026-05-28</lastmod>
     </url>
     <url>
          <loc>https://robotframework.org/robotframework/latest/latest/getting-started/demonstration/</loc>
-         <lastmod>2026-05-22</lastmod>
+         <lastmod>2026-05-28</lastmod>
     </url>
     <url>
          <loc>https://robotframework.org/robotframework/latest/latest/getting-started/introduction/</loc>
-         <lastmod>2026-05-22</lastmod>
+         <lastmod>2026-05-28</lastmod>
     </url>
     <url>
          <loc>https://robotframework.org/robotframework/latest/latest/supporting-tools/</loc>
-         <lastmod>2026-05-22</lastmod>
+         <lastmod>2026-05-28</lastmod>
     </url>
     <url>
          <loc>https://robotframework.org/robotframework/latest/latest/supporting-tools/libdoc/</loc>
-         <lastmod>2026-05-22</lastmod>
+         <lastmod>2026-05-28</lastmod>
     </url>
     <url>
          <loc>https://robotframework.org/robotframework/latest/latest/supporting-tools/other-tools/</loc>
-         <lastmod>2026-05-22</lastmod>
+         <lastmod>2026-05-28</lastmod>
     </url>
     <url>
          <loc>https://robotframework.org/robotframework/latest/latest/supporting-tools/testdoc/</loc>
-         <lastmod>2026-05-22</lastmod>
+         <lastmod>2026-05-28</lastmod>
     </url>
     <url>
          <loc>https://robotframework.org/robotframework/latest/latest/supporting-tools/tidy/</loc>
-         <lastmod>2026-05-22</lastmod>
+         <lastmod>2026-05-28</lastmod>
     </url>
 </urlset>
