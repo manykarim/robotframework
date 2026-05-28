@@ -45,10 +45,11 @@ jobs:
   build-check:
     name: Build docs (strict)
     runs-on: ubuntu-latest
-    # Runs on PRs (validation gate), tag pushes (pre-deploy gate), and manual dispatch
+    # Runs on PRs (validation gate), tag pushes (pre-deploy gate), master pushes, and manual dispatch
     if: >-
       github.event_name == 'pull_request'
       || (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v'))
+      || (github.event_name == 'push' && github.ref == 'refs/heads/master')
       || github.event_name == 'workflow_dispatch'
     steps:
       - name: Checkout repository
@@ -168,6 +169,7 @@ jobs:
     needs: [build-check]
     if: |
       (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v'))
+      || (github.event_name == 'push' && github.ref == 'refs/heads/master')
       || github.event_name == 'workflow_dispatch'
     steps:
       - name: Checkout repository
