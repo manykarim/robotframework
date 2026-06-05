@@ -9,6 +9,7 @@ on:
       - '.github/workflows/docs.yml'
   pull_request:
     branches: [master]
+    types: [opened, synchronize, reopened, closed]
     paths:
       - 'doc/userguide-mkdocs/**'
       - '.github/workflows/docs.yml'
@@ -234,3 +235,87 @@ jobs:
       - name: List deployed versions
         working-directory: ${{ env.MKDOCS_DIR }}
         run: uv run mike list
+
+  # ---------------------------------------------------------------------------
+  # Job 4: Deploy a live preview for each PR and post the URL as a comment
+  # ---------------------------------------------------------------------------
+  pr-preview:
+    name: Deploy PR preview
+    runs-on: ubuntu-latest
+    needs: [build-check]
+    if: github.event_name == 'pull_request' && github.event.action != 'closed'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          cache-dependency-glob: '${{ env.MKDOCS_DIR }}/pyproject.toml'
+
+      - name: Install dependencies
+        working-directory: ${{ env.MKDOCS_DIR }}
+        run: uv sync
+
+      - name: Configure git for mike
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Deploy PR preview with mike
+        working-directory: ${{ env.MKDOCS_DIR }}
+        run: uv run mike deploy --push pr-${{ github.event.number }}
+
+      - name: Post preview URL as PR comment
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PREVIEW_URL="https://manykarim.github.io/robotframework/pr-${{ github.event.number }}/"
+          gh pr comment ${{ github.event.number }} \
+            --repo ${{ github.repository }} \
+            --body "📖 **Docs preview:** ${PREVIEW_URL}"
+
+  # ---------------------------------------------------------------------------
+  # Job 5: Remove the PR preview version when the PR is closed
+  # ---------------------------------------------------------------------------
+  pr-cleanup:
+    name: Remove PR preview
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          cache-dependency-glob: '${{ env.MKDOCS_DIR }}/pyproject.toml'
+
+      - name: Install dependencies
+        working-directory: ${{ env.MKDOCS_DIR }}
+        run: uv sync
+
+      - name: Configure git for mike
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Delete PR preview with mike
+        working-directory: ${{ env.MKDOCS_DIR }}
+        run: uv run mike delete --push pr-${{ github.event.number }} || true

@@ -1,5 +1,5 @@
 {
-  "_comment": "Data-driven reference mappings for RST\u2192MkDocs conversion pipeline. Edit this file to fix link targets without changing script logic.",
+  "_comment": "Data-driven reference mappings for RST→MkDocs conversion pipeline. Edit this file to fix link targets without changing script logic.",
   "rst_to_md_files": {
     "_comment": "Maps RST source filenames to MkDocs output paths (relative to docs/)",
     "GettingStarted/Introduction.rst": "getting-started/introduction.md",
@@ -50,14 +50,14 @@
     "Appendices": "appendices"
   },
   "filename_corrections": {
-    "_comment": "Wrong filenames generated during conversion \u2192 correct filenames. Applied as post-processing.",
+    "_comment": "Wrong filenames generated during conversion → correct filenames. Applied as post-processing.",
     "test-case.md": "creating-test-cases.md",
     "test-suite.md": "creating-test-suites.md",
     "creating-test-library.md": "creating-test-libraries.md",
     "standard-libraries.md": "using-test-libraries.md"
   },
   "bare_word_refs": {
-    "_comment": "RST bare word_ references \u2192 Markdown link targets. Keys are lowercase. Value is URL or relative path (use {from_dir} placeholder for relative path adjustment).",
+    "_comment": "RST bare word_ references → Markdown link targets. Keys are lowercase. Value is URL or relative path (use {from_dir} placeholder for relative path adjustment).",
     "libdoc": {
       "text": "Libdoc",
       "target": "supporting-tools/libdoc.md"
@@ -409,7 +409,7 @@
     "result.Message": "robot.result.html#robot.result.model.Message"
   },
   "split_pages": {
-    "_comment": "Splits one converted MD into multiple files at H2 boundaries. Driven by scripts/split_pages.py. Each entry: source MD path under docs/ \u2192 splits[] with from_heading (## title to slice from), target (output MD path under docs/), h1_title (promoted heading). delete_source removes the original combined file after splitting.",
+    "_comment": "Splits one converted MD into multiple files at H2 boundaries. Driven by scripts/split_pages.py. Each entry: source MD path under docs/ → splits[] with from_heading (## title to slice from), target (output MD path under docs/), h1_title (promoted heading). delete_source removes the original combined file after splitting.",
     "creating-test-data/resource-and-variable-files.md": {
       "splits": [
         {
@@ -454,5 +454,13 @@
     "TEMPDIR",
     "PROCESS_",
     "STATUS_"
-  ]
+  ],
+  "section_intros": {
+    "getting-started": "Robot Framework is a generic automation framework that works equally well for acceptance testing, ATDD, and RPA — the same readable, keyword-driven syntax everywhere. [Introduction](introduction.md) covers the architecture and core concepts; start there. If you prefer learning by doing, the [demonstration projects](demonstration.md) are a faster on-ramp than any amount of reading.",
+    "creating-test-data": "This is where most of your time goes. Robot Framework data files have a clean, tabular syntax described in [Test data syntax](test-data-syntax.md) — learn it once and you’re set for everything else. From there, [creating test cases](creating-test-cases.md) and [creating user keywords](creating-user-keywords.md) cover the two building blocks you’ll use every day; the rest of the section fills in variables, control structures, and the finer details you’ll reach for as your test suite grows.",
+    "executing-tests": "Running Robot Framework is straightforward: point it at a file or directory and it handles the rest. [Basic usage](basic-usage.md) covers the command-line entry points, and [configuring execution](configuring-execution.md) covers the options for filtering, tagging, and controlling exactly what runs. After execution, the output and result files give you a full record of what happened — down to every keyword call.",
+    "extending": "Robot Framework’s real power comes from its library interface. [Creating test libraries](creating-test-libraries.md) explains how to write Python libraries using the static, hybrid, or dynamic API — if your keyword belongs in Python code rather than a `.robot` file, this is the place to start. For reacting to execution events in real time or running libraries as separate processes, the [listener interface](listener-interface.md) and [remote library interface](remote-library.md) have you covered.",
+    "supporting-tools": "A small suite of official tools ships alongside Robot Framework. [Libdoc](libdoc.md) generates structured keyword documentation from your libraries and resource files — useful for team reference and IDE integrations alike. Testdoc produces high-level HTML overviews of test suites, and Tidy keeps your data files consistently formatted. None of them are required; all of them earn their keep.",
+    "appendices": "Pure reference. [Command-line options](command-line-options.md) and [available settings](available-settings.md) are the two pages you’ll bookmark and return to most — every option the `robot` and `rebot` commands accept, and every setting available in data files. The remaining entries cover expression evaluation, time formats, translations, and documentation formatting for when you need the exact details."
+  }
 }

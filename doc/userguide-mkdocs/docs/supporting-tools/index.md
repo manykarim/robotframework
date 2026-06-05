@@ -1,8 +1,10 @@
-# Supporting Tools
+# Libraries
 
 A small suite of official tools ships alongside Robot Framework. [Libdoc](libdoc.md) generates structured keyword documentation from your libraries and resource files — useful for team reference and IDE integrations alike. Testdoc produces high-level HTML overviews of test suites, and Tidy keeps your data files consistently formatted. None of them are required; all of them earn their keep.
 
-- [Library documentation tool (Libdoc)](libdoc.md) — Generating keyword documentation from test libraries and resource files.
-- [Test data documentation tool (Testdoc)](testdoc.md) — Generating high-level HTML documentation from test suite files.
-- [Test data clean-up tool (Tidy)](tidy.md) — Normalizing and cleaning up Robot Framework test data files.
-- [External tools](other-tools.md) — Overview of third-party tools and integrations in the Robot Framework ecosystem.
+## In this section
+
+- [Libdoc](libdoc.md)
+- [Testdoc](testdoc.md)
+- [Tidy](tidy.md)
+- [Other Tools](other-tools.md)

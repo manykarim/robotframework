@@ -11,13 +11,20 @@ copyright: Copyright &copy; Robot Framework Foundation
 theme:
   name: material
   language: en
+  logo: assets/logo-white.png
+  favicon: assets/logo.png
 
   palette:
+    # Auto mode
+    - media: "(prefers-color-scheme)"
+      primary: custom
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
     # Light mode
     - media: "(prefers-color-scheme: light)"
       scheme: default
       primary: custom
-      accent: custom
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
@@ -25,46 +32,33 @@ theme:
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
       primary: custom
-      accent: custom
       toggle:
         icon: material/brightness-4
-        name: Switch to light mode
-
-  font:
-    text: Roboto
-    code: Roboto Mono
+        name: Switch to system preference
 
   features:
     - navigation.instant
-    - navigation.instant.prefetch
-    - navigation.tracking
+    - navigation.instant.progress
     - navigation.tabs
-    - navigation.tabs.sticky
     - navigation.sections
-    - navigation.prune  # Reduces HTML size ~2-3%
-    - navigation.path
     - navigation.indexes
     - navigation.top
     - navigation.footer
-    - toc.follow
     - toc.integrate
     - search.suggest
     - search.highlight
-    - search.share
     - content.tabs.link
     - content.code.copy
     - content.code.annotate
     - content.action.edit
-    - content.action.view
 
   icon:
     repo: fontawesome/brands/github
-    logo: material/robot
-
-  favicon: assets/favicon.ico
 
 extra_css:
-  - stylesheets/extra.css
+  - assets/highlight-light.css
+  - assets/highlight-dark.css
+  - assets/extra.css
 
 extra_javascript:
   # Legacy URL fragment redirect handler for backward compatibility
@@ -75,14 +69,17 @@ extra:
   version:
     provider: mike
     default: latest
+    alias: true
 
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/robotframework/robotframework
-    - icon: fontawesome/brands/twitter
-      link: https://twitter.com/robotframework
     - icon: fontawesome/brands/slack
       link: https://robotframework.slack.com
+    - icon: fontawesome/brands/discourse
+      link: https://forum.robotframework.org
+    - icon: fontawesome/brands/linkedin
+      link: https://linkedin.com/company/robot-framework-foundation
 
   analytics:
     provider: google
@@ -95,6 +92,7 @@ plugins:
       separator: '[\s\-\._]+'
       lang:
         - en
+  - section-index
   - mike:
       alias_type: symlink
       redirect_template: null
@@ -140,11 +138,12 @@ markdown_extensions:
       emoji_index: !!python/name:material.extensions.emoji.twemoji
       emoji_generator: !!python/name:material.extensions.emoji.to_svg
   - pymdownx.highlight:
+      default_lang: python
+      linenums: true
       anchor_linenums: true
-      line_spans: __span
-      pygments_lang_class: true
+      line_anchors: example
+      line_spans: line
       auto_title: false
-      linenums: false
   - pymdownx.inlinehilite
   - pymdownx.keys
   - pymdownx.magiclink:
@@ -168,15 +167,15 @@ markdown_extensions:
   - pymdownx.tilde
 
 nav:
-  - Home: index.md
+  - Manual: index.md
 
-  - Getting Started:
+  - Install:
     - getting-started/index.md
     - Introduction: getting-started/introduction.md
     - Copyright and License: getting-started/copyright-and-license.md
     - Demonstration: getting-started/demonstration.md
 
-  - Creating Test Data:
+  - Syntax:
     - creating-test-data/index.md
     - Test Data Syntax: creating-test-data/test-data-syntax.md
     - Creating Test Cases: creating-test-data/creating-test-cases.md
@@ -190,7 +189,7 @@ nav:
     - Control Structures: creating-test-data/control-structures.md
     - Advanced Features: creating-test-data/advanced-features.md
 
-  - Executing Tests:
+  - Execution:
     - executing-tests/index.md
     - Basic Usage: executing-tests/basic-usage.md
     - Test Execution: executing-tests/test-execution.md
@@ -199,21 +198,21 @@ nav:
     - Configuring Execution: executing-tests/configuring-execution.md
     - Output Files: executing-tests/output-files.md
 
-  - Extending Robot Framework:
+  - Extend:
     - extending/index.md
     - Creating Test Libraries: extending/creating-test-libraries.md
     - Remote Library: extending/remote-library.md
     - Listener Interface: extending/listener-interface.md
     - Parser Interface: extending/parser-interface.md
 
-  - Supporting Tools:
+  - Libraries:
     - supporting-tools/index.md
     - Libdoc: supporting-tools/libdoc.md
     - Testdoc: supporting-tools/testdoc.md
     - Tidy: supporting-tools/tidy.md
     - Other Tools: supporting-tools/other-tools.md
 
-  - Appendices:
+  - Appendix:
     - appendices/index.md
     - Available Settings: appendices/available-settings.md
     - Command Line Options: appendices/command-line-options.md
