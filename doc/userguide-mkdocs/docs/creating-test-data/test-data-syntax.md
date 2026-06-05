@@ -587,7 +587,7 @@ by using the [built-in variable](variables.md#built-in-variable) `${SPACE}`.
    | `\\ leading space`          `${SPA | }leading space` |  |
    | `trailing space \\`         `trail | g space${SPACE}`            Backsl | h must be after the space. |
    | `\\ \\`                     `${SPA | }`                          Backsl | h needed on both sides. |
-   | `consecutive \\ \\ spaces`  `conse | tive${SPACE * 3}spaces[Using | xtended variable syntax](variables.md#variable). |
+   | `consecutive \\ \\ spaces`  `conse | tive${SPACE * 3}spaces[Using | xtended variable syntax](index.md#syntax). |
 
 As the above examples show, using the `${SPACE}` variable often makes the
 test data easier to understand. It is especially handy in combination with

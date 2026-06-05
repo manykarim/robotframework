@@ -746,6 +746,65 @@ class RstToMarkdownConverter:
         # Didn't find a valid table
         return [], start
 
+    def _render_rich_cell(self, tokens: list) -> str:
+        """Render a cell's token list to an HTML-enriched string.
+
+        Tokens are (type, content) tuples where type is 'text', 'blank', or
+        'bullet'.  Plain-text-only cells are returned unchanged (no HTML added).
+        """
+        if not tokens:
+            return ''
+
+        # Fast path: no structure tokens — all plain text
+        if all(t == 'text' for t, _ in tokens):
+            return ' '.join(c for _, c in tokens)
+
+        # Split into segments at blank boundaries
+        segments: list = []
+        current: list = []
+        for t, c in tokens:
+            if t == 'blank':
+                if current:
+                    segments.append(current)
+                    current = []
+            else:
+                current.append((t, c))
+        if current:
+            segments.append(current)
+
+        rendered = []
+        for seg in segments:
+            bullets = [(t, c) for t, c in seg if t == 'bullet']
+            texts = [(t, c) for t, c in seg if t == 'text']
+
+            if bullets and not texts:
+                # Pure bullet list
+                lis = ''.join(f'<li>{c}</li>' for _, c in bullets)
+                rendered.append(f'<ul>{lis}</ul>')
+            elif texts and not bullets:
+                # Pure text paragraph
+                rendered.append(' '.join(c for _, c in texts))
+            else:
+                # Mixed (e.g. "Shared attributes:" heading then bullets):
+                # preserve token order, flush bullet runs as <ul>
+                parts: list = []
+                pending_bullets: list = []
+                for t, c in seg:
+                    if t == 'bullet':
+                        pending_bullets.append(c)
+                    else:
+                        if pending_bullets:
+                            lis = ''.join(f'<li>{b}</li>' for b in pending_bullets)
+                            parts.append(f'<ul>{lis}</ul>')
+                            pending_bullets = []
+                        parts.append(c)
+                if pending_bullets:
+                    lis = ''.join(f'<li>{b}</li>' for b in pending_bullets)
+                    parts.append(f'<ul>{lis}</ul>')
+                rendered.append('<br>'.join(parts))
+
+        return '<br>'.join(rendered)
+
     def _parse_grid_table_v2(self, table_lines: List[str]) -> str:
         """Parse RST grid table lines and convert to Markdown."""
         if not table_lines:
@@ -761,17 +820,18 @@ class RstToMarkdownConverter:
         if len(col_positions) < 2:
             return '\n'.join(table_lines)  # Not a valid table
 
-        # Extract cell contents
+        # Extract cell contents as token lists.
+        # Each token is (type, content) where type is 'text', 'blank', or 'bullet'.
         rows = []
-        current_row = [''] * (len(col_positions) - 1)
+        current_row = [[] for _ in range(len(col_positions) - 1)]
         header_row_idx = -1
 
         for line in table_lines:
             if line.startswith('+'):
                 # This is a separator line
-                if current_row and any(cell.strip() for cell in current_row):
+                if current_row and any(len(cell) > 0 for cell in current_row):
                     rows.append(current_row)
-                    current_row = [''] * (len(col_positions) - 1)
+                    current_row = [[] for _ in range(len(col_positions) - 1)]
 
                 # Check if it's a header separator (uses =)
                 if '=' in line and rows:
@@ -788,16 +848,26 @@ class RstToMarkdownConverter:
                             cell_content = cell_content[:-1].strip()
 
                         # Handle RST line block markers (| at start of cell)
-                        if cell_content.startswith('|'):
-                            cell_content = cell_content[1:].strip()
                         if cell_content.startswith('| '):
                             cell_content = cell_content[2:].strip()
+                        elif cell_content.startswith('|'):
+                            cell_content = cell_content[1:].strip()
 
-                        # Append to existing cell content
-                        if current_row[col_idx]:
-                            current_row[col_idx] += ' ' + cell_content
+                        tokens = current_row[col_idx]
+                        if not cell_content:
+                            # Blank intra-cell line → paragraph break marker
+                            if tokens:
+                                tokens.append(('blank', ''))
+                        elif cell_content.startswith('* '):
+                            # RST bullet list item
+                            tokens.append(('bullet', cell_content[2:].strip()))
                         else:
-                            current_row[col_idx] = cell_content
+                            # Regular text or continuation of previous token
+                            if tokens and tokens[-1][0] in ('text', 'bullet'):
+                                t, prev = tokens[-1]
+                                tokens[-1] = (t, prev + ' ' + cell_content)
+                            else:
+                                tokens.append(('text', cell_content))
 
         if not rows:
             return '\n'.join(table_lines)
@@ -807,17 +877,14 @@ class RstToMarkdownConverter:
         num_cols = len(col_positions) - 1
 
         for idx, row in enumerate(rows):
-            # Clean cells
-            cleaned = [cell.strip() for cell in row]
-            md_lines.append('| ' + ' | '.join(cleaned) + ' |')
+            rendered = [self._render_rich_cell(cell_tokens) for cell_tokens in row]
+            md_lines.append('| ' + ' | '.join(rendered) + ' |')
 
             # Add separator after header row
             if idx == header_row_idx or (header_row_idx == -1 and idx == 0):
                 md_lines.append('| ' + ' | '.join(['---'] * num_cols) + ' |')
 
         return '\n'.join(md_lines)
-
-        return '\n'.join(md_lines) + '\n'
 
     def convert_figures(self, content: str) -> str:
         """

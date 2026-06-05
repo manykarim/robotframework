@@ -79,7 +79,7 @@ The [test data](../creating-test-data/test-data-syntax.md#test-data-syntax) is i
 Robot Framework is started, it processes the data, [executes test
 cases](../creating-test-data/creating-test-suites.md#suite-setup-and-teardown) and generates logs and reports. The core framework does not
 know anything about the target under test, and the interaction with it
-is handled by [libraries](../creating-test-data/using-test-libraries.md#test-libraries). Libraries can either use application
+is handled by [libraries](../supporting-tools/index.md#libraries). Libraries can either use application
 interfaces directly or use lower level test tools as drivers.
 
 ## Screenshots

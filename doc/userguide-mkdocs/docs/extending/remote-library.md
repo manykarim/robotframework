@@ -328,7 +328,7 @@ This includes mandatory arguments, default values, varargs, as well
 as [named argument syntax](dynamic-library-api.md#free-named-arguments-with-dynamic-libraries).
 
 Also free named arguments (`**kwargs`) works mostly the [same way
-as with other dynamic libraries](../supporting-tools/libdoc.md#dynamic-libraries). First of all, the
+as with other dynamic libraries](../supporting-tools/index.md#libraries). First of all, the
 `get_keyword_arguments` must return an argument specification that
 contains `**kwargs` exactly like with any other dynamic library.
 The main difference is that

@@ -1223,7 +1223,7 @@ There are also other methods to execute keywords conditionally:
 - [Test teardowns](http://docs.python.org/library/functions.html#func-range) and [keyword teardowns](http://docs.python.org/library/functions.html#enumerate) can be used for cleaning up activities
   similarly as `FINALLY` branches.
 
-- When keywords are implemented in Python based [libraries](using-test-libraries.md#test-libraries), all Python's error
+- When keywords are implemented in Python based [libraries](../supporting-tools/index.md#libraries), all Python's error
   handling features are readily available. This is the recommended approach
   especially if needed logic gets more complicated.
 

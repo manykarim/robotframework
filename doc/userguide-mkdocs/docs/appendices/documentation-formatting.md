@@ -122,7 +122,7 @@ Bold text can be created by having an asterisk before and after the
 selected word or words, for example `*this is bold*[. Italic
 style works similarly, but the special character to use is an
 underscore, for example,](../creating-test-data/control-structures.md#for)[italic](#italic)[. It is also possible to have
-bold italic with the syntax](#it-is-also-possible-to-have-bold-italic-with-the-syntax)*bold italic*_`.
+bold italic with the syntax](../creating-test-data/index.md#syntax)*bold italic*_`.
 
 The code style is created using double backticks like `\`\`code\`\``.
 The result is monospaced text with light gray background.

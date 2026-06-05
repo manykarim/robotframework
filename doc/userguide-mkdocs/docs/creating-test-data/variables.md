@@ -1266,7 +1266,7 @@ the command line.
 #### Creating secrets programmatically
 
 Secrets can be created programmatically by using the [robot.api.types.Secret](../extending/creating-test-libraries.md#secret-type)
-class. This is most commonly done by [libraries](using-test-libraries.md#test-libraries) and [variable files](variable-files.md#variable-files), but also
+class. This is most commonly done by [libraries](../supporting-tools/index.md#libraries) and [variable files](variable-files.md#variable-files), but also
 [pre-run modifiers](https://docs.python.org/3/library/stdtypes.html#bytes-objects) and [listeners](../extending/listener-interface.md#listeners) can utilize secrets if needed.
 
 The simplest possible example of the programmatic usage is a variable file:
@@ -1458,7 +1458,7 @@ can be changed dynamically using keywords from the [BuiltIn](using-test-librarie
 | ${LOG FILE} | An absolute path to the [log file](../executing-tests/result-files.md#log-file) as a string or a string `NONE` if the log file is not created. | Everywhere |
 | ${REPORT FILE} | An absolute path to the [report file](../executing-tests/result-files.md#report-file) as a string or a string `NONE` if the report file is not created. | Everywhere |
 | ${DEBUG FILE} | An absolute path to the [debug file](../executing-tests/result-files.md#debug-file) as a string or a string `NONE` if the debug file is not created. | Everywhere |
-| &{OPTIONS} | A dictionary exposing command line options. The dictionary keys match the command line options and can be accessed both like `${OPTIONS}[key]` and `${OPTIONS.key}`. Available options:  - `${OPTIONS.exclude}` (`--exclude`) - `${OPTIONS.include}` (`--include`) - `${OPTIONS.skip}` (`--skip`) - `${OPTIONS.skip_on_failure}` (`--skip-on-failure`) - `${OPTIONS.console_width}` (integer, `--console-width`) - `${OPTIONS.rpa}` (boolean, `--rpa`)  `${OPTIONS}` itself was added in RF 5.0, `${OPTIONS.console_width}` in RF 7.1 and `${OPTIONS.rpa}` in RF 7.3. More options can be exposed later. | Everywhere |
+| &{OPTIONS} | A dictionary exposing command line options. The dictionary keys match the command line options and can be accessed both like `${OPTIONS}[key]` and `${OPTIONS.key}`. Available options:<br>- `${OPTIONS.exclude}` (`--exclude`) - `${OPTIONS.include}` (`--include`) - `${OPTIONS.skip}` (`--skip`) - `${OPTIONS.skip_on_failure}` (`--skip-on-failure`) - `${OPTIONS.console_width}` (integer, `--console-width`) - `${OPTIONS.rpa}` (boolean, `--rpa`)<br>`${OPTIONS}` itself was added in RF 5.0, `${OPTIONS.console_width}` in RF 7.1 and `${OPTIONS.rpa}` in RF 7.3. More options can be exposed later. | Everywhere |
 
 Suite related variables `${SUITE SOURCE}`, `${SUITE NAME}`, `${SUITE DOCUMENTATION}`
 and `&{SUITE METADATA}` as well as options related to command line options like
