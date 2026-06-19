@@ -245,12 +245,12 @@ documentations it generates.
 Version information is read from attribute
 `ROBOT_LIBRARY_VERSION`, similarly as [library scope](#library-scope) is
 read from `ROBOT_LIBRARY_SCOPE`. If
-`ROBOT_LIBRARY_VERSION[ does not exist, information is tried to
-be read from ](http://docs.python.org/c-api/index.html)version__[ attribute. These attributes must be
+`ROBOT_LIBRARY_VERSION` does not exist, information is tried to
+be read from `__version__` attribute. These attributes must be
 class or module attributes, depending whether the library is
 implemented as a class or a module.
 
-An example module using ](http://docs.python.org/library/ctypes.html)version__`:
+An example module using `__version__`:
 
 ```python
 __version__ = '0.1'
@@ -517,10 +517,10 @@ def example_keyword():
     thread_name = current_thread().name
     print(f"Running in thread '{thread_name}'.")
 ```
-#### Using `__all__[ attribute
+#### Using `__all__` attribute
 
-Python modules can define the special ](http://docs.python.org/c-api/index.html)all__` attribute to specify what
-[public names](http://docs.python.org/library/ctypes.html) they contain. If a module based library has such an attribute,
+Python modules can define the special `__all__` attribute to specify what
+[public names](http://docs.python.org/c-api/index.html) they contain. If a module based library has such an attribute,
 Robot Framework respects it and considers only listed functions as keywords:
 
 ```python

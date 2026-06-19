@@ -128,8 +128,6 @@ markdown_extensions:
       toc_depth: 3
 
   # PyMdown Extensions
-  - pymdownx.arithmatex:
-      generic: true
   - pymdownx.betterem:
       smart_enable: all
   - pymdownx.caret

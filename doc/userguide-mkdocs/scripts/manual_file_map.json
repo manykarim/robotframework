@@ -1,5 +1,12 @@
 {
-  "_comment": "Maps source paths (relative to doc/userguide-mkdocs/docs/) to target paths (relative to doc/manual/docs/) in pekkaklarck/manual.",
+  "_comment": "Maps source paths (relative to doc/userguide-mkdocs/docs/) to target paths (relative to doc/manual/docs/) in the manual repo (manykarim/manual). 'section_dirs' maps our section directory names to the manual's; 'files' maps individual files (used both for copying and for internal-link rewriting).",
+  "section_dirs": {
+    "creating-test-data": "syntax",
+    "executing-tests":     "execution",
+    "extending":           "extend",
+    "appendices":          "appendix",
+    "supporting-tools":    "extend"
+  },
   "files": {
     "creating-test-data/index.md":              "syntax/index.md",
     "creating-test-data/test-data-syntax.md":   "syntax/data.md",
@@ -54,6 +61,9 @@
     "appendices/boolean-arguments.md":          "appendix/boolean-arguments.md",
     "appendices/time-format.md":               "appendix/time-format.md",
     "appendices/translations.md":              "appendix/translations.md",
-    "appendices/documentation-formatting.md":  "appendix/doc-format.md"
+    "appendices/documentation-formatting.md":  "appendix/doc-format.md",
+
+    "supporting-tools/libdoc.md":               "extend/libdoc.md",
+    "supporting-tools/ExampleLibrary.png":      "extend/ExampleLibrary.png"
   }
 }

@@ -21,21 +21,38 @@ python -m robot.testdoc [options] data_sources output_file
 
 ### Options
 
- -T, --title <title>           Set the title of the generated documentation.
-                               Underscores in the title are converted to spaces.
-                               The default title is the name of the top level suite.
- -N, --name <name>             Override the name of the top level test suite.
- -D, --doc <doc>               Override the documentation of the top level test suite.
- -M, --metadata <name:value>   Set/override free metadata of the top level test suite.
- -G, --settag <tag>            Set given tag(s) to all test cases.
- -t, --test <name>             Include tests by name.
- -s, --suite <name>            Include suites by name.
- -i, --include <tag>           Include tests by tags.
- -e, --exclude <tag>           Exclude tests by tags.
- -A, --argumentfile <path>     Text file to read more arguments from. Works
-                               exactly like [argument files](../executing-tests/basic-usage.md#argument-files) when running
-                               tests.
- -h, --help                    Print this help in the console.
+`-T, --title <title>`
+:   Set the title of the generated documentation. Underscores in the title are converted to spaces. The default title is the name of the top level suite.
+
+`-N, --name <name>`
+:   Override the name of the top level test suite.
+
+`-D, --doc <doc>`
+:   Override the documentation of the top level test suite.
+
+`-M, --metadata <name:value>`
+:   Set/override free metadata of the top level test suite.
+
+`-G, --settag <tag>`
+:   Set given tag(s) to all test cases.
+
+`-t, --test <name>`
+:   Include tests by name.
+
+`-s, --suite <name>`
+:   Include suites by name.
+
+`-i, --include <tag>`
+:   Include tests by tags.
+
+`-e, --exclude <tag>`
+:   Exclude tests by tags.
+
+`-A, --argumentfile <path>`
+:   Text file to read more arguments from. Works exactly like [argument files](../executing-tests/basic-usage.md#argument-files) when running tests.
+
+`-h, --help`
+:   Print this help in the console.
 
 All options except `--title` have exactly the same semantics as same
 options have when [executing test cases](https://marvkler.github.io/robotframework-testdoc).

@@ -1,52 +1,89 @@
 #!/usr/bin/env bash
-# Push generated docs to pekkaklarck/manual and open a PR.
+# Publish generated docs to a manual repo and optionally deploy to GitHub Pages.
+#
+# Defaults target the fork manykarim/manual: content is committed directly to
+# its base branch (main), whose existing `dev-docs.yml` workflow then deploys
+# the `dev` version to gh-pages via mike. With --deploy, this script also runs
+# `mike deploy` locally for immediate publishing.
 #
 # Prerequisites:
-#   - gh CLI installed and authenticated (gh auth login), OR
-#     set GH_TOKEN / GITHUB_TOKEN in the environment with repo scope on pekkaklarck/manual
-#   - Can be run from any directory; all paths are derived from the script location.
+#   - gh CLI authenticated (gh auth login) with repo+workflow scope, OR
+#     GH_TOKEN / GITHUB_TOKEN set with write access to the target repo.
+#   - For --deploy: mike + properdocs installed (e.g. the fork's requirements).
 #
-# Usage (from repo root):
-#   bash doc/userguide-mkdocs/scripts/push_to_manual.sh [--skip-pipeline]
+# Usage (from anywhere):
+#   bash doc/userguide-mkdocs/scripts/push_to_manual.sh [options]
 #
-#   --skip-pipeline   Skip running pipeline.py; use already-generated docs as-is.
+# Options / env:
+#   --skip-pipeline        Skip running pipeline.py; use generated docs as-is.
+#   --no-rewrite           Copy files without rewriting internal links.
+#   --deploy               Run `mike deploy -F properdocs.yml --push dev` locally.
+#   --pr                   Open a PR instead of committing to the base branch
+#                          (use when targeting an upstream you cannot push to).
+#   MANUAL_REPO=owner/repo Target repo (default: manykarim/manual).
+#   MANUAL_BASE=branch     Base branch (default: main).
+#   MIKE_VERSION=name      Mike version/alias to deploy (default: dev).
 
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd)"
 MKDOCS_DIR="$REPO_ROOT/doc/userguide-mkdocs"
-MANUAL_REPO="https://github.com/pekkaklarck/manual.git"
-WORK_DIR="$(mktemp -d)"
-MANUAL_DIR="$WORK_DIR/manual"
+
+MANUAL_REPO="${MANUAL_REPO:-manykarim/manual}"
+MANUAL_BASE="${MANUAL_BASE:-main}"
+MIKE_VERSION="${MIKE_VERSION:-dev}"
+
 SKIP_PIPELINE=false
+NO_REWRITE=false
+DEPLOY=false
+OPEN_PR=false
 
 for arg in "$@"; do
-  [[ "$arg" == "--skip-pipeline" ]] && SKIP_PIPELINE=true
+  case "$arg" in
+    --skip-pipeline) SKIP_PIPELINE=true ;;
+    --no-rewrite)    NO_REWRITE=true ;;
+    --deploy)        DEPLOY=true ;;
+    --pr)            OPEN_PR=true ;;
+    *) echo "Unknown option: $arg" >&2; exit 2 ;;
+  esac
 done
 
+WORK_DIR="$(mktemp -d)"
+MANUAL_DIR="$WORK_DIR/manual"
 cleanup() { rm -rf "$WORK_DIR"; }
 trap cleanup EXIT
 
-echo "==> Working directory: $WORK_DIR"
+echo "==> Target repo : $MANUAL_REPO (base: $MANUAL_BASE)"
+echo "==> Working dir : $WORK_DIR"
 
 # --- Step 1: Run the pipeline ---
 if [[ "$SKIP_PIPELINE" == false ]]; then
   echo "==> Running pipeline (--skip-fetch)..."
-  cd "$MKDOCS_DIR/scripts"
-  python pipeline.py --skip-fetch
-  cd "$REPO_ROOT"
+  (cd "$MKDOCS_DIR/scripts" && python pipeline.py --skip-fetch)
 else
   echo "==> Skipping pipeline (--skip-pipeline flag set)"
 fi
 
-# --- Step 2: Clone pekkaklarck/manual ---
-echo "==> Cloning pekkaklarck/manual..."
-git clone --depth=1 "$MANUAL_REPO" "$MANUAL_DIR"
+# --- Step 2: Clone the target manual repo ---
+echo "==> Cloning $MANUAL_REPO ..."
+gh repo clone "$MANUAL_REPO" "$MANUAL_DIR" -- --depth=1 --branch "$MANUAL_BASE"
 
-# --- Step 3: Run publish script ---
-echo "==> Copying files..."
-python "$SCRIPT_DIR/publish_to_manual.py" --manual-dir "$MANUAL_DIR"
+# --- Step 3: Run publish script (copy + rewrite links) ---
+echo "==> Copying files and rewriting links..."
+PUBLISH_ARGS=(--manual-dir "$MANUAL_DIR")
+[[ "$NO_REWRITE" == true ]] && PUBLISH_ARGS+=(--no-rewrite)
+python "$SCRIPT_DIR/publish_to_manual.py" "${PUBLISH_ARGS[@]}"
+
+# --- Step 3.5: Point properdocs.yml at the target owner/repo (idempotent) ---
+OWNER="${MANUAL_REPO%%/*}"
+REPO_NAME="${MANUAL_REPO##*/}"
+PD="$MANUAL_DIR/properdocs.yml"
+if [[ -f "$PD" ]]; then
+  echo "==> Updating properdocs.yml site_url/edit_uri for $OWNER/$REPO_NAME ..."
+  sed -i -E "s#^(site_url:[[:space:]]*).*github\.io/[^/]+/#\1https://${OWNER}.github.io/${REPO_NAME}/#" "$PD"
+  sed -i -E "s#^(edit_uri:[[:space:]]*).*#\1https://github.com/${OWNER}/${REPO_NAME}/blob/${MANUAL_BASE}/doc/manual/docs#" "$PD"
+fi
 
 # --- Step 4: Check for changes ---
 cd "$MANUAL_DIR"
@@ -55,45 +92,39 @@ if git diff --quiet && git diff --cached --quiet; then
   exit 0
 fi
 
-# --- Step 5: Create branch and commit ---
 DATE="$(date +%Y-%m-%d)"
 SHA="$(git -C "$REPO_ROOT" rev-parse --short HEAD)"
-BRANCH="auto-update-${DATE}-${SHA}"
+COMMIT_MSG="Auto-update from manykarim/robotframework@${SHA}
 
-git checkout -b "$BRANCH"
-git add -A
-git commit -m "Auto-update from manykarim/robotframework@${SHA}
+Generated by publish_to_manual.py (copy + internal link rewrite).
+Sections: syntax, execution, extend, appendix."
 
-Generated by publish_to_manual.py. Sections updated:
-  syntax      (from creating-test-data)
-  execution   (from executing-tests)
-  extend      (from extending)
-  appendix    (from appendices)"
+if [[ "$OPEN_PR" == true ]]; then
+  # --- PR flow (for upstreams without direct push access) ---
+  BRANCH="auto-update-${DATE}-${SHA}"
+  git checkout -b "$BRANCH"
+  git add -A
+  git commit -m "$COMMIT_MSG"
+  echo "==> Pushing branch $BRANCH and opening PR..."
+  git push origin "$BRANCH"
+  gh pr create --repo "$MANUAL_REPO" --base "$MANUAL_BASE" --head "$BRANCH" \
+    --title "Auto-update docs from robotframework@${SHA} (${DATE})" \
+    --body "Automated update from manykarim/robotframework@\`${SHA}\` via publish_to_manual.py."
+  echo "==> Done. PR opened against $MANUAL_REPO."
+else
+  # --- Direct-commit flow (fork we own) ---
+  git add -A
+  git commit -m "$COMMIT_MSG"
+  echo "==> Pushing to $MANUAL_REPO@$MANUAL_BASE ..."
+  git push origin "$MANUAL_BASE"
+  echo "==> Content pushed. The repo's dev-docs workflow will deploy '$MIKE_VERSION'."
+fi
 
-# --- Step 6: Push and open PR ---
-echo "==> Pushing branch $BRANCH and opening PR..."
-git push origin "$BRANCH"
-
-gh pr create \
-  --repo pekkaklarck/manual \
-  --base main \
-  --head "$BRANCH" \
-  --title "Auto-update docs from robotframework@${SHA} (${DATE})" \
-  --body "$(cat <<EOF
-## Summary
-
-Automated update from [manykarim/robotframework](https://github.com/manykarim/robotframework) commit \`${SHA}\`.
-
-Generated by \`publish_to_manual.py\` using the conversion pipeline output.
-
-### Sections updated
-- \`syntax/\` ← \`creating-test-data/\`
-- \`execution/\` ← \`executing-tests/\`
-- \`extend/\` ← \`extending/\`
-- \`appendix/\` ← \`appendices/\`
-
-Please review for content correctness and nav changes before merging.
-EOF
-)"
-
-echo "==> Done. PR opened against pekkaklarck/manual."
+# --- Step 5 (optional): Deploy to gh-pages locally via mike ---
+if [[ "$DEPLOY" == true ]]; then
+  echo "==> Deploying '$MIKE_VERSION' to gh-pages via mike..."
+  git config user.name "Documentation Bot"
+  git config user.email "doc-bot@robotframework.org"
+  mike deploy -F properdocs.yml --push "$MIKE_VERSION"
+  echo "==> Deployed. Live at https://$(echo "$MANUAL_REPO" | cut -d/ -f1).github.io/$(echo "$MANUAL_REPO" | cut -d/ -f2)/$MIKE_VERSION/"
+fi

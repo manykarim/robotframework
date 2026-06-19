@@ -239,8 +239,8 @@ but not if it is `['count=1', 'caseless=True']`.
 
 Remote servers can also provide [general library documentation](dynamic-library-api.md#getting-keyword-arguments) to
 be used when generating documentation with the [Libdoc](../supporting-tools/libdoc.md#libdoc) tool. This information
-is got by calling `get_keyword_documentation[ with special values ](dynamic-library-api.md#getting-general-library-documentation)intro__[
-and ](#different-argument-syntaxes)init__`.
+is got by calling `get_keyword_documentation[ with special values ](#-with-special-values-)intro__`
+and `__init__`.
 
 !!! note
     `get_keyword_types` is new in Robot Framework 3.1 and support for
@@ -260,8 +260,8 @@ Information must be provided using same semantics as when `get_keyword_arguments
 in the previous section. If some information is not available, it can be omitted
 from the info dictionary altogether.
 
-`get_library_information[ supports also returning general library documentation
-to be used with [Libdoc](../supporting-tools/libdoc.md#libdoc). It is done by including special ](#supported-argument-and-return-value-types)intro__[ and ](creating-test-libraries.md#logging-information)init__`
+`get_library_information` supports also returning general library documentation
+to be used with [Libdoc](../supporting-tools/libdoc.md#libdoc). It is done by including special `__intro__[ and ](creating-test-libraries.md#errors-and-warnings)init__`
 entries into the returned library information dictionary.
 
 For example, a Python library like

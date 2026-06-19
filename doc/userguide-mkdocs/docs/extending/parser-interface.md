@@ -55,8 +55,8 @@ accept two arguments. In that case the second argument is a [TestDefaults](https
 
 ### `parse_init` method
 
-The optional `parse_init[ method is responsible for parsing [suite initialization
-files](../creating-test-data/creating-test-suites.md#suite-initialization-files) i.e. files in format ](https://robot-framework.readthedocs.io/en/master/autodoc/robot.running.html#robot.running.model.TestSuite.from_string)init__.ext` where `.ext` is an extension
+The optional `parse_init` method is responsible for parsing [suite initialization
+files](../creating-test-data/creating-test-suites.md#suite-initialization-files) i.e. files in format `__init__.ext` where `.ext` is an extension
 supported by the parser. The method must return a [TestSuite](#runningtestsuite)_
 object representing the whole directory. Suites created from child suite files
 and directories will be added to its child suites.

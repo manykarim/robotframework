@@ -500,8 +500,11 @@ class RstToMarkdownConverter:
         RST anonymous references are resolved in document order - the first
         reference matches the first target, etc.
         """
-        # Find all anonymous reference positions
-        backtick_pattern = r'`([^`]+)`__'
+        # Find all anonymous reference positions.
+        # Lookbehind on backtick_pattern ensures we start at an *opening* backtick
+        # (not a closing one), preventing false matches like the closing ` of
+        # `ROBOT_LIBRARY_VERSION` pairing with the opening ` of `__version__`.
+        backtick_pattern = r'(?<![`\w])`([^`]+)`__'
         word_pattern = r'(?<![`\w])(\w+)__(?![_\w])'
 
         # Collect all reference positions with their matched text
@@ -1382,6 +1385,106 @@ class RstToMarkdownConverter:
         slug = slug.strip('-')
         return slug
 
+    # RST option-list entry: optional indent, one or more comma-separated
+    # option tokens (-x / --xxx), an optional <arg>, then either 2+ spaces and
+    # a same-line description, or end-of-line (description on following lines).
+    _OPTION_RE = re.compile(
+        r'^(?P<indent>\s+)'
+        r'(?P<spec>-{1,2}[A-Za-z][\w-]*'
+        r'(?:,\s*-{1,2}[A-Za-z][\w-]*)*'
+        r'(?:\s+<[^>]+>)?)'
+        r'(?:(?P<gap>\s{2,})(?P<desc>\S.*))?$'
+    )
+    _OPTION_FENCE_RE = re.compile(r'^(`{3,}|~{3,})(.*)$')
+
+    def convert_option_lists(self, content: str) -> str:
+        """
+        Convert RST option-list blocks to MkDocs ``def_list`` definitions.
+
+        Each option entry becomes a term (the option spec, as inline code) and
+        a definition (its description). Both the same-line style (description on
+        the option line) and the next-line style (description on following
+        indented lines, as in Libdoc) are supported; multi-line descriptions are
+        joined. Runs after code/literal blocks are fenced so that command-line
+        examples inside code blocks are never treated as option lists. A block
+        must have at least two entries to be converted.
+        """
+        lines = content.split('\n')
+        result: List[str] = []
+        i = 0
+        in_fence = False
+        fence_char = ''
+        fence_len = 0
+
+        while i < len(lines):
+            line = lines[i]
+
+            # Track fenced code blocks (robust CommonMark closer rule) and never
+            # convert option-like lines inside them.
+            fm = self._OPTION_FENCE_RE.match(line.lstrip())
+            if fm:
+                marker, rest = fm.group(1), fm.group(2)
+                if not in_fence:
+                    in_fence = True
+                    fence_char = marker[0]
+                    fence_len = len(marker)
+                elif (marker[0] == fence_char and len(marker) >= fence_len
+                      and rest.strip() == ''):
+                    in_fence = False
+                result.append(line)
+                i += 1
+                continue
+            if in_fence:
+                result.append(line)
+                i += 1
+                continue
+
+            m = self._OPTION_RE.match(line)
+            if m:
+                option_indent = len(m.group('indent'))
+                entries: List[Tuple[str, List[str]]] = []
+                j = i
+                while j < len(lines):
+                    lj = lines[j]
+                    if self._OPTION_FENCE_RE.match(lj.lstrip()):
+                        break
+                    if lj.strip() == '':
+                        break
+                    mj = self._OPTION_RE.match(lj)
+                    indent_j = len(lj) - len(lj.lstrip())
+                    if mj and indent_j == option_indent:
+                        desc_parts: List[str] = []
+                        if mj.group('desc'):
+                            desc_parts.append(mj.group('desc').strip())
+                        entries.append((mj.group('spec'), desc_parts))
+                        j += 1
+                    elif indent_j > option_indent and entries:
+                        entries[-1][1].append(lj.strip())
+                        j += 1
+                    else:
+                        break
+
+                if len(entries) >= 2:
+                    if result and result[-1].strip() != '':
+                        result.append('')
+                    # Blank line between entries: without it, def_list lazily
+                    # absorbs the next term into the previous definition and
+                    # produces nested <dl> elements.
+                    for idx, (spec, desc_parts) in enumerate(entries):
+                        if idx > 0:
+                            result.append('')
+                        desc = ' '.join(p for p in desc_parts if p)
+                        result.append(f'`{spec}`')
+                        result.append(f':   {desc}' if desc else ':')
+                    result.append('')
+                    i = j
+                    continue
+
+            result.append(line)
+            i += 1
+
+        return '\n'.join(result)
+
     def convert_file(self, rst_path: Path, md_path: Optional[Path] = None) -> str:
         """
         Convert a single RST file to Markdown.
@@ -1405,6 +1508,10 @@ class RstToMarkdownConverter:
         content = self.convert_literal_blocks(content)
         content = self.convert_admonitions(content)
         content = self.convert_sections(content)
+        # After convert_sections so RST section underlines (~~~~, ````) are gone
+        # and won't be mistaken for tilde/backtick code fences; before
+        # convert_cross_references so links inside descriptions still resolve.
+        content = self.convert_option_lists(content)
         content = self.convert_figures(content)
         content = self.convert_raw_html(content)
         content = self.convert_tables(content)
