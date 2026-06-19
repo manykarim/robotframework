@@ -550,7 +550,7 @@ There is no error or warning if a link target is not found, but instead Libdoc
 just formats the text in italics. Earlier this formatting was recommended to
 be used when referring to keyword arguments, but that was problematic because
 it could accidentally create internal links. Nowadays it is recommended to
-use [inline code style](../appendices/documentation-formatting.md#inline-styles)_ with double backticks like
+use [inline code style](../appendices/documentation-formatting.md#inline-styles) with double backticks like
 `\`\`argument\`\`` instead. The old formatting of single backticks
 may even be removed in the future in favor of giving an error when a link
 target is not found.
@@ -659,7 +659,7 @@ in libraries or in resource files:
 
 
 When referring to arguments in keyword documentation, it is recommended to
-use [inline code style](../appendices/documentation-formatting.md#inline-styles)_ like `\`\`argument\`\``.
+use [inline code style](../appendices/documentation-formatting.md#inline-styles) like `\`\`argument\`\``.
 
 ### Automatically listing type documentation
 

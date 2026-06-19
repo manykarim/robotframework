@@ -395,8 +395,11 @@ class RstToMarkdownConverter:
         return self._apply_outside_fences(content, self._convert_cross_references_text)
 
     def _convert_cross_references_text(self, content: str) -> str:
-        # Pattern for `text <target>`_ style references
-        explicit_pattern = r'`([^<`]+)\s+<([^>]+)>`_'
+        # Pattern for `text <target>`_ style references.
+        # Allow one or two trailing underscores so RST embedded-target anonymous
+        # references (`text <Target_>`__) are fully consumed and don't leave a
+        # stray `_` after the generated link.
+        explicit_pattern = r'`([^<`]+)\s+<([^>]+)>`_{1,2}'
 
         def replace_explicit_ref(match):
             text = match.group(1).strip()
@@ -406,6 +409,11 @@ class RstToMarkdownConverter:
             # Check if target is a URL
             if target.startswith('http://') or target.startswith('https://'):
                 return f'[{text}]({target})'
+
+            # Embedded-target reference marker: `<Target_>` points to a named
+            # reference, so strip the trailing underscore before resolving.
+            if target.endswith('_'):
+                target = target[:-1].strip()
 
             # Check if target is in link targets
             target_lower = target.lower()

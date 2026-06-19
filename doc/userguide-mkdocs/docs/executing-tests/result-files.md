@@ -166,7 +166,7 @@ execution. All messages got from test libraries are written to them,
 as well as information about started and ended test suites, test cases
 and keywords. Debug files can be used for monitoring the test
 execution. This can be done using, for example, a separate
-[fileviewer.py](https://bitbucket.org/robotframework/robottools/src/master/fileviewer/)_
+[fileviewer.py](https://bitbucket.org/robotframework/robottools/src/master/fileviewer/)
 tool, or in UNIX-like systems, simply with the `tail -f` command.
 
 Debug files are not created unless the command line option

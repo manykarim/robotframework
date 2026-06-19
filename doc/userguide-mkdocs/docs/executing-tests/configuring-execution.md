@@ -71,7 +71,7 @@ robot --parseinclude tests/example tests       # Parse files under `tests/exampl
 ```
 
 Values used with `--parseinclude` are case-insensitive and support
-[glob patterns](basic-usage.md#simple-patterns)_ like `example_*.robot`. There are, however,
+[glob patterns](basic-usage.md#simple-patterns) like `example_*.robot`. There are, however,
 two small differences compared to how patterns typically work with Robot Framework:
 
 - `*` matches only a single path segment. For example, `path/*/tests.robot`
@@ -624,7 +624,7 @@ a so called *pre-run modifier* and activating it using the
 
 Pre-run modifiers should be implemented as visitors that can traverse through
 the executable test suite structure and modify it as needed. The visitor
-interface is explained as part of the [Robot Framework API documentation](#visitor-interface), and it possible to modify executed [test suites](#runningtestsuite), [test cases](#runningtestcase) and [keywords](#runningkeyword) using it. The examples below ought to give an idea of
+interface is explained as part of the [Robot Framework API documentation](http://robot-framework.readthedocs.org/en/master/autodoc/robot.model.html#module-robot.model.visitor), and it possible to modify executed [test suites](http://robot-framework.readthedocs.org/en/master/autodoc/robot.running.html#robot.running.model.TestSuite), [test cases](http://robot-framework.readthedocs.org/en/master/autodoc/robot.running.html#robot.running.model.TestCase) and [keywords](http://robot-framework.readthedocs.org/en/master/autodoc/robot.running.html#robot.running.model.Keyword) using it. The examples below ought to give an idea of
 how pre-run modifiers can be used and how powerful this functionality is.
 
 When a pre-run modifier is taken into use on the command line using the

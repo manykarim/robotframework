@@ -11,7 +11,7 @@ are listed.
 :   Turn on [generic automation](../executing-tests/task-execution.md#generic-automation-mode) mode.
 
 `--language <lang>`
-:   Activate [localization](../creating-test-data/test-data-syntax.md#localization). `lang` can be a name or a code of a [built-in language](translations.md#translations)_, or a path or a module name of a custom language file.
+:   Activate [localization](../creating-test-data/test-data-syntax.md#localization). `lang` can be a name or a code of a [built-in language](translations.md#translations), or a path or a module name of a custom language file.
 
 `-F, --extension <value>`
 :   [Parse only these files](#parse-only-these-files) when executing a directory.
@@ -104,7 +104,7 @@ are listed.
 :   Sets the number of [error lines](#error-lines) shown in report when tests fail.
 
 `--maxassignlength <characters>`
-:   Sets the number of characters shown in log when [variables are assigned](../creating-test-data/variables.md#automatically-logging-assigned-variable-value)_.
+:   Sets the number of characters shown in log when [variables are assigned](../creating-test-data/variables.md#automatically-logging-assigned-variable-value).
 
 `-L, --loglevel <level>`
 :   [Sets the threshold level](#sets-the-threshold-level) for logging. Optionally the default [visible log level](../executing-tests/result-files.md#visible-log-level) can be given separated with a colon (:).
@@ -149,10 +149,10 @@ are listed.
 :   In the [dry run](../executing-tests/configuring-execution.md#dry-run) mode tests are run without executing keywords originating from test libraries. Useful for validating test data syntax.
 
 `-X, --exitonfailure`
-:   [Stops test execution](../executing-tests/test-execution.md#stopping-when-first-test-case-fails)_ if any test fails.
+:   [Stops test execution](../executing-tests/test-execution.md#stopping-when-first-test-case-fails) if any test fails.
 
 `--exitonerror`
-:   [Stops test execution](../executing-tests/test-execution.md#stopping-on-parsing-or-execution-error)_ if any error occurs when parsing test data, importing libraries, and so on.
+:   [Stops test execution](../executing-tests/test-execution.md#stopping-on-parsing-or-execution-error) if any error occurs when parsing test data, importing libraries, and so on.
 
 `--skipteardownonexit`
 :   [Skips teardowns](../executing-tests/test-execution.md#skip) if test execution is prematurely stopped.
@@ -205,7 +205,7 @@ are listed.
 :   Turn on [generic automation](../executing-tests/task-execution.md#generic-automation-mode) mode.
 
 `-R, --merge`
-:   Changes result combining behavior to [merging](../executing-tests/post-processing.md#merging-results)_.
+:   Changes result combining behavior to [merging](../executing-tests/post-processing.md#merging-results).
 
 `-N, --name <name>`
 :   [Sets the name](#sets-the-name) of the top level test suite.

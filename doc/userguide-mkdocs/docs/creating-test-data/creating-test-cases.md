@@ -329,7 +329,7 @@ arguments](http://docs.python.org/tutorial/controlflow.html#keyword-arguments). 
 depends on the keyword type. For example, [Python based keywords](https://www.python.org/dev/peps/pep-3102) simply use
 `**kwargs` and [user keywords](https://github.com/robotframework/robotframework/issues/5250) use `&{kwargs}`.
 
-Free named arguments support variables similarly as [named arguments](#named-arguments-with-variables)_. In practice that means that variables
+Free named arguments support variables similarly as [named arguments](#named-arguments-with-variables). In practice that means that variables
 can be used both in names and values, but the escape sign must always be
 visible literally. For example, both `foo=${bar}` and `${foo}=${bar}` are
 valid, as long as the variables that are used exist. An extra limitation is

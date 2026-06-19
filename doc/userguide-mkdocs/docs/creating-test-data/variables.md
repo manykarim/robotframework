@@ -1265,7 +1265,7 @@ the command line.
 
 #### Creating secrets programmatically
 
-Secrets can be created programmatically by using the [robot.api.types.Secret](../extending/creating-test-libraries.md#secret-type)
+Secrets can be created programmatically by using the [robot.api.types.Secret](https://robot-framework.readthedocs.io/en/master/autodoc/robot.utils.html#robot.utils.secret.Secret)
 class. This is most commonly done by [libraries](../supporting-tools/index.md#libraries) and [variable files](variable-files.md#variable-files), but also
 [pre-run modifiers](https://docs.python.org/3/library/stdtypes.html#bytes-objects) and [listeners](../extending/listener-interface.md#listeners) can utilize secrets if needed.
 
@@ -1618,7 +1618,7 @@ arguments, can make the test data pretty complicated to understand.
 If that happens, it is recommended to move the code into a library.
 
 The most common usages of extended variable syntax are illustrated
-in the example below. First assume that we have the following [variable file](variable-files.md#variable-files)_ and test case:
+in the example below. First assume that we have the following [variable file](variable-files.md#variable-files) and test case:
 
 ```python
 class MyObject:
