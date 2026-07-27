@@ -2,7 +2,7 @@
 
 Robot Framework has its own time format that is both flexible to use and easy
 to understand. It is used by several keywords (for example, [BuiltIn](../creating-test-data/using-test-libraries.md#builtin) keywords
-*Sleep* and *Wait Until Keyword Succeeds*), [DateTime](../creating-test-data/using-test-libraries.md#datetime) library, and
+*Sleep*{.name} and *Wait Until Keyword Succeeds*{.name}), [DateTime](../creating-test-data/using-test-libraries.md#datetime) library, and
 [timeouts](../creating-test-data/advanced-features.md#timeouts).
 
 ## Time as number

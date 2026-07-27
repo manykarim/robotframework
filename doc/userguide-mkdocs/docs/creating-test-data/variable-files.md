@@ -3,7 +3,7 @@
 
 Variable files contain [variables](variables.md#variables) that can be used in the test
 data. Variables can also be created using [Variable sections](variables.md#variable-sections) or [set from
-the command line](https://packaging.python.org/en/latest/guides/distributing-packages-using-setuptools/#package-data), but variable files allow creating them dynamically
+the command line](variables.md#command-line-variables), but variable files allow creating them dynamically
 and also make it easy to create other variable values than strings.
 
 Variable files are typically implemented as modules and there are
@@ -21,19 +21,19 @@ two different approaches for creating variables:
    (or `getVariables`) method that returns variables as a mapping.
    Because the method can take arguments this approach is very flexible.
 
-Alternatively variable files can be implemented as [classes](https://robot-framework.readthedocs.io/en/master/autodoc/robot.running.html#robot.running.model.ResourceFile.to_json)
+Alternatively variable files can be implemented as [classes](#implementing-variable-file-as-a-class)
 that the framework will instantiate. Also in this case it is possible to create
 variables as attributes or get them dynamically from the `get_variables`
-method. Variable files can also be created as [YAML](https://robot-framework.readthedocs.io/en/master/autodoc/robot.running.html#robot.running.model.ResourceFile.from_json) and [JSON](test-data-syntax.md#json-structure).
+method. Variable files can also be created as [YAML](#variable-file-as-yaml) and [JSON](#variable-file-as-json).
 
 ### Taking variable files into use
 
 #### Setting section
 
-All test data files can import variable files using the `Variables`
+All test data files can import variable files using the *Variables*{.setting}
 setting in the Setting section. Variable files are typically imported using
-a path to the file same way as [resource files are imported](resource-files.md#resource-files) using
-the `Resource` setting. Similarly to resource files, the path to
+a path to the file same way as [resource files are imported](resource-files.md#taking-resource-files-into-use) using
+the *Resource*{.setting} setting. Similarly to resource files, the path to
 the imported variable file is considered relative to the directory where the
 importing file is, and if not found, it is searched from directories
 in the [module search path](../executing-tests/configuring-execution.md#module-search-path). The path can also contain variables,
@@ -48,7 +48,7 @@ Variables    ../data/variables.py
 Variables    ${RESOURCES}/common.yaml
 ```
 Starting from Robot Framework 5.0, variable files implemented using Python
-can also be imported using the module name [similarly as libraries](https://packaging.python.org/en/latest/guides/distributing-packages-using-setuptools/#package-data).
+can also be imported using the module name [similarly as libraries](using-test-libraries.md#specifying-library-to-import).
 When using this approach, the module needs to be in the [module search path](../executing-tests/configuring-execution.md#module-search-path).
 
 Examples:
@@ -58,7 +58,7 @@ Examples:
 Variables    myvariables
 Variables    rootmodule.Variables
 ```
-If a [variable file accepts arguments](https://packaging.python.org/en/latest/guides/distributing-packages-using-setuptools/#package-data), they are specified after the path
+If a [variable file accepts arguments](#getting-variables-from-a-special-function), they are specified after the path
 or name of the variable file to import:
 
 ```robotframework
@@ -75,8 +75,8 @@ set from the command line override variables from variable files.
 #### Command line
 
 Another way to take variable files into use is using the command line option
-`--variablefile`. Variable files are referenced using a path or
-module name similarly as when importing them using the `Variables`
+`--variablefile`{.option}. Variable files are referenced using a path or
+module name similarly as when importing them using the *Variables*{.setting}
 setting. Possible arguments are joined to the path with a colon (`:`):
 
 ```
@@ -111,11 +111,11 @@ quotes on UNIX-like operating systems:
 ```
 
 Variables in variable files taken use on the command line are globally
-available in all test data files, similarly as [individual variables](https://packaging.python.org/en/latest/guides/distributing-packages-using-setuptools/#package-data)
-set with the `--variable` option. If both `--variablefile` and
-`--variable` options are used and there are variables with same
+available in all test data files, similarly as [individual variables](variables.md#command-line-variables)
+set with the `--variable`{.option} option. If both `--variablefile`{.option} and
+`--variable`{.option} options are used and there are variables with same
 names, those that are set individually with
-`--variable` option take precedence.
+`--variable`{.option} option take precedence.
 
 ### Getting variables directly from a module
 
@@ -408,10 +408,10 @@ dict:
   with spaces: kolme
 ```
 YAML variable files can be used exactly like normal variable files
-from the command line using `--variablefile` option, in the Settings
-section using `Variables` setting, and dynamically using the
-*Import Variables* keyword. They are automatically recognized by their
-extension that must be either *.yaml* or *.yml*.
+from the command line using `--variablefile`{.option} option, in the Settings
+section using *Variables*{.setting} setting, and dynamically using the
+*Import Variables*{.name} keyword. They are automatically recognized by their
+extension that must be either `.yaml`{.file} or `.yml`{.file}.
 If the above YAML file is imported, it will create exactly the same variables
 as this Variable section:
 
@@ -438,7 +438,7 @@ always possible to access dictionary values using syntax like
 
 !!! note
     Using YAML files with Robot Framework requires [PyYAML](http://pyyaml.org) module to be installed. You can typically
-    install it with [pip](test-data-syntax.md#pipe-separated-format) like `pip install pyyaml`.
+    install it with [pip](#pip) like `pip install pyyaml`.
 
 ### Variable file as JSON
 
@@ -464,7 +464,7 @@ exactly the same data as the earlier YAML example:
     }
 }
 ```
-JSON variable files are automatically recognized by their *.json*
+JSON variable files are automatically recognized by their `.json`{.file}
 extension and they can be used exactly like YAML variable files. They
 also have exactly same requirements for structure, encoding, and so on.
 Unlike YAML, Python supports JSON out-of-the-box so no extra modules need

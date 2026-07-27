@@ -12,7 +12,7 @@ Example usages include communicating with external test management systems,
 sending a message when a test fails, and modifying tests during execution.
 
 Listeners are implemented as classes or modules with certain special methods.
-They can be [taken into use from the command line](https://github.com/robotframework/robotframework/tree/master/atest/testdata/output/listener_interface/body_items_v3) and be [registered
+They can be [taken into use from the command line](#registering-listeners-from-command-line) and be [registered
 by libraries](#libraries-as-listeners). The former listeners are active during the whole execution
 while the latter are active only when executing suites where libraries registering
 them are imported.
@@ -21,6 +21,9 @@ There are two supported listener interface versions, [listener version 2](#liste
 [listener version 3](#listener-version-3). They have mostly the same methods, but these methods are
 called with different arguments. The newer listener version 3 is more powerful
 and generally recommended.
+
+!!! note
+    The listener interface is used also by [custom console loggers](../executing-tests/configuring-execution.md#custom-console-loggers).
 
 ## Listener structure
 
@@ -108,15 +111,15 @@ it. If that is needed, [listener version 3](#listener-version-3) can be used ins
 | end_test | name, attributes | Called when a test case ends.<br>Contents of the attribute dictionary:<br><ul><li>`id`: Same as in `start_test`.</li><li>`longname`: Same as in `start_test`.</li><li>`originalname`: Same as in `start_test`.</li><li>`doc`: Same as in `start_test`.</li><li>`tags`: Same as in `start_test`.</li><li>`template`: Same as in `start_test`.</li><li>`source`: Same as in `start_test`.</li><li>`lineno`: Same as in `start_test`.</li><li>`starttime`: Same as in `start_test`.</li><li>`endtime`: Test execution execution end time.</li><li>`elapsedtime`: Total execution time in milliseconds as an integer</li><li>`status`: Test status as string `PASS`, `FAIL` or `SKIP`.</li><li>`message`: Status message. Normally an error message or an empty string.</li></ul> |
 | start_keyword | name, attributes | Called when a keyword or a control structure such as `IF/ELSE` or `TRY/EXCEPT` starts.<br>With keywords `name` is the full keyword name containing possible library or resource name as a prefix like `MyLibrary.Example Keyword`. With control structures `name` contains string representation of parameters.<br>Keywords and control structures share most of attributes, but control structures can have additional attributes depending on their `type`.<br>Shared attributes:<br><ul><li>`type`: String specifying type of the started item. Possible values are: `KEYWORD`, `SETUP`, `TEARDOWN`, `FOR`, `WHILE`, `ITERATION`, `IF`, `ELSE IF`, `ELSE`, `TRY`, `EXCEPT`, `FINALLY`, `VAR`, `RETURN`, `BREAK`, `CONTINUE` and `ERROR`. All type values were changed in RF 4.0 and in RF 5.0 `FOR ITERATION` was changed to `ITERATION`.</li><li>`kwname`: Name of the keyword without library or resource prefix. String representation of parameters with control structures.</li><li>`libname`: Name of the library or resource file the keyword belongs to. An empty string with user keywords in a test case file and with control structures.</li><li>`doc`: Keyword documentation.</li><li>`args`: Keyword's arguments as a list of strings.</li><li>`assign`: A list of variable names that keyword's return value is assigned to.</li><li>`tags`: [Keyword tags](creating-test-libraries.md#keyword-tags) as a list of strings.</li><li>`source`: An absolute path of the file where the keyword was used. New in RF 4.0.</li><li>`lineno`: Line where the keyword was used. Typically an integer, but can be `None` if a keyword has been executed by a listener. New in RF 4.0.</li><li>`status`: Initial keyword status. `NOT RUN` if keyword is not executed (e.g. due to an earlier failure), `NOT SET` otherwise. New in RF 4.0.</li><li>`starttime`: Keyword execution start time.</li></ul><br>Additional attributes for `FOR` types:<br><ul><li>`variables`: Assigned variables for each loop iteration as a list or strings.</li><li>`flavor`: Type of loop (e.g. `IN RANGE`).</li><li>`values`: List of values being looped over as a list or strings.</li><li>`start`: Start configuration. Only used with `IN ENUMERATE` loops. New in RF 6.1.</li><li>`mode`: Mode configuration. Only used with `IN ZIP` loops. New in RF 6.1.</li><li>`fill`: Fill value configuration. Only used with `IN ZIP` loops. New in RF 6.1.</li></ul><br>Additional attributes for `ITERATION` types with `FOR` loops:<br><ul><li>`variables`: Variables and string representations of their contents for one `FOR` loop iteration as a dictionary.</li></ul><br>Additional attributes for `WHILE` types:<br><ul><li>`condition`: The looping condition.</li><li>`limit`: The maximum iteration limit.</li><li>`on_limit`: What to do if the limit is exceeded. Valid values are `pass` and `fail`. New in RF 7.0.</li><li>`on_limit_message`: The custom error raised when the limit of the WHILE loop is reached. New in RF 6.1.</li></ul><br>Additional attributes for `IF` and `ELSE IF` types:<br><ul><li>`condition`: The conditional expression being evaluated. With `ELSE IF` new in RF 6.1.</li></ul><br>Additional attributes for `EXCEPT` types:<br><ul><li>`patterns`: The exception patterns being matched as a list or strings.</li><li>`pattern_type`: The type of pattern match (e.g. `GLOB`).</li><li>`variable`: The variable containing the captured exception.</li></ul><br>Additional attributes for `RETURN` types:<br><ul><li>`values`: Return values from a keyword as a list or strings.</li></ul><br>Additional attributes for `VAR` types:<br><ul><li>`name`: Variable name.</li><li>`value`: Variable value. A string with scalar variables and a list otherwise.</li><li>`scope`: Variable scope (e.g. `GLOBAL`) as a string.</li></ul><br>Additional attributes for control structures are in general new in RF 6.0. `VAR` is new in RF 7.0. |
 | end_keyword | name, attributes | Called when a keyword or a control structure ends.<br>`name` is the full keyword name containing possible library or resource name as a prefix. For example, `MyLibrary.Example Keyword`.<br>Control structures have additional attributes, which change based on the `type` attribute. For descriptions of all possible attributes, see the `start_keyword` section.<br>Contents of the attribute dictionary:<br><ul><li>`type`: Same as with `start_keyword`.</li><li>`kwname`: Same as with `start_keyword`.</li><li>`libname`: Same as with `start_keyword`.</li><li>`doc`: Same as with `start_keyword`.</li><li>`args`: Same as with `start_keyword`.</li><li>`assign`: Same as with `start_keyword`.</li><li>`tags`: Same as with `start_keyword`.</li><li>`source`: Same as with `start_keyword`.</li><li>`lineno`: Same as with `start_keyword`.</li><li>`starttime`: Same as with `start_keyword`.</li><li>`endtime`: Keyword execution end time.</li><li>`elapsedtime`: Total execution time in milliseconds as an integer</li><li>`status`: Keyword status as string `PASS`, `FAIL`, `SKIP` or `NOT RUN`. `SKIP` and `NOT RUN` are new in RF 4.0.</li></ul> |
-| log_message | message | Called when an executed keyword writes a log message.<br>`message` is a dictionary with the following contents:<br><ul><li>`message`: The content of the message.</li><li>`level`: [Log level](../executing-tests/result-files.md#log-level) used in logging the message.</li><li>`timestamp`: Message creation time in format `YYYY-MM-DD hh:mm:ss.mil`.</li><li>`html`: String `yes` or `no` denoting whether the message should be interpreted as HTML or not.</li></ul><br>Not called if the message level is below the current [threshold level](../executing-tests/result-files.md#log-levels). |
-| message | message | Called when the framework itself writes a [syslog](../executing-tests/result-files.md#syslog) message.<br>`message` is a dictionary with the same contents as with `log_message` method. |
-| library_import | name, attributes | Called when a library has been imported.<br>`name` is the name of the imported library. If the library has been given a custom name when imported it using `AS`, `name` is the specified alias.<br>Contents of the attribute dictionary:<br><ul><li>`args`: Arguments passed to the library as a list.</li><li>`originalname`: The original library name if the library has been given an alias using `AS`, otherwise same as `name`.</li><li>`source`: An absolute path to the library source. An empty string if getting the source of the library failed for some reason.</li><li>`importer`: An absolute path to the file importing the library. `None` when [BuiltIn](../creating-test-data/using-test-libraries.md#builtin) is imported as well as when</li></ul> |
-| resource_import | name, attributes | Called when a resource file has been imported.<br>`name` is the name of the imported resource file without the file extension.<br>Contents of the attribute dictionary:<br><ul><li>`source`: An absolute path to the imported resource file.</li><li>`importer`: An absolute path to the file importing the keyword.</li></ul> |
-| variables_import | name, attributes | Called when a variable file has been imported.<br>`name` is the name of the imported variable file with the file extension.<br>Contents of the attribute dictionary:<br><ul><li>`args`: Arguments passed to the variable file as a list.</li><li>`source`: An absolute path to the imported variable file.</li><li>`importer`: An absolute path to the file importing the Variables* keyword.</li></ul> |
+| log_message | message | Called when an executed keyword writes a log message.<br>`message` is a dictionary with the following contents:<br><ul><li>`message`: The content of the message.</li><li>`level`: [Log level](../executing-tests/result-files.md#log-levels) used in logging the message.</li><li>`timestamp`: Message creation time in format `YYYY-MM-DD hh:mm:ss.mil`.</li><li>`html`: String `yes` or `no` denoting whether the message should be interpreted as HTML or not.</li></ul><br>Not called if the message level is below the current [threshold level](../executing-tests/result-files.md#log-levels). |
+| message | message | Called when the framework itself writes a [syslog](../executing-tests/result-files.md#system-log) message.<br>`message` is a dictionary with the same contents as with `log_message` method. |
+| library_import | name, attributes | Called when a library has been imported.<br>`name` is the name of the imported library. If the library has been given a custom name when imported it using `AS`, `name` is the specified alias.<br>Contents of the attribute dictionary:<br><ul><li>`args`: Arguments passed to the library as a list.</li><li>`originalname`: The original library name if the library has been given an alias using `AS`, otherwise same as `name`.</li><li>`source`: An absolute path to the library source. An empty string if getting the source of the library failed for some reason.</li><li>`importer`: An absolute path to the file importing the library. `None` when [BuiltIn](../creating-test-data/using-test-libraries.md#builtin) is imported as well as when using the *Import Library*{.name} keyword.</li></ul> |
+| resource_import | name, attributes | Called when a resource file has been imported.<br>`name` is the name of the imported resource file without the file extension.<br>Contents of the attribute dictionary:<br><ul><li>`source`: An absolute path to the imported resource file.</li><li>`importer`: An absolute path to the file importing the resource file. `None` when using the *Import Resource*{.name} keyword.</li></ul> |
+| variables_import | name, attributes | Called when a variable file has been imported.<br>`name` is the name of the imported variable file with the file extension.<br>Contents of the attribute dictionary:<br><ul><li>`args`: Arguments passed to the variable file as a list.</li><li>`source`: An absolute path to the imported variable file.</li><li>`importer`: An absolute path to the file importing the resource file. `None` when using the *Import Variables*{.name} key</li></ul> |
 | output_file | path | Called when the [output file](../executing-tests/result-files.md#output-file) is ready.<br>`path` is an absolute path to the file as a string or a string `None` if creating the output file is disabled. |
 | log_file | path | Called when the [log file](../executing-tests/result-files.md#log-file) is ready.<br>`path` is an absolute path to the file as a string.<br>Not called if creating the log file is disabled. |
 | report_file | path | Called when the [report file](../executing-tests/result-files.md#report-file) is ready.<br>`path` is an absolute path to the file as a string.<br>Not called if creating the report file is disabled. |
-| xunit_file | path | Called when the [xunit file](../executing-tests/output-files.md#xunit-file) is ready.<br>`path` is an absolute path to the file as a string.<br>Only called if creating the xunit file is enabled. |
+| xunit_file | path | Called when the [xunit file](../executing-tests/execution-artifacts.md#xunit-file) is ready.<br>`path` is an absolute path to the file as a string.<br>Only called if creating the xunit file is enabled. |
 | debug_file | path | Called when the [debug file](../executing-tests/result-files.md#debug-file) is ready.<br>`path` is an absolute path to the file as a string.<br>Only called if creating the debug file is enabled. |
 | close |  | Called when the whole test execution ends.<br>With [library listeners](../extending/listener-interface.md) called when the library goes out of scope. |
 
@@ -172,15 +175,15 @@ and in the API docs of the optional [ListenerV3](https://robot-framework.readthe
 | start_body_item | data, result | Called when a keyword or a control structure starts, unless a more specific method such as `start_keyword` or `start_if` is implemented. |
 | end_body_item | data, result | Called when a keyword or a control structure ends, unless a more specific method such as `end_keyword` or `end_if` is implemented. |
 | log_message | message | Called when an executed keyword writes a log message. `message` is a model object representing the [logged message](http://robot-framework.readthedocs.org/en/master/autodoc/robot.result.html#robot.result.model.Message).<br>This method is not called if the message has level below the current [threshold level](../executing-tests/result-files.md#log-levels). |
-| message | message | Called when the framework itself writes a [syslog](../executing-tests/result-files.md#syslog) message.<br>`message` is same object as with `log_message`. |
+| message | message | Called when the framework itself writes a [syslog](../executing-tests/result-files.md#system-log) message.<br>`message` is same object as with `log_message`. |
 | library_import | library, importer | Called after a library has been imported.<br>[library](https://robot-framework.readthedocs.io/en/stable/autodoc/robot.running.html#robot.running.testlibraries.TestLibrary) represents the imported library. It can be inspected and also modified. [importer](https://robot-framework.readthedocs.io/en/stable/autodoc/robot.running.html#robot.running.resourcemodel.Import) contains information about the location where the library was imported. |
 | resource_import | resource, importer | Called after a resource file has been imported.<br>[resource](https://robot-framework.readthedocs.io/en/stable/autodoc/robot.running.html#robot.running.resourcemodel.ResourceFile) represents the imported resource file. It can be inspected and also modified. [importer](https://robot-framework.readthedocs.io/en/stable/autodoc/robot.running.html#robot.running.resourcemodel.Import) contains information about the location where the resource was imported. |
 | variables_import | attrs, importer | Called after a variable file has been imported.<br>`attrs` contains information about the imported variable file as a dictionary. It can be inspected, but modifications to it have no effect. [importer](https://robot-framework.readthedocs.io/en/stable/autodoc/robot.running.html#robot.running.resourcemodel.Import) contains information about the location where the variable file was imported.<br>This method will be changed in the future so that the `attrs` dictionary is replaced with an object representing the imported variable file. |
-| result_file | kind, path | Called, by default, when a [result file](../executing-tests/result-files.md#result-file) like output or log is ready.<br>`kind` is a string `OUTPUT`, `REPORT`, `LOG`, `XUNIT` or `DEBUG`. `path` is an absolute path to the file as a `pathlib.Path` object.<br>Not called if a more specific result file related method like `output_file` or `log_file` is implemented or when creating a result file is disabled.<br>New in Robot Framework 7.5. |
+| result_file | kind, path | Called, by default, when a [result file](../executing-tests/result-files.md#result-files) like an output file or a log file is ready.<br>`kind` is a string `OUTPUT`, `REPORT`, `LOG`, `XUNIT` or `DEBUG`. `path` is an absolute path to the file as a `pathlib.Path` object.<br>Not called if a more specific result file related method like `output_file` or `log_file` is implemented or when creating a result file is disabled.<br>New in Robot Framework 7.5. |
 | output_file | path | Called when the [output file](../executing-tests/result-files.md#output-file) is ready.<br>`path` is an absolute path to the file as a `pathlib.Path` object or the `None` object if creating the output file is disabled.<br>Starting from Robot Framework 7.5, the generic `result_file` method is called if this method is not implemented and creating the output file is not disabled. |
 | log_file | path | Called when [log file](../executing-tests/result-files.md#log-file) is ready.<br>`path` is an absolute path to the file as a `pathlib.Path` object.<br>Not called if creating the log file is disabled.<br>Starting from Robot Framework 7.5, the generic `result_file` method is called if this method is not implemented. |
 | report_file | path | Called when [report file](../executing-tests/result-files.md#report-file) is ready.<br>`path` is an absolute path to the file as a `pathlib.Path` object.<br>Not called if creating the report file is disabled.<br>Starting from Robot Framework 7.5, the generic `result_file` method is called if this method is not implemented. |
-| xunit_file | path | Called when [xunit file](../executing-tests/output-files.md#xunit-file) is ready.<br>`path` is an absolute path to the file as a `pathlib.Path` object.<br>Only called if creating the xunit file is enabled.<br>Starting from Robot Framework 7.5, the generic `result_file` method is called if this method is not implemented. |
+| xunit_file | path | Called when [xunit file](../executing-tests/execution-artifacts.md#xunit-file) is ready.<br>`path` is an absolute path to the file as a `pathlib.Path` object.<br>Only called if creating the xunit file is enabled.<br>Starting from Robot Framework 7.5, the generic `result_file` method is called if this method is not implemented. |
 | debug_file | path | Called when [debug file](../executing-tests/result-files.md#debug-file) is ready.<br>`path` is an absolute path to the file as a `pathlib.Path` object.<br>Only called if creating the debug file is enabled.<br>Starting from Robot Framework 7.5, the generic `result_file` method is called if this method is not implemented. |
 | close |  | Called when the whole test execution ends.<br>With [library listeners](../extending/listener-interface.md) called when the library goes out of scope. |
 
@@ -201,7 +204,7 @@ and in the API docs of the optional [ListenerV3](https://robot-framework.readthe
 ### Registering listeners from command line
 
 Listeners that need to be active during the whole execution must be taken into
-use from the command line. That is done using the `--listener` option
+use from the command line. That is done using the `--listener`{.option} option
 so that the name of the listener is given to it as an argument. The listener
 name is got from the name of the class or module implementing the
 listener, similarly as [library name](creating-test-libraries.md#library-name) is got from the class or module
@@ -209,7 +212,7 @@ implementing the library. The specified listeners must be in the same [module
 search path](../executing-tests/configuring-execution.md#module-search-path) where test libraries are searched from when they are imported.
 In addition to registering a listener by using a name, it is possible to give
 an absolute or a relative path to the listener file [similarly as with test
-libraries](https://github.com/robotframework/robotframework/tree/master/atest/testdata/output/listener_interface/body_items_v3). It is possible to take multiple listeners
+libraries](../creating-test-data/using-test-libraries.md#using-physical-path-to-library). It is possible to take multiple listeners
 into use by using this option several times:
 
 ```
@@ -243,7 +246,7 @@ robot --listener "listener.py;name=value:with:colons;second=argument" tests.robo
 ```
 
 Listener arguments are automatically converted using [same rules as with
-keywords](https://github.com/robotframework/robotframework/tree/master/atest/testdata/output/listener_interface/body_items_v3) based on [type hints](#type-hints) and [default values](../creating-test-data/creating-test-cases.md#default-values). For example,
+keywords](creating-test-libraries.md#supported-conversions) based on [type hints](creating-test-libraries.md#specifying-argument-types-using-function-annotations) and [default values](creating-test-libraries.md#implicit-argument-types-based-on-default-values). For example,
 this listener
 
 ```python
@@ -272,7 +275,7 @@ and the second to a Boolean based on the default value.
 <a id="Librariesaslisteners"></a>
 ### Libraries as listeners
 
-Sometimes it is useful also for [test libraries](../creating-test-data/using-test-libraries.md#test-libraries) to get notifications about
+Sometimes it is useful also for [test libraries](../creating-test-data/using-test-libraries.md#using-test-libraries) to get notifications about
 test execution. This allows them, for example, to perform certain clean-up
 activities automatically when a test suite or the whole test execution ends.
 
@@ -398,7 +401,7 @@ def end_test(name, attrs):
         print(f"Test '{name}'" failed: {attrs['message']}")
         input("Press enter to continue.")
 ```
-If the above example would be saved to, for example, *PauseExecution.py*
+If the above example would be saved to, for example, `PauseExecution.py`{.file}
 file, it could be used from the command line like this:
 
 ```
@@ -410,7 +413,7 @@ complicated. It writes all the information it gets into a text file in
 a temporary directory without much formatting. The filename may be given
 from the command line, but it also has a default value. Note that in real usage,
 the [debug file](../executing-tests/result-files.md#debug-file) functionality available through the command line option
-`--debugfile` is probably more useful than this example.
+`--debugfile`{.option} is probably more useful than this example.
 
 ```python
 import os.path
@@ -540,7 +543,7 @@ class ResultModifier:
         ...
 ```
 A limitation is that modifying the name of the current test suite or test
-case is not possible because it has already been written to the [output.xml](../executing-tests/output-files.md#outputxml)
+case is not possible because it has already been written to the [output.xml](../executing-tests/execution-artifacts.md#outputxml)
 file when listeners are called. Due to the same reason modifying already
 finished tests in the `end_suite` method has no effect either.
 
@@ -549,9 +552,9 @@ by setting `message` to `None` as the above example demonstrates. This can be
 used for removing sensitive or non-relevant messages so that there is nothing
 visible in the log file.
 
-This API is very similar to the [pre-Rebot modifier](../executing-tests/output-files.md#pre-rebot-modifier) API that can be used
+This API is very similar to the [pre-Rebot modifier](../executing-tests/execution-artifacts.md#pre-rebot-modifier) API that can be used
 to modify results before report and log are generated. The main difference is
-that listeners modify also the created *output.xml* file.
+that listeners modify also the created `output.xml`{.file} file.
 
 !!! note
     Removing messages altogether by setting them to `None` is new in

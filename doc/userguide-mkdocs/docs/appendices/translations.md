@@ -1,6 +1,6 @@
 # Translations
 
-Robot Framework supports translating [section headers](#section-headers), [settings](#settings),
+Robot Framework supports translating [section headers](../creating-test-data/test-data-syntax.md#test-data-sections), [settings](available-settings.md#available-settings),
 [Given/When/Then prefixes](../creating-test-data/creating-test-cases.md#behavior-driven-style) used in Behavior Driven Development (BDD)
 as well as [true and false strings](../extending/creating-test-libraries.md#supported-conversions) used in automatic Boolean argument
 conversion. This appendix lists all translations for all languages,
@@ -525,6 +525,13 @@ New in Robot Framework 7.3.
 |---|
 | True |
 | False |
+
+
+### Deprecations
+
+| Old term |
+|---|
+| Unités de test |
 
 
 ## Hindi (hi)

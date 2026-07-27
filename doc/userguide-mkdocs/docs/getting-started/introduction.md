@@ -30,34 +30,34 @@ Robot Framework is open source software released under the [Apache License
 - Enables easy-to-use tabular syntax for [creating test cases](../creating-test-data/creating-test-cases.md#creating-test-cases) in a uniform
   way.
 
-- Provides ability to create reusable [higher-level keywords](../creating-test-data/creating-user-keywords.md) from the
+- Provides ability to create reusable [higher-level keywords](../creating-test-data/creating-user-keywords.md#creating-user-keywords) from the
   existing keywords.
 
-- Provides easy-to-read result [reports](../executing-tests/result-files.md#report) and [logs](../executing-tests/result-files.md#log) in HTML format.
+- Provides easy-to-read result [reports](../executing-tests/post-processing.md#creating-reports-logs-and-output-files) and [logs](../executing-tests/execution-artifacts.md#splitting-logs) in HTML format.
 
 - Is platform and application independent.
 
-- Provides a simple [library API](../extending/creating-test-libraries.md#library-api) for creating customized test libraries
+- Provides a simple [library API](../extending/creating-test-libraries.md#creating-test-libraries) for creating customized test libraries
   which can be implemented natively with Python.
 
-- Provides a [command line interface](https://github.com/robotframework/robotframework) and XML based [output files](../executing-tests/output-files.md#output-files)  for
+- Provides a [command line interface](../executing-tests/basic-usage.md#executing-test-cases) and XML based [output files](../executing-tests/result-files.md#output-file)  for
   integration into existing build infrastructure (continuous integration
   systems).
 
 - Provides support for testing web applications, rest APIs, mobile applications,
   running processes, connecting to remote systems via Telnet or SSH, and so on.
 
-- Supports creating [data-driven test cases](http://www.catb.org/~esr/faqs/smart-questions.html).
+- Supports creating [data-driven test cases](../creating-test-data/creating-test-cases.md#data-driven-style).
 
 - Has built-in support for [variables](../creating-test-data/variables.md#variables), practical particularly for testing in
   different environments.
 
-- Provides [tagging](http://groups.google.com/group/robotframework-users) to categorize and [select test cases](http://groups.google.com/group/robotframework-announce) to be executed.
+- Provides [tagging](../creating-test-data/creating-test-cases.md#tagging-test-cases) to categorize and [select test cases](../executing-tests/configuring-execution.md#selecting-test-cases) to be executed.
 
-- Enables easy integration with source control: [test suites](../creating-test-data/creating-test-suites.md#test-suite) are just files
+- Enables easy integration with source control: [test suites](../creating-test-data/creating-test-suites.md#creating-test-suites) are just files
   and directories that can be versioned with the production code.
 
-- Provides [test-case](http://groups.google.com/group/robotframework-devel) and [test-suite](../creating-test-data/creating-test-cases.md#test-setup-and-teardown) -level setup and teardown.
+- Provides [test-case](../creating-test-data/creating-test-cases.md#test-setup-and-teardown) and [test-suite](../creating-test-data/creating-test-suites.md#suite-setup-and-teardown) -level setup and teardown.
 
 - The modular architecture supports creating tests even for applications with
   several diverse interfaces.
@@ -75,17 +75,17 @@ diagram below.
 
 *Robot Framework architecture*
 
-The [test data](../creating-test-data/test-data-syntax.md#test-data-syntax) is in simple, easy-to-edit tabular format. When
+The [test data](../index.md#creating-test-data) is in simple, easy-to-edit tabular format. When
 Robot Framework is started, it processes the data, [executes test
-cases](../creating-test-data/creating-test-suites.md#suite-setup-and-teardown) and generates logs and reports. The core framework does not
+cases](../executing-tests/basic-usage.md#executing-test-cases) and generates logs and reports. The core framework does not
 know anything about the target under test, and the interaction with it
-is handled by [libraries](../supporting-tools/index.md#libraries). Libraries can either use application
+is handled by [libraries](../extending/creating-test-libraries.md#creating-test-libraries). Libraries can either use application
 interfaces directly or use lower level test tools as drivers.
 
 ## Screenshots
 
-Following screenshots show examples of the [test data](../creating-test-data/test-data-syntax.md#test-data-syntax) and created
-[reports](../executing-tests/result-files.md#report) and [logs](../executing-tests/result-files.md#log).
+Following screenshots show examples of the [test data](../index.md#creating-test-data) and created
+[reports](../executing-tests/post-processing.md#creating-reports-logs-and-output-files) and [logs](../executing-tests/execution-artifacts.md#splitting-logs).
 
 ![Test case file](testdata_screenshots.png)
 
@@ -101,7 +101,7 @@ Following screenshots show examples of the [test data](../creating-test-data/tes
 
 The number one place to find more information about Robot Framework
 and the rich ecosystem around it is http://robotframework.org.
-Robot Framework itself is hosted on [GitHub](#github).
+Robot Framework itself is hosted on [GitHub](https://github.com/robotframework/robotframework).
 
 <a id="mailing-list"></a>
 
@@ -116,19 +116,19 @@ these lists freely. Only list members can send mails, though, and to
 prevent spam new users are moderated which means that it might take a
 little time before your first message goes through.  Do not be afraid
 to send question to mailing lists but remember [How To Ask Questions
-The Smart Way](../executing-tests/basic-usage.md#executing-test-cases).
+The Smart Way](http://www.catb.org/~esr/faqs/smart-questions.html).
 
-robotframework-[users](#users)
+robotframework-[users](http://groups.google.com/group/robotframework-users)
 : General discussion about all Robot Framework related
    issues. Questions and problems can be sent to this list. Used also
    for information sharing for all users.
 
-robotframework-[announce](#announce)
+robotframework-[announce](http://groups.google.com/group/robotframework-announce)
 : An announcements-only mailing list where only moderators can send
     messages. All announcements are sent also to the
     robotframework-users mailing list so there is no need to join both
     lists.
 
-robotframework-[devel](../creating-test-data/creating-user-keywords.md#behavior-driven-development-example)
+robotframework-[devel](http://groups.google.com/group/robotframework-devel)
 : Discussion about Robot Framework development.
 

@@ -28,7 +28,7 @@ Should Be True keyword
     Should Be True    ${x} > 0
 ```
 Notice that instead of creating complicated
-expressions, it is often better to move the logic into a [test library](../extending/creating-test-libraries.md#creating-test-library-class-or-module).
+expressions, it is often better to move the logic into a [test library](../creating-test-data/using-test-libraries.md#using-test-libraries).
 That typically eases maintenance and also enhances execution speed.
 
 ## Evaluation namespace
@@ -73,7 +73,7 @@ implemented, at least at the time of this writing, so that just importing
 `selenium` does not import the `selenium.webdriver` submodule.
 Another limitation is that modules cannot be used in the expression part of
 a list comprehension. A workaround to both of these problems
-is using the [BuiltIn](../creating-test-data/using-test-libraries.md#builtin) keyword *Evaluate* that accepts modules to be imported
+is using the [BuiltIn](../creating-test-data/using-test-libraries.md#builtin) keyword *Evaluate*{.name} that accepts modules to be imported
 and added to the evaluation namespace as an argument:
 
 ```robotframework
@@ -92,7 +92,7 @@ Evaluate keyword with list comprehension
     ${items} =    Evaluate    [json.loads(item) for item in ('1', '"b"')]    modules=json
     Log    ${items}
 ```
-The *Evaluate* keyword also supports custom evaluation namespaces if further
+The *Evaluate*{.name} keyword also supports custom evaluation namespaces if further
 customization is needed. See its documentation in the [BuiltIn](../creating-test-data/using-test-libraries.md#builtin) library for more details.
 
 ## Using variables
@@ -113,7 +113,7 @@ Most importantly, strings must always be quoted either with
 single or double quotes like `'${x}'`, and if they can contain newlines, they must be
 triple-quoted like `'''${x}'''`. Strings containing quotes themselves cause
 additional problems, but triple-quoting typically handles them. Also the
-backslash character `\\` is problematic, but can be handled by
+backslash character `\`{.codesc} is problematic, but can be handled by
 using Python's raw-string notation like `r'${path}'`.
 
 ```robotframework

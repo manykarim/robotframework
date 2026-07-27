@@ -61,19 +61,29 @@ class RstToMarkdownConverter:
         'code', 'literal', 'emphasis', 'strong', 'ref',
     )
 
-    # Custom role mappings for Robot Framework User Guide
-    # :setting:`value` -> `value` (code) - 110 usages
-    # :option:`value` -> `value` (code) - 207 usages
-    # :name:`value` -> *value* (emphasis) - 197 usages
-    # :file:`value` -> *value* (emphasis) - 100 usages
-    # :codesc:`value` -> `value` (code, with escape handling)
-    ROLE_PATTERNS = {
-        'setting': ('`', '`'),      # backticks for settings
-        'option': ('`', '`'),       # backticks for options
-        'name': ('*', '*'),         # italics for names (keywords, etc.)
-        'file': ('*', '*'),         # italics for file paths
-        'codesc': ('`', '`'),       # code with escape support
+    # Custom roles are NOT converted to attr_list markup inline (that markup is
+    # mangled by later cross-ref/heading passes). Instead each role is emitted as
+    # a compact, markdown-inert Private-Use-Area placeholder that survives every
+    # downstream pass; render_roles.py (final fix script) renders it to the
+    # attr_list carrier. ROLE_CHAR maps a role name to its single-char code.
+    # `:opt:` is an alias of option. render_roles.py owns char -> carrier/class.
+    ROLE_CHAR = {
+        'setting': 's',
+        'name':    'n',
+        'option':  'o',
+        'opt':     'o',   # alias of option
+        'file':    'f',
+        'codesc':  'c',
     }
+    # Placeholder delimiters + a backtick sentinel (so codesc content containing
+    # backticks carries no literal backtick through the pipeline). Private Use
+    # Area code points, inert to every ASCII markup regex in the pipeline.
+    ROLE_PH_OPEN = chr(0xE000)
+    ROLE_PH_CLOSE = chr(0xE001)
+    ROLE_BACKTICK = chr(0xE002)
+    ROLE_PH_SEP = chr(0xE003)     # separates role char from content (breaks word_ refs)
+    ROLE_UNDERSCORE = chr(0xE004) # content underscores (inert to bare/anon ref passes)
+    ROLE_FILLER = chr(0xE005)     # length-preserving pad (keeps table column offsets)
 
     # Admonition mappings: RST directive -> MkDocs admonition type
     ADMONITION_TYPES = {
@@ -111,6 +121,9 @@ class RstToMarkdownConverter:
         self.stats = ConversionStats()
         self.anchor_map: Dict[str, str] = {}  # RST label -> MD anchor
         self.link_targets: Dict[str, str] = {}  # Reference name -> URL/anchor
+        # Indirect targets: `.. _A: `B`_` — reference name -> the name it points
+        # to (another section/ref). Resolved by following the chain to a section.
+        self.indirect_targets: Dict[str, str] = {}
         self.section_chars_seen: List[str] = []  # Track section char order per file
 
     def reset_file_state(self):
@@ -119,30 +132,61 @@ class RstToMarkdownConverter:
         self.anonymous_targets = []
         self.anonymous_target_index = 0
 
+    def _role_placeholder(self, role: str, inner: str, orig_len: int = 0) -> str:
+        """Build the markdown-inert placeholder for a role occurrence.
+
+        Format: PH_OPEN + rolechar + SEP + content [+ FILLER...] + PH_CLOSE.
+        Backticks/underscores in content are stored as sentinels so no ref-active
+        character travels through the pipeline. When `orig_len` (the length of
+        the original `:role:`...`` markup) is given and the content is single
+        line, the placeholder is padded to that exact length so table column
+        offsets and section-underline lengths are unchanged. render_roles.py
+        performs the inverse.
+        """
+        multiline = '\n' in inner
+        # Collapse cross-line content. Roles legitimately wrap across prose line
+        # breaks (`Log\nVariables` -> "Log Variables"); a role that wraps across
+        # a grid-table cell boundary also captures the `|` borders — drop those
+        # (a genuine multi-line role never contains a pipe) so the placeholder is
+        # single-line and pipe-free and cannot be split by the grid-table parser.
+        if multiline:
+            inner = re.sub(r'\s+', ' ', inner.replace('|', ' ')).strip()
+        enc = (inner.replace('`', self.ROLE_BACKTICK)
+                    .replace('_', self.ROLE_UNDERSCORE))
+        ph = (f'{self.ROLE_PH_OPEN}{self.ROLE_CHAR[role]}{self.ROLE_PH_SEP}'
+              f'{enc}{self.ROLE_PH_CLOSE}')
+        if orig_len and not multiline and len(ph) < orig_len:
+            pad = self.ROLE_FILLER * (orig_len - len(ph))
+            ph = (f'{self.ROLE_PH_OPEN}{self.ROLE_CHAR[role]}{self.ROLE_PH_SEP}'
+                  f'{enc}{pad}{self.ROLE_PH_CLOSE}')
+        return ph
+
     def convert_custom_roles(self, content: str) -> str:
         """
-        Convert Robot Framework custom roles to Markdown.
+        Convert Robot Framework custom roles to inert role placeholders.
 
-        Handles:
-        - :setting:`Library` -> `Library`
-        - :option:`--output` -> `--output`
-        - :name:`Log` -> *Log*
-        - :file:`output.xml` -> *output.xml*
-        - :codesc:`\\n` -> `\\n` (preserves escapes)
+        Each semantic role becomes a Private-Use-Area placeholder carrying its
+        role code and content; render_roles.py (final pass) renders it to the
+        attr_list carrier (e.g. *Library*{.setting}, `--output`{.option}). This
+        keeps the attr_list markup away from every intermediate pass.
+        - :setting:`Library`, :option:`--output`, :name:`Log`, :file:`output.xml`
+        - :codesc:`\\n`   (escape-aware capture; backticks preserved)
         """
-        for role, (prefix, suffix) in self.ROLE_PATTERNS.items():
-            # Pattern matches :role:`content` - use non-greedy match
-            # Handle content that might contain escaped backticks
-            pattern = rf':{role}:`([^`]+)`'
+        for role in self.ROLE_CHAR:
+            # Escape-aware capture so codesc content containing escaped backticks
+            # (\`) is captured whole rather than truncated at the first backtick.
+            pattern = rf':{role}:`((?:\\.|[^`])+)`'
 
-            def replace_role(match, p=prefix, s=suffix, r=role):
+            def replace_role(match, r=role):
                 inner = match.group(1)
-                # For codesc, handle escape sequences
                 if r == 'codesc':
-                    # Convert RST escapes like \` to just `
-                    inner = inner.replace(r'\`', '`')
+                    # RST-unescape: a backslash escapes the following character,
+                    # so `\X` -> `X` (`\\`->`\`, `\ `->space, `` \` ``->backtick,
+                    # `\\n`->`\n`). Fixes visible backslashes like `\ |\ ` and the
+                    # doubled `\\`/`\\n`/`\\r\\n` in the escaping/OS-variable tables.
+                    inner = re.sub(r'\\(.)', r'\1', inner)
                 self.stats.custom_roles_converted += 1
-                return f'{p}{inner}{s}'
+                return self._role_placeholder(r, inner, orig_len=len(match.group(0)))
 
             content = re.sub(pattern, replace_role, content)
 
@@ -166,14 +210,20 @@ class RstToMarkdownConverter:
         """
         roles_alt = '|'.join(re.escape(r) for r in self.KNOWN_ROLES)
         pattern = re.compile(
-            rf'`([^`\n]+)`:(?:{roles_alt}):',
+            rf'`([^`\n]+)`:({roles_alt}):',
             re.DOTALL,
         )
 
         def transform(text: str) -> str:
             def repl(match):
+                inner, role = match.group(1), match.group(2)
                 self.stats.custom_roles_converted += 1
-                return f'`{match.group(1)}`'
+                if role in self.ROLE_CHAR:
+                    if role == 'codesc':
+                        inner = inner.replace(r'\`', '`')
+                    return self._role_placeholder(role, inner, orig_len=len(match.group(0)))
+                # Non-semantic roles (code/literal/emphasis/strong/ref): bare code
+                return f'`{inner}`'
             return pattern.sub(repl, text)
 
         return self._apply_outside_fences(content, transform)
@@ -270,6 +320,16 @@ class RstToMarkdownConverter:
 
         return f'!!! {admon_type}\n' + '\n'.join(processed_lines) + '\n'
 
+    @staticmethod
+    def _block_fence(body: str) -> str:
+        """Return a backtick fence long enough to wrap ``body`` even when the
+        body itself contains ``` sequences (e.g. a Markdown example that shows
+        embedded code fences). CommonMark requires the outer fence to be longer
+        than any run of backticks inside — otherwise the block closes early,
+        stranding the following content inside a phantom fence."""
+        runs = [len(m) for m in re.findall(r'`{3,}', body)]
+        return '`' * max([3] + [r + 1 for r in runs])
+
     def convert_code_blocks(self, content: str) -> str:
         """
         Convert RST sourcecode/code-block directives to Markdown fenced code blocks.
@@ -327,7 +387,8 @@ class RstToMarkdownConverter:
 
             code_content = '\n'.join(processed_lines)
 
-            return f'```{lang}\n{code_content}\n```\n'
+            fence = self._block_fence(code_content)
+            return f'{fence}{lang}\n{code_content}\n{fence}\n'
 
         content = re.sub(pattern, replace_code_block, content)
         return content
@@ -343,10 +404,24 @@ class RstToMarkdownConverter:
 
         Stores mapping for cross-reference conversion.
         """
-        # Extract anonymous targets: __ URL
-        # These are used with `text`__ references
-        anon_pattern = r'^__\s+(https?://[^\s]+)\s*$'
-        self.anonymous_targets = re.findall(anon_pattern, content, re.MULTILINE)
+        # Extract anonymous targets (lines beginning `__ `) in document order.
+        # RST pairs `text`__ / word__ references with these targets positionally,
+        # so we must capture ALL of them — both `__ URL` and the named-reference
+        # form `` __ `Section`_ `` (and `__ Word_`). Previously only URLs were
+        # captured, which dropped most targets and made the positional pairing
+        # off-by-N (the classic "everything links to the one github issue" bug).
+        # Named-ref targets resolve to the section anchor (#slug); the cross-page
+        # anchor fixer then points them at the page that owns that section.
+        anon_target_pattern = r'^__\s+(\S.*?)\s*$'
+        self.anonymous_targets = []
+        for m in re.finditer(anon_target_pattern, content, re.MULTILINE):
+            val = m.group(1).strip()
+            if val.startswith(('http://', 'https://')):
+                self.anonymous_targets.append(val)
+            else:
+                mb = re.match(r'^`(.+)`_+$', val)      # `Section Name`_
+                name = mb.group(1) if mb else val.rstrip('_').strip('`')
+                self.anonymous_targets.append('#' + self._create_slug(name.strip()))
         self.anonymous_target_index = 0
 
         # External link targets: .. _name: URL
@@ -359,6 +434,18 @@ class RstToMarkdownConverter:
 
         # Remove link target definitions from content
         content = re.sub(ext_pattern, '', content)
+
+        # Indirect targets: .. _A: `B`_  (A is an alias that points to another
+        # named reference / section B — RST "indirect hyperlink target"). These
+        # are common on the command-line-options page, where short option labels
+        # indirect to the real sections. Capture the chain so `A`_ resolves to
+        # B's section anchor instead of a dead same-page #a-slug.
+        indirect_pattern = r'\.\.\s+_([^:]+):\s+`([^`]+)`_\s*\n'
+        for match in re.finditer(indirect_pattern, content):
+            name = match.group(1).strip().lower()
+            ref = match.group(2).strip()
+            self.indirect_targets[name] = ref
+        content = re.sub(indirect_pattern, '', content)
 
         # Internal anchor targets: .. _label:
         anchor_pattern = r'\.\.\s+_([^:]+):\s*\n(?!\s*https?://)'
@@ -391,8 +478,13 @@ class RstToMarkdownConverter:
 
         Fenced code blocks are skipped so Python dunders like ``__init__``
         and other code identifiers are not misinterpreted as RST refs.
+
+        Uses robust fence tracking: this pass runs after convert_sections (no RST
+        underlines remain), and the accurate CommonMark tracking keeps anonymous
+        references — and their document-global pairing cursor — from being
+        stranded inside a phantom fence around nested ```markdown examples.
         """
-        return self._apply_outside_fences(content, self._convert_cross_references_text)
+        return self._apply_outside_fences(content, self._convert_cross_references_text, robust=True)
 
     def _convert_cross_references_text(self, content: str) -> str:
         # Pattern for `text <target>`_ style references.
@@ -433,18 +525,22 @@ class RstToMarkdownConverter:
             text = match.group(1).strip()
             self.stats.cross_refs_converted += 1
 
-            text_lower = text.lower()
+            # Follow any indirect-target chain (`A`_ -> B -> section) so short
+            # option labels resolve to the real section, not a dead same-page slug.
+            target = self._resolve_indirect(text.lower())
 
             # Check if it's in link targets
-            if text_lower in self.link_targets:
-                return f'[{text}]({self.link_targets[text_lower]})'
+            if target in self.link_targets:
+                return f'[{text}]({self.link_targets[target]})'
 
             # Check if it's in anchor map
-            if text_lower in self.anchor_map:
-                return f'[{text}](#{self.anchor_map[text_lower]})'
+            if target in self.anchor_map:
+                return f'[{text}](#{self.anchor_map[target]})'
 
-            # Default to creating a slug
-            slug = self._create_slug(text)
+            # Default to creating a slug from the resolved target name. Cross-page
+            # anchor resolution (fix_cross_page_anchors.py) then points it at the
+            # page that actually owns that section anchor.
+            slug = self._create_slug(target)
             return f'[{text}](#{slug})'
 
         content = re.sub(backtick_pattern, replace_backtick_ref, content)
@@ -486,20 +582,34 @@ class RstToMarkdownConverter:
 
             self.stats.cross_refs_converted += 1
 
-            text_lower = text.lower()
+            target = self._resolve_indirect(text.lower())
 
-            if text_lower in self.link_targets:
-                return f'[{text}]({self.link_targets[text_lower]})'
+            if target in self.link_targets:
+                return f'[{text}]({self.link_targets[target]})'
 
-            if text_lower in self.anchor_map:
-                return f'[{text}](#{self.anchor_map[text_lower]})'
+            if target in self.anchor_map:
+                return f'[{text}](#{self.anchor_map[target]})'
 
-            slug = self._create_slug(text)
+            slug = self._create_slug(target)
             return f'[{text}](#{slug})'
 
         content = re.sub(word_pattern, replace_word_ref, content)
 
         return content
+
+    def _resolve_indirect(self, name: str) -> str:
+        """Follow an RST indirect-target chain to the final section/URL name.
+
+        `.. _A: `B`_` makes A an alias for B; B may itself be an alias. Follow
+        the chain (cycle-guarded) so `A`_ resolves to the terminal section's
+        name, whose slug/anchor is then looked up or created.
+        """
+        cur = name.lower()
+        seen = set()
+        while cur in self.indirect_targets and cur not in seen:
+            seen.add(cur)
+            cur = self.indirect_targets[cur].strip().lower()
+        return cur
 
     def _resolve_anonymous_references(self, content: str) -> str:
         """
@@ -528,24 +638,34 @@ class RstToMarkdownConverter:
         # Get anonymous targets in order
         targets = getattr(self, 'anonymous_targets', [])
 
+        # This resolver is invoked once per non-fenced chunk (via
+        # _apply_outside_fences). Use a document-GLOBAL cursor so the i-th
+        # anonymous reference of the whole file pairs with the i-th target —
+        # rather than restarting at 0 in every chunk (which reused targets[0],
+        # the previous root cause of mass mis-linking).
+        base = getattr(self, 'anonymous_target_index', 0)
+
         # Build replacement content
         result = []
         last_end = 0
 
-        for i, (start, end, text, ref_type) in enumerate(refs):
+        for local_i, (start, end, text, ref_type) in enumerate(refs):
+            gi = base + local_i
             # Add content before this reference
             result.append(content[last_end:start])
 
-            # Get the target URL (or fallback to anchor)
-            if i < len(targets):
-                url = targets[i]
-                result.append(f'[{text}]({url})')
+            # Get the target (URL or #anchor) by global position, else fall back
+            if gi < len(targets):
+                result.append(f'[{text}]({targets[gi]})')
             else:
                 slug = self._create_slug(text)
                 result.append(f'[{text}](#{slug})')
 
             self.stats.cross_refs_converted += 1
             last_end = end
+
+        # Advance the global cursor for the next chunk / record final count.
+        self.anonymous_target_index = base + len(refs)
 
         # Add remaining content
         result.append(content[last_end:])
@@ -858,11 +978,16 @@ class RstToMarkdownConverter:
                         if cell_content.endswith('|'):
                             cell_content = cell_content[:-1].strip()
 
-                        # Handle RST line block markers (| at start of cell)
+                        # Handle RST line-block markers (`| ` at start of a cell
+                        # line). These force a line break — each `| ` line is a
+                        # separate line rendered with <br>, not merged.
+                        is_lineblock = False
                         if cell_content.startswith('| '):
                             cell_content = cell_content[2:].strip()
+                            is_lineblock = True
                         elif cell_content.startswith('|'):
                             cell_content = cell_content[1:].strip()
+                            is_lineblock = True
 
                         tokens = current_row[col_idx]
                         if not cell_content:
@@ -872,9 +997,12 @@ class RstToMarkdownConverter:
                         elif cell_content.startswith('* '):
                             # RST bullet list item
                             tokens.append(('bullet', cell_content[2:].strip()))
+                        elif is_lineblock:
+                            # RST line-block line — its own line (<br>-separated)
+                            tokens.append(('lineblock', cell_content))
                         else:
                             # Regular text or continuation of previous token
-                            if tokens and tokens[-1][0] in ('text', 'bullet'):
+                            if tokens and tokens[-1][0] in ('text', 'bullet', 'lineblock'):
                                 t, prev = tokens[-1]
                                 tokens[-1] = (t, prev + ' ' + cell_content)
                             else:
@@ -991,14 +1119,23 @@ class RstToMarkdownConverter:
 
         return content
 
-    def _apply_outside_fences(self, content: str, transform) -> str:
+    def _apply_outside_fences(self, content: str, transform, robust: bool = False) -> str:
         """
         Apply ``transform(text)`` only to regions outside fenced code blocks.
 
-        Recognises GFM fences using three or more backticks or tildes. A line is
-        only treated as an opening fence when the previous line is blank or
-        absent — this prevents RST section underlines (``~~~~`` directly under
-        a title) from being misread as fence openers.
+        Recognises GFM fences using three or more backticks or tildes. By default
+        a line is only treated as an opening fence when the previous line is blank
+        or absent — this prevents RST section underlines (``~~~~`` directly under
+        a title) from being misread as fence openers (needed for passes that run
+        before section conversion, e.g. convert_postfix_roles).
+
+        With ``robust=True`` the blank-before-opening guard is dropped and pure
+        CommonMark fence tracking is used (any ``` when not already in a fence
+        opens one). Safe — and more accurate — for passes that run AFTER
+        convert_sections (RST underlines are gone), e.g. convert_cross_references.
+        This avoids mis-tracking around nested ```` ```markdown ```` example
+        blocks, which previously left anonymous references (and their global
+        pairing cursor) stranded inside a phantom fence.
         """
         lines = content.split('\n')
         chunks: List[str] = []
@@ -1024,7 +1161,7 @@ class RstToMarkdownConverter:
             if fence_match:
                 token = fence_match.group(1)
                 if not in_fence:
-                    if first_line or prev_line.strip() == '' or prev_was_fence_delim:
+                    if robust or first_line or prev_line.strip() == '' or prev_was_fence_delim:
                         flush_buffer()
                         chunks.append(line)
                         in_fence = True
@@ -1091,8 +1228,9 @@ class RstToMarkdownConverter:
                             if rewritten.strip():
                                 output.append(rewritten + trailing)
                                 output.append(blank_text + blank_trailing)
-                            fence_open = f'```{language}' if language else '```'
-                            output.append(f'{fence_open}\n{body}\n```')
+                            fence = self._block_fence(body)
+                            fence_open = f'{fence}{language}' if language else fence
+                            output.append(f'{fence_open}\n{body}\n{fence}')
                             output.append(next_trailing)
                             self.stats.literal_blocks_converted += 1
                             i += 3
@@ -1482,7 +1620,10 @@ class RstToMarkdownConverter:
                         if idx > 0:
                             result.append('')
                         desc = ' '.join(p for p in desc_parts if p)
-                        result.append(f'`{spec}`')
+                        # Emit the option as a role placeholder so the term is
+                        # classed .option by render_roles.py (kept out of the
+                        # downstream passes, like every other role).
+                        result.append(self._role_placeholder('option', spec))
                         result.append(f':   {desc}' if desc else ':')
                     result.append('')
                     i = j
@@ -1530,6 +1671,18 @@ class RstToMarkdownConverter:
 
         # Clean up multiple blank lines
         content = re.sub(r'\n{3,}', '\n\n', content)
+
+        # Prevention: anonymous references and targets must be 1:1 per RST file.
+        # A mismatch means the positional pairing has drifted (the defect that
+        # produced the mass mis-linking). Record it so it can never silently
+        # regress — surfaced in the conversion summary.
+        n_refs = getattr(self, 'anonymous_target_index', 0)
+        n_targets = len(getattr(self, 'anonymous_targets', []))
+        if n_refs != n_targets:
+            self.stats.warnings.append(
+                f"{rst_path.name}: anonymous refs ({n_refs}) != targets "
+                f"({n_targets}) — positional pairing may be off"
+            )
 
         self.stats.files_processed += 1
 

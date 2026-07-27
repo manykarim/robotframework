@@ -21,41 +21,41 @@ python -m robot.testdoc [options] data_sources output_file
 
 ### Options
 
-`-T, --title <title>`
+`-T, --title <title>`{.option}
 :   Set the title of the generated documentation. Underscores in the title are converted to spaces. The default title is the name of the top level suite.
 
-`-N, --name <name>`
+`-N, --name <name>`{.option}
 :   Override the name of the top level test suite.
 
-`-D, --doc <doc>`
+`-D, --doc <doc>`{.option}
 :   Override the documentation of the top level test suite.
 
-`-M, --metadata <name:value>`
+`-M, --metadata <name:value>`{.option}
 :   Set/override free metadata of the top level test suite.
 
-`-G, --settag <tag>`
+`-G, --settag <tag>`{.option}
 :   Set given tag(s) to all test cases.
 
-`-t, --test <name>`
+`-t, --test <name>`{.option}
 :   Include tests by name.
 
-`-s, --suite <name>`
+`-s, --suite <name>`{.option}
 :   Include suites by name.
 
-`-i, --include <tag>`
+`-i, --include <tag>`{.option}
 :   Include tests by tags.
 
-`-e, --exclude <tag>`
+`-e, --exclude <tag>`{.option}
 :   Exclude tests by tags.
 
-`-A, --argumentfile <path>`
+`-A, --argumentfile <path>`{.option}
 :   Text file to read more arguments from. Works exactly like [argument files](../executing-tests/basic-usage.md#argument-files) when running tests.
 
-`-h, --help`
+`-h, --help`{.option}
 :   Print this help in the console.
 
-All options except `--title` have exactly the same semantics as same
-options have when [executing test cases](https://marvkler.github.io/robotframework-testdoc).
+All options except `--title`{.option} have exactly the same semantics as same
+options have when [executing test cases](../executing-tests/configuring-execution.md#configuring-execution).
 
 ## Generating documentation
 

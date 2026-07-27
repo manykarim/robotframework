@@ -53,3 +53,28 @@
 .md-typeset dl dd p:has(> .mkdocs-ezglossary-refs:not(:has(li))) {
   display: none;
 }
+
+/* RST role styling — ported from the "Roles" block of
+   doc/userguide/src/userguide.css. render_roles.py (final pipeline pass) emits
+   each semantic role as an attr_list-classed inline element (`text`{.option},
+   *text*{.setting}, …) so the role identity survives into HTML and these rules
+   can target it. 1:1 restore of the original look (italic / monospace / nowrap,
+   no color). Carriers match the original: setting/name were italic and
+   non-monospace (<em>); option/file/codesc were monospace (<code>). Material's
+   own code styling supplies the monospace box and adapts to light/dark, so no
+   per-scheme override is needed (no color introduced). Applies everywhere,
+   including inside definition-list terms. */
+.md-typeset em.setting {
+  font-style: italic;
+  white-space: nowrap;
+}
+.md-typeset em.name {
+  font-style: italic;
+}
+.md-typeset code.file {
+  font-style: italic;
+}
+.md-typeset code.option {
+  white-space: nowrap;
+}
+/* code.codesc relies on the base code styling — no extra rules required. */

@@ -38,10 +38,29 @@ def slugify(text: str) -> str:
     - collapsing multiple hyphens
     """
     slug = text.lower()
+    # Role placeholders (<char><content><fillers>) emitted by
+    # convert.py are only rendered to attr_list markup by render_roles.py, which
+    # runs LATER in the pipeline. This slug pass runs before it, so decode a
+    # placeholder to its bare content here — otherwise a role-styled heading
+    # slugs wrongly and its cross-page links never resolve.
+    _PH=chr(0xE000); _CL=chr(0xE001); _SEP=chr(0xE003)
+    _F=chr(0xE005); _BT=chr(0xE002); _US=chr(0xE004)
+    slug = re.sub(
+        _PH + r'.' + _SEP + '([^' + _CL + ']*)' + _CL,
+        lambda m: m.group(1).replace(_F, '').replace(_BT, '`').replace(_US, '_'),
+        slug,
+    )
+    # Markdown links -> their text: [text](url) -> text
+    slug = re.sub(r'\[([^\]]+)\]\([^)]*\)', r'\1', slug)
     # Remove inline code backticks and their content markers
     slug = re.sub(r'`([^`]*)`', r'\1', slug)
     # Remove bold/italic markers
     slug = re.sub(r'\*+([^*]*)\*+', r'\1', slug)
+    # Remove attr_list role markup ({.setting}, {#id}) — it is consumed by the
+    # attr_list extension and does NOT appear in MkDocs' computed slug. Without
+    # this, a role-styled heading like "*Force Tags*{.setting}" would slug to
+    # "force-tagssetting" and never match the real anchor.
+    slug = re.sub(r'\{[.#][^}]*\}', '', slug)
     # Remove special chars except hyphens, underscores, spaces
     slug = re.sub(r'[^\w\s-]', '', slug)
     # Spaces and underscores to hyphens
@@ -182,9 +201,16 @@ def fix_anchors_in_file(
         if not candidates:
             # Try fuzzy match: the anchor might be slightly different
             # (e.g., "test-cases" vs "creating-test-cases")
+            # Component-boundary fuzzy match: one slug must contain the other as a
+            # WHOLE hyphen-delimited component (e.g. "test-cases" ⊂ "creating-test-
+            # cases"). This rejects arbitrary substrings like "for" inside "format"
+            # that produced garbage links ("JSON format" -> control-structures#for).
+            def _component(needle, haystack):
+                return bool(re.search(r'(?:^|-)' + re.escape(needle) + r'(?:$|-)', haystack))
+
             fuzzy_candidates = []
             for key, files in global_map.items():
-                if anchor in key or key in anchor:
+                if key == anchor or _component(anchor, key) or _component(key, anchor):
                     for f in files:
                         if f != file_rel:
                             fuzzy_candidates.append((key, f))

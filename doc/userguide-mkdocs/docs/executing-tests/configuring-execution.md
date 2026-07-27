@@ -1,8 +1,8 @@
 # Configuring execution
 
 This section explains different command line options that can be used
-for configuring the [test execution](test-execution.md#test-execution) or [post-processing
-outputs](post-processing.md#post-processing-outputs). Options related to generated [result files](result-files.md#result-files) are discussed in
+for configuring the [test execution](basic-usage.md#starting-test-execution) or [post-processing outputs](post-processing.md#post-processing-outputs).
+Options related to the generated [execution artifacts](execution-artifacts.md#execution-artifacts) are discussed in
 the next section.
 
 ## Selecting files to parse
@@ -13,12 +13,12 @@ When executing individual files, Robot Framework tries to parse and run them
 regardless the name or the file extension. What parser to use depends
 on the extension:
 
-- *.robot* files and files that are not recognized are parsed using
-  the normal [Robot Framework parser](https://github.com/robotframework/robotframework/issues/5023).
-- *.rst* and *.rest* files are parsed using the [reStructuredText parser](https://en.wikipedia.org/wiki/Glob_(programming)).
-- *.md* and *.markdown* files are parsed using the [Markdown parser](http://docs.python.org/library/sys.html#sys.path).
-- *.rbt* and *.json* files are parsed using the [JSON parser](http://en.wikipedia.org/wiki/ANSI_escape_code).
-- Files supported by [custom parsers](https://github.com/Alhadis/OSC8-Adoption) are parsed by a matching parser.
+- `.robot`{.file} files and files that are not recognized are parsed using
+  the normal [Robot Framework parser](../creating-test-data/test-data-syntax.md#supported-file-formats).
+- `.rst`{.file} and `.rest`{.file} files are parsed using the [reStructuredText parser](../creating-test-data/test-data-syntax.md#restructuredtext-data-format).
+- `.md`{.file} and `.markdown`{.file} files are parsed using the [Markdown parser](../creating-test-data/test-data-syntax.md#markdown-data-format).
+- `.rbt`{.file} and `.json`{.file} files are parsed using the [JSON parser](../creating-test-data/test-data-syntax.md#json-data-format).
+- Files supported by [custom parsers](#using-custom-parsers) are parsed by a matching parser.
 
 Examples:
 
@@ -32,24 +32,24 @@ robot x.robot y.rst    # Parse both files using an appropriate parser.
 
 ### Included and excluded files
 
-When executing a [directory](https://github.com/robotframework/robotframework/issues/5023), files and directories are parsed using
+When executing a [directory](../creating-test-data/creating-test-suites.md#suite-directories), files and directories are parsed using
 the following rules:
 
-- All files and directories starting with a dot (*.*) or an underscore
-  (*_*) are ignored.
-- *.robot* files are parsed using the normal [Robot Framework parser](https://en.wikipedia.org/wiki/Glob_(programming)).
-- *.robot.rst* files are parsed using the [reStructuredText parser](http://docs.python.org/library/sys.html#sys.path).
-- *.robot.md* files are parsed using the [Markdown parser](http://en.wikipedia.org/wiki/ANSI_escape_code).
-- *.rbt* files are parsed using the [JSON parser](https://github.com/Alhadis/OSC8-Adoption).
-- Files supported by [custom parsers](https://en.wikipedia.org/wiki/Windows_Console) are parsed by a matching parser.
+- All files and directories starting with a dot (`.`{.file}) or an underscore
+  (`_`{.file}) are ignored.
+- `.robot`{.file} files are parsed using the normal [Robot Framework parser](../creating-test-data/test-data-syntax.md#supported-file-formats).
+- `.robot.rst`{.file} files are parsed using the [reStructuredText parser](../creating-test-data/test-data-syntax.md#restructuredtext-data-format).
+- `.robot.md`{.file} files are parsed using the [Markdown parser](../creating-test-data/test-data-syntax.md#markdown-data-format).
+- `.rbt`{.file} files are parsed using the [JSON parser](../creating-test-data/test-data-syntax.md#json-data-format).
+- Files supported by [custom parsers](#using-custom-parsers) are parsed by a matching parser.
 - Other files are ignored unless parsing them has been enabled by using
-  the `--parseinclude` or `--extension` options discussed
+  the `--parseinclude`{.option} or `--extension`{.option} options discussed
   in the subsequent sections.
 
 ### Selecting files by name or path
 
 When executing a directory, it is possible to parse only certain files based on
-their name or path by using the `--parseinclude (-I)` option. This option
+their name or path by using the `--parseinclude (-I)`{.option} option. This option
 has slightly different semantics depending on the value it is used with:
 
 - If the value is just a file name like `example.robot`, files matching
@@ -70,24 +70,24 @@ robot -I tests/example.robot tests             # Parse only `tests/example.robot
 robot --parseinclude tests/example tests       # Parse files under `tests/example` directory, recursively.
 ```
 
-Values used with `--parseinclude` are case-insensitive and support
+Values used with `--parseinclude`{.option} are case-insensitive and support
 [glob patterns](basic-usage.md#simple-patterns) like `example_*.robot`. There are, however,
 two small differences compared to how patterns typically work with Robot Framework:
 
 - `*` matches only a single path segment. For example, `path/*/tests.robot`
-  matches *path/to/tests.robot* but not *path/to/nested/tests.robot*.
+  matches `path/to/tests.robot`{.file} but not `path/to/nested/tests.robot`{.file}.
 
 - `**` can be used to enable recursive matching. For example, `path/**/tests.robot`
-  matches both *path/to/tests.robot* and *path/to/nested/tests.robot*.
+  matches both `path/to/tests.robot`{.file} and `path/to/nested/tests.robot`{.file}.
 
 If the pattern contains an extension, files with that extension are parsed
-even if they by [default would not be](https://github.com/robotframework/robotframework/issues/5023). What parser to use depends on
+even if they by [default would not be](#included-and-excluded-files). What parser to use depends on
 the used extension:
 
-- *.rst* and *.rest* files are parsed using the [reStructuredText parser](https://en.wikipedia.org/wiki/Glob_(programming)).
-- *.md* and *.markdown* files are parsed using the [Markdown parser](http://docs.python.org/library/sys.html#sys.path).
-- *.json* files are parsed using the [JSON parser](http://en.wikipedia.org/wiki/ANSI_escape_code).
-- Other files are parsed using the normal [Robot Framework parser](https://github.com/Alhadis/OSC8-Adoption).
+- `.rst`{.file} and `.rest`{.file} files are parsed using the [reStructuredText parser](../creating-test-data/test-data-syntax.md#restructuredtext-data-format).
+- `.md`{.file} and `.markdown`{.file} files are parsed using the [Markdown parser](../creating-test-data/test-data-syntax.md#markdown-data-format).
+- `.json`{.file} files are parsed using the [JSON parser](../creating-test-data/test-data-syntax.md#json-data-format).
+- Other files are parsed using the normal [Robot Framework parser](../creating-test-data/test-data-syntax.md#supported-file-formats).
 
 Notice that when you use a pattern like `*.robot` and there exists a file that
 matches the pattern in the execution directory, the shell may resolve
@@ -96,13 +96,13 @@ it is the file name, not the original pattern. In such cases you need
 to quote or escape the pattern like `'*.robot'` or `\*.robot`.
 
 !!! note
-    `--parseinclude` is new in Robot Framework 6.1.
+    `--parseinclude`{.option} is new in Robot Framework 6.1.
 
 ### Selecting files by extension
 
-In addition to using the `--parseinclude` option discussed in the
+In addition to using the `--parseinclude`{.option} option discussed in the
 previous section, it is also possible to enable parsing files that are [not
-parsed by default](https://en.wikipedia.org/wiki/Windows_Console) by using the `--extension (-F)` option.
+parsed by default](#included-and-excluded-files) by using the `--extension (-F)`{.option} option.
 Matching extensions is case insensitive and the leading dot can be omitted.
 If there is a need to parse more than one kind of files, it is possible to
 use a colon `:` to separate extensions:
@@ -112,16 +112,16 @@ robot --extension rst path/to/tests    # Parse only *.rst files.
 robot -F robot:rst path/to/tests       # Parse *.robot and *.rst files.
 ```
 
-The above is equivalent to the following `--parseinclude` usage:
+The above is equivalent to the following `--parseinclude`{.option} usage:
 
 ```
 robot --parseinclude *.rst path/to/tests
 robot -I *.robot -I *.rst path/to/tests
 ```
 
-Because the `--parseinclude` option is more powerful and covers all
-same use cases as the `--extension` option, the latter is likely to be
-deprecated in the future. Users are recommended to use `--parseinclude`
+Because the `--parseinclude`{.option} option is more powerful and covers all
+same use cases as the `--extension`{.option} option, the latter is likely to be
+deprecated in the future. Users are recommended to use `--parseinclude`{.option}
 already now.
 
 ### Using custom parsers
@@ -139,7 +139,7 @@ tasks](task-execution.md#executing-tasks) and when post-processing outputs with 
 ### By test names
 
 The easiest way to select only some tests to be run is using the
-`--test (-t)` option. As the name implies, it can be used for
+`--test (-t)`{.option} option. As the name implies, it can be used for
 selecting tests by their names. Given names are case, space and underscore
 insensitive and they also support [simple patterns](basic-usage.md#simple-patterns). The option can be
 used multiple times to match multiple tests:
@@ -163,19 +163,19 @@ Notice that when the given name includes a suite name, it must match the whole
 suite name starting from the root suite. Using a wildcard as in the last example
 above allows matching tests with a parent suite anywhere.
 
-Using the `--test` option is convenient when only a few tests needs
+Using the `--test`{.option} option is convenient when only a few tests needs
 to be selected. A common use case is running just the test that is currently
 being worked on. If a bigger number of tests needs to be selected,
 it is typically easier to select them [by suite names](#by-suite-names) or [by tag names](#by-tag-names).
 
-When [executing tasks](task-execution.md#executing-tasks), it is possible to use the `--task` option
-as an alias for `--test`.
+When [executing tasks](task-execution.md#executing-tasks), it is possible to use the `--task`{.option} option
+as an alias for `--test`{.option}.
 
 ### By suite names
 
-Tests can be selected also by suite names with the `--suite (-s)`
+Tests can be selected also by suite names with the `--suite (-s)`{.option}
 option that selects all tests in matching suites. Similarly
-as with `--test`, given names are case, space and underscore
+as with `--test`{.option}, given names are case, space and underscore
 insensitive and support [simple patterns](basic-usage.md#simple-patterns). To pinpoint a suite
 more precisely, it is possible to prefix the name with the parent suite
 name:
@@ -189,23 +189,23 @@ name:
 ```
 
 If the name contains a parent suite name, it must match the whole suite name
-the same way as with `--test`. Using a wildcard as in the last example
+the same way as with `--test`{.option}. Using a wildcard as in the last example
 above allows matching suites with a parent suite anywhere.
 
 !!! note
-    Prior to Robot Framework 7.0, `--suite` with a parent suite
+    Prior to Robot Framework 7.0, `--suite`{.option} with a parent suite
     did not need to match the whole suite name. For example, `parent.child`
     would match suite `child` with parent `parent` anywhere. The name must
     be prefixed with a wildcard if this behavior is desired nowadays.
 
-If both `--suite` and `--test` options are used, only the
+If both `--suite`{.option} and `--test`{.option} options are used, only the
 specified tests in specified suites are selected:
 
 ```
 --suite mysuite --test mytest    # Match test 'mytest' if its inside suite 'mysuite'.
 ```
 
-Using the `--suite` option is more or less the same as executing
+Using the `--suite`{.option} option is more or less the same as executing
 the appropriate suite file or directory directly. The main difference is
 that if a file or directory is run directly, possible higher level
 [suite initialization files](../creating-test-data/creating-test-suites.md#suite-initialization-files) are ignored:
@@ -218,19 +218,19 @@ robot --suite example path/to/tests
   # Root suite is 'Example' and higher level initialization files are ignored.
   robot path/to/tests/example.robot
 
-Prior to Robot Framework 6.1, files not matching the `--suite` option
+Prior to Robot Framework 6.1, files not matching the `--suite`{.option} option
 were not parsed at all for performance reasons. This optimization was not
-possible anymore after suites got a new `Name` setting that can override
+possible anymore after suites got a new *Name*{.setting} setting that can override
 the default suite name that is got from the file or directory name. New
-`--parseinclude` option has been added to [explicitly select which
-files are parsed](https://github.com/robotframework/robotframework/issues/5023) if this kind of parsing optimization is needed.
+`--parseinclude`{.option} option has been added to [explicitly select which
+files are parsed](#selecting-files-by-name-or-path) if this kind of parsing optimization is needed.
 
 ### By tag names
 
-It is possible to include and exclude test cases by [tag](../creating-test-data/creating-test-cases.md#tag) names with the
-`--include (-i)` and `--exclude (-e)` options, respectively.
-If the `--include` option is used, only test cases having a matching
-tag are selected, and with the `--exclude` option test cases having a
+It is possible to include and exclude test cases by [tag](../creating-test-data/creating-test-cases.md#tagging-test-cases) names with the
+`--include (-i)`{.option} and `--exclude (-e)`{.option} options, respectively.
+If the `--include`{.option} option is used, only test cases having a matching
+tag are selected, and with the `--exclude`{.option} option test cases having a
 matching tag are not. If both are used, only tests with a tag
 matching the former option, and not with a tag matching the latter,
 are selected:
@@ -241,7 +241,7 @@ are selected:
 --include regression --exclude long_lasting
 ```
 
-Both `--include` and `--exclude` can be used several
+Both `--include`{.option} and `--exclude`{.option} can be used several
 times to match multiple tags. In that case a test is selected
 if it has a tag that matches any included tags, and also has no tag
 that matches any excluded tags.
@@ -259,7 +259,7 @@ combining individual tags or patterns together:
 --include fooNOTbar
 ```
 
-Another way to exclude tests by tags is using the `robot:exclude` [reserved tag](https://github.com/robotframework/robotframework/issues/5023).
+Another way to exclude tests by tags is using the `robot:exclude` [reserved tag](../creating-test-data/creating-test-cases.md#reserved-tags).
 This tag can also be set using a variable, which allows excluding test
 dynamically during execution.
 
@@ -294,8 +294,8 @@ many interesting possibilities:
   the tests for a certain sprint can be generated (for example, `rebot
   --include sprint-42 output.xml`).
 
-Options `--include` and `--exclude` can be used in combination
-with `--suite` and `--test` discussed in the previous section.
+Options `--include`{.option} and `--exclude`{.option} can be used in combination
+with `--suite`{.option} and `--test`{.option} discussed in the previous section.
 In that case tests that are selected must match all selection criteria:
 
 ```
@@ -310,18 +310,18 @@ In that case tests that are selected must match all selection criteria:
 
 !!! note
     Using variables with `robot:exclude` is new in Robot Framework 7.2.
-    Using variables with tags matched against `--include` and
-    `--exclude` is not supported.
+    Using variables with tags matched against `--include`{.option} and
+    `--exclude`{.option} is not supported.
 
 !!! note
-    In Robot Framework 7.0 `--include` and `--test` were cumulative
+    In Robot Framework 7.0 `--include`{.option} and `--test`{.option} were cumulative
     and selected tests needed to match only either of these options. That behavior
     caused [backwards incompatibility problems](https://github.com/robotframework/robotframework/issues/5023) and it was reverted already in
     Robot Framework 7.0.1.
 
 ### Re-executing failed test cases
 
-Command line option `--rerunfailed (-R)` can be used to select all failed
+Command line option `--rerunfailed (-R)`{.option} can be used to select all failed
 tests from an earlier [output file](result-files.md#output-file) for re-execution. This option is useful,
 for example, if running all tests takes a lot of time and one wants to
 iteratively fix failing test cases.
@@ -332,33 +332,33 @@ robot --rerunfailed output.xml tests    # then re-execute failing
 ```
 
 Behind the scenes this option selects the failed tests as they would have been
-selected individually using the `--test` option. It is possible to further
-fine-tune the list of selected tests by using `--test`, `--suite`,
-`--include` and `--exclude` options.
+selected individually using the `--test`{.option} option. It is possible to further
+fine-tune the list of selected tests by using `--test`{.option}, `--suite`{.option},
+`--include`{.option} and `--exclude`{.option} options.
 
 It is an error if the output contains no failed tests, but this behavior can be
-changed by using the `--runemptysuite` option [discussed below](https://github.com/robotframework/robotframework/issues/5023).
+changed by using the `--runemptysuite`{.option} option [discussed below](#when-no-tests-match-selection).
 Using an output not originating from executing the same tests that are run
 now causes undefined results. Using a special value `NONE` as the output is
 same as not specifying this option at all.
 
 !!! tip
-    Re-execution results and original results can be [merged together](https://en.wikipedia.org/wiki/Glob_(programming))
-    using the `--merge` command line option.
+    Re-execution results and original results can be [merged together](post-processing.md#merging-results)
+    using the `--merge`{.option} command line option.
 
 ### Re-executing failed test suites
 
-Command line option `--rerunfailedsuites (-S)` can be used to select all
+Command line option `--rerunfailedsuites (-S)`{.option} can be used to select all
 failed suites from an earlier [output file](result-files.md#output-file) for re-execution. Like
-`--rerunfailed (-R)`, this option is useful when full test execution
+`--rerunfailed (-R)`{.option}, this option is useful when full test execution
 takes a lot of time. Note that all tests from a failed test suite will be
 re-executed, even passing ones. This option is useful when the tests in
 a test suite depends on each other.
 
 Behind the scenes this option selects the failed suites as they would have been
-selected individually with the `--suite` option. It is possible to further
-fine-tune the list of selected tests by using `--test`, `--suite`,
-`--include` and `--exclude` options.
+selected individually with the `--suite`{.option} option. It is possible to further
+fine-tune the list of selected tests by using `--test`{.option}, `--suite`{.option},
+`--include`{.option} and `--exclude`{.option} options.
 
 ### When no tests match selection
 
@@ -371,7 +371,7 @@ with an error like:
 
 Because no outputs are generated, this behavior can be problematic if tests
 are executed and results processed automatically. Luckily a command line
-option `--RunEmptySuite` (case-insensitive) can be used to force
+option `--RunEmptySuite`{.option} (case-insensitive) can be used to force
 the suite to be executed also in this case. As a result normal outputs are
 created but show zero executed tests. The same option can be used also to
 alter the behavior when an empty directory or a test case file containing
@@ -381,23 +381,23 @@ Similar situation can occur also when processing output files with [Rebot](post-
 It is possible that no test match the used filtering criteria or that
 the output file contained no tests to begin with. By default executing
 Rebot fails in these cases, but it has a separate
-`--ProcessEmptySuite` option that can be used to alter the behavior.
-In practice this option works the same way as `--RunEmptySuite` when
+`--ProcessEmptySuite`{.option} option that can be used to alter the behavior.
+In practice this option works the same way as `--RunEmptySuite`{.option} when
 running tests.
 
 !!! note
-    Using `--RunEmptySuite` with `--ReRunFailed`
-    or `--ReRunFailedSuites` requires Robot Framework 5.0.1
+    Using `--RunEmptySuite`{.option} with `--ReRunFailed`{.option}
+    or `--ReRunFailedSuites`{.option} requires Robot Framework 5.0.1
     or newer.
 
 ## Setting metadata
 
 ### Setting suite name
 
-When Robot Framework parses test data, [suite names](https://github.com/robotframework/robotframework/issues/5023) are created
+When Robot Framework parses test data, [suite names](../creating-test-data/creating-test-suites.md#suite-name) are created
 from file and directory names. The name of the top-level test suite
 can, however, be overridden with the command line option
-`--name (-N)`:
+`--name (-N)`{.option}:
 
 ```
 robot --name "Custom name" tests.robot
@@ -405,9 +405,9 @@ robot --name "Custom name" tests.robot
 
 ### Setting suite documentation
 
-In addition to [defining documentation in the test data](https://github.com/robotframework/robotframework/issues/5023), documentation
+In addition to [defining documentation in the test data](../creating-test-data/creating-test-suites.md#suite-documentation), documentation
 of the top-level suite can be given from the command line with the
-option `--doc (-D)`. The value can contain simple [HTML formatting](../appendices/documentation-formatting.md#html-formatting)
+option `--doc (-D)`{.option}. The value can contain simple [HTML formatting](../appendices/documentation-formatting.md#documentation-formatting)
 and must be quoted if it contains spaces.
 
 If the given documentation is a relative or absolute path pointing to an existing
@@ -426,14 +426,14 @@ robot --doc doc.txt tests.robot    # Documentation read from doc.txt if it exits
     Reading documentation from an external file is new in Robot Framework 4.1.
 
           Prior to Robot Framework 3.1, underscores in documentation were
-          converted to spaces same way as with the `--name` option.
+          converted to spaces same way as with the `--name`{.option} option.
 
 ### Setting free suite metadata
 
 [Free suite metadata](../creating-test-data/creating-test-suites.md#free-suite-metadata) may also be given from the command line with the
-option `--metadata (-M)`. The argument must be in the format
+option `--metadata (-M)`{.option}. The argument must be in the format
 `name:value`, where `name` the name of the metadata to set and
-`value` is its value. The value can contain simple [HTML formatting](../appendices/documentation-formatting.md#html-formatting) and
+`value` is its value. The value can contain simple [HTML formatting](../appendices/documentation-formatting.md#documentation-formatting) and
 the whole argument must be quoted if it contains spaces.
 This option may be used several times to set multiple metadata values.
 
@@ -456,18 +456,18 @@ robot --metadata "Path As Value: meta.txt" tests.robot    # Value always used as
     Reading metadata value from an external file is new in Robot Framework 4.1.
 
           Prior to Robot Framework 3.1, underscores in the value were
-          converted to spaces same way as with the `--name` option.
+          converted to spaces same way as with the `--name`{.option} option.
 
 ### Setting test tags
 
-The command line option `--settag (-G)` can be used to set
+The command line option `--settag (-G)`{.option} can be used to set
 the given tag to all executed test cases. This option may be used
 several times to set multiple tags.
 
 <a id="module-search-path"></a>
 ## Configuring where to search libraries and other extensions
 
-When Robot Framework imports a [test library](https://github.com/robotframework/robotframework/issues/5023), [listener](https://en.wikipedia.org/wiki/Glob_(programming)), or some other
+When Robot Framework imports a [test library](../creating-test-data/using-test-libraries.md#specifying-library-to-import), [listener](#setting-listeners), or some other
 Python based extension, it uses the Python interpreter to import the module
 containing the extension from the system. The list of locations where modules
 are looked for is called *the module search path*, and its contents can be
@@ -486,7 +486,7 @@ a good idea to create a custom [start-up script](basic-usage.md#start-up-script)
 Python interpreters have their own standard library as well as a directory
 where third party modules are installed automatically in the module search
 path. This means that test libraries [packaged using Python's own packaging
-system](http://docs.python.org/library/sys.html#sys.path) are automatically installed so that they can be imported without
+system](../extending/creating-test-libraries.md#packaging-libraries) are automatically installed so that they can be imported without
 any additional configuration.
 
 ### `PYTHONPATH`
@@ -505,13 +505,13 @@ before running a command, something that works extremely well in custom
 
 ### Using `--pythonpath` option
 
-Robot Framework has a separate command line option `--pythonpath (-P)`
+Robot Framework has a separate command line option `--pythonpath (-P)`{.option}
 for adding locations to the module search path.
 
 Multiple locations can be given by separating them with a colon (`:`) or
 a semicolon (`;`) or by using this option multiple times. If the value
 contains both colons and semicolons, it is split from semicolons. Paths
-can also be [glob patterns](http://en.wikipedia.org/wiki/ANSI_escape_code) matching multiple paths, but they typically
+can also be [glob patterns](https://en.wikipedia.org/wiki/Glob_(programming)) matching multiple paths, but they typically
 need to be escaped when used on the console.
 
 Examples:
@@ -531,15 +531,15 @@ Examples:
 ### Configuring `sys.path` programmatically
 
 Python interpreters store the module search path they use as a list of strings
-in [sys.path](https://github.com/robotframework/robotframework/issues/5023)
+in [sys.path](http://docs.python.org/library/sys.html#sys.path)
 attribute. This list can be updated dynamically during execution, and changes
 are taken into account next time when something is imported.
 
 ## Setting variables
 
-[Variables](../creating-test-data/variables.md#variables) can be set from the command line either [individually](https://en.wikipedia.org/wiki/Glob_(programming))
-using the `--variable (-v)` option or through [variable files](../creating-test-data/variable-files.md#variable-files)
-with the `--variablefile (-V)` option. Variables and variable
+[Variables](../creating-test-data/variables.md#variables) can be set from the command line either [individually](../creating-test-data/variables.md#command-line-variables)
+using the `--variable (-v)`{.option} option or through [variable files](../creating-test-data/variable-files.md#variable-files)
+with the `--variablefile (-V)`{.option} option. Variables and variable
 files are explained in separate chapters, but the following examples
 illustrate how to use these options:
 
@@ -557,7 +557,7 @@ Robot Framework supports so called *dry run* mode where the tests are
 run normally otherwise, but the keywords coming from the test libraries
 are not executed at all. The dry run mode can be used to validate the
 test data; if the dry run passes, the data should be syntactically
-correct. This mode is triggered using option `--dryrun`.
+correct. This mode is triggered using option `--dryrun`{.option}.
 
 The dry run execution may fail for following reasons:
 
@@ -565,12 +565,12 @@ The dry run execution may fail for following reasons:
   * Using keywords with wrong number of arguments.
   * Using user keywords that have invalid syntax.
 
-In addition to these failures, normal [execution errors](https://github.com/robotframework/robotframework/issues/5023) are shown,
+In addition to these failures, normal [execution errors](basic-usage.md#errors-and-warnings-during-execution) are shown,
 for example, when test library or resource file imports cannot be
 resolved.
 
-It is possible to disable dry run validation of specific [user keywords](../creating-test-data/creating-user-keywords.md#user-keyword)
-by adding a special `robot:no-dry-run` [keyword tag](https://en.wikipedia.org/wiki/Glob_(programming)) to them. This is useful
+It is possible to disable dry run validation of specific [user keywords](../creating-test-data/creating-user-keywords.md#creating-user-keywords)
+by adding a special `robot:no-dry-run` [keyword tag](../creating-test-data/creating-user-keywords.md#user-keyword-tags) to them. This is useful
 if a keyword fails in the dry run mode for some reason, but work fine when
 executed normally.
 
@@ -580,7 +580,7 @@ executed normally.
 ## Randomizing execution order
 
 The test execution order can be randomized using option
-`--randomize <what>[:<seed>]`, where `<what>` is one of the following:
+`--randomize <what>[:<seed>]`{.option}, where `<what>` is one of the following:
 
 `tests`
 : Test cases inside each test suite are executed in random order.
@@ -595,14 +595,14 @@ The test execution order can be randomized using option
 `none`
 : Neither execution order of test nor suites is randomized.
     This value can be used to override the earlier value set with
-    `--randomize`.
+    `--randomize`{.option}.
 
 It is possible to give a custom seed
 to initialize the random generator. This is useful if you want to re-run tests
 using the same order as earlier. The seed is given as part of the value for
-`--randomize` in format `<what>:<seed>` and it must be an integer.
+`--randomize`{.option} in format `<what>:<seed>` and it must be an integer.
 If no seed is given, it is generated randomly. The executed top level test
-suite automatically gets [metadata](http://docs.python.org/library/sys.html#sys.path) named *Randomized* that tells both
+suite automatically gets [metadata](../creating-test-data/creating-test-suites.md#free-suite-metadata) named *Randomized*{.name} that tells both
 what was randomized and what seed was used.
 
 Examples:
@@ -620,7 +620,7 @@ If the provided built-in features to modify test data before execution
 are not enough, Robot Framework makes it possible to do
 custom modifications programmatically. This is accomplished by creating
 a so called *pre-run modifier* and activating it using the
-`--prerunmodifier` option.
+`--prerunmodifier`{.option} option.
 
 Pre-run modifiers should be implemented as visitors that can traverse through
 the executable test suite structure and modify it as needed. The visitor
@@ -628,31 +628,31 @@ interface is explained as part of the [Robot Framework API documentation](http:/
 how pre-run modifiers can be used and how powerful this functionality is.
 
 When a pre-run modifier is taken into use on the command line using the
-`--prerunmodifier` option, it can be specified either as a name of
+`--prerunmodifier`{.option} option, it can be specified either as a name of
 the modifier class or a path to the modifier file. If the modifier is given
 as a class name, the module containing the class must be in the [module search
 path](#module-search-path), and if the module name is different than the class name, the given
 name must include both like `module.ModifierClass`. If the modifier is given
 as a path, the class name must be same as the file name. For most parts this
-works exactly like when [importing a test library](https://github.com/robotframework/robotframework/issues/5023).
+works exactly like when [importing a test library](../creating-test-data/using-test-libraries.md#specifying-library-to-import).
 
 If a modifier requires arguments, like the examples below do, they can be
 specified after the modifier name or path using either a colon (`:`) or a
 semicolon (`;`) as a separator. If both are used in the value, the one used
 first is considered to be the actual separator. Starting from Robot Framework
 4.0, arguments also support the [named argument syntax](../creating-test-data/creating-test-cases.md#named-argument-syntax) as well as [argument
-conversion](https://en.wikipedia.org/wiki/Glob_(programming)) based on [type hints](http://docs.python.org/library/sys.html#sys.path) and [default values](http://en.wikipedia.org/wiki/ANSI_escape_code) the same way
+conversion](../extending/creating-test-libraries.md#supported-conversions) based on [type hints](../extending/creating-test-libraries.md#specifying-argument-types-using-function-annotations) and [default values](../extending/creating-test-libraries.md#implicit-argument-types-based-on-default-values) the same way
 as keywords do.
 
 If more than one pre-run modifier is needed, they can be specified by using
-the `--prerunmodifier` option multiple times. If similar modifying
+the `--prerunmodifier`{.option} option multiple times. If similar modifying
 is needed before creating logs and reports, [programmatic modification of
-results](result-files.md#programmatic-modification-of-results) can be enabled using the `--prerebotmodifier` option.
+results](result-files.md#programmatic-modification-of-results) can be enabled using the `--prerebotmodifier`{.option} option.
 
 Pre-run modifiers are executed before other configuration affecting the
 executed test suite and test cases. Most importantly, options related to
 [selecting test cases](#selecting-test-cases) are processed after modifiers, making it possible to
-use options like `--include` also with possible dynamically added
+use options like `--include`{.option} also with possible dynamically added
 tests.
 
 Another way to modify tests is using the [listener version 3](../extending/listener-interface.md#listener-version-3) interface.
@@ -665,7 +665,7 @@ happens during the execution.
 
 !!! tip
     Modifiers are taken into use from the command line exactly the same
-    way as [listeners](../extending/listener-interface.md#listeners). See the [Registering listeners from command line](../extending/listener-interface.md#registering-listeners-from-command-line)
+    way as [listeners](../extending/listener-interface.md#listener-interface). See the [Registering listeners from command line](../extending/listener-interface.md#registering-listeners-from-command-line)
     section for more information and examples.
 
 ### Example: Select every Xth test
@@ -678,7 +678,7 @@ start index.
 ```python
 ../api/code_examples/SelectEveryXthTest.py
 ```
-If the above pre-run modifier is in a file *SelectEveryXthTest.py* and
+If the above pre-run modifier is in a file `SelectEveryXthTest.py`{.file} and
 the file is in the [module search path](#module-search-path), it could be used like this:
 
 ```
@@ -692,13 +692,13 @@ robot --prerunmodifier path/to/SelectEveryXthTest.py:2 tests.robot
 ### Example: Exclude tests by name
 
 Also the second example removes tests, this time based on a given name pattern.
-In practice it works like a negative version of the built-in `--test`
+In practice it works like a negative version of the built-in `--test`{.option}
 option.
 
 ```python
 ../api/code_examples/ExcludeTests.py
 ```
-Assuming the above modifier is in a file named *ExcludeTests.py*, it
+Assuming the above modifier is in a file named `ExcludeTests.py`{.file}, it
 could be used like this:
 
 ```
@@ -718,7 +718,7 @@ it easy to do that temporarily for a single run:
 ```python
 ../api/code_examples/disable.py
 ```
-Assuming that the above modifiers are all in a file named *disable.py*
+Assuming that the above modifiers are all in a file named `disable.py`{.file}
 and this file is in the [module search path](#module-search-path), setups and teardowns could be
 disabled, for example, as follows:
 
@@ -737,22 +737,22 @@ robot --prerunmodifier disable.SuiteTeardown tests.robot
 
 ## Controlling console output
 
-There are various command line options to control how test execution is
-reported on the console.
+There are various command line options to control how execution is reported
+on the console.
 
-### Console output type
+### Built-in console loggers
 
-The overall console output type is set with the `--console` option.
-It supports the following case-insensitive values:
+Robot Framework has several built-in console loggers that provide output on
+different verbosity levels. The logger to use can selected with the
+`--console`{.option} option that supports the following case-insensitive values:
 
 `verbose`
-: Every test suite and test case is reported individually. This is
-    the default.
+: Every suite and test is reported individually. This is the default.
 
 `dotted`
 : Only show `.` for passed test, `F` for failed tests, `s` for skipped
     tests and `x` for tests which are skipped because
-    [test execution exit](https://github.com/robotframework/robotframework/issues/5023). Failed tests are listed separately
+    [test execution exit](test-execution.md#stopping-test-execution-gracefully). Failed tests are listed separately
     after execution. This output type makes it easy to see are there any
     failures during execution even if there would be a lot of tests.
 
@@ -760,10 +760,9 @@ It supports the following case-insensitive values:
 : No output except for [errors and warnings](../extending/creating-test-libraries.md#errors-and-warnings).
 
 `none`
-: No output whatsoever. Useful when creating a custom output using,
-    for example, [listeners](../extending/listener-interface.md#listeners).
+: No output whatsoever.
 
-Separate convenience options `--dotted (-.)` and `--quiet`
+Separate convenience options `--dotted (-.)`{.option} and `--quiet`{.option}
 are shortcuts for `--console dotted` and `--console quiet`, respectively.
 
 Examples:
@@ -773,10 +772,122 @@ robot --console quiet tests.robot
 robot --dotted tests.robot
 ```
 
+### Custom console loggers
+
+In addition to the built-in values listed above, the `--console`{.option} option
+accepts a path or name of a custom console logger class or module. The argument
+format is the same as with `--listener`{.option}: a path to a Python file, a
+module name, or a dotted class name, with optional arguments separated by colons.
+
+Examples:
+
+```
+robot --console path/to/myconsole.py tests.robot
+robot --console MyConsole --pythonpath /path/to/consoles tests.robot
+robot --console CustomConsole.py:arg1:arg2 tests.robot
+```
+
+Custom console loggers receive the same [listener method calls](../extending/listener-interface.md#listener-interface) as
+normal listeners. Only methods that are implemented are called — missing methods
+are silently ignored. This means a minimal console only needs to implement the
+hooks it is interested in.
+
+!!! note
+    Console loggers should treat the `data` and `result` objects passed
+    to their methods as read-only. Currently live objects are passed so modifications
+    would take effect, but this behaviour may change without notice. Use the
+    [Listener interface](../extending/listener-interface.md#listener-interface) if you need to legitimately modify them.
+
+   Support for custom console loggers is new in Robot Framework 7.5.
+
+#### Example
+
+The following example shows a custom console that provides a compact progress
+view with elapsed time and a running pass/fail counter — useful in CI pipelines
+or when the verbose output is too noisy but `dotted` does not provide enough
+context:
+
+```python
+import time
+
+class ProgressConsole:
+
+    def __init__(self):
+        self.passed = 0
+        self.failed = 0
+        self.skipped = 0
+        self.start_time = None
+
+    def start_suite(self, data, result):
+        if self.start_time is None:
+            self.start_time = time.time()
+
+    def end_test(self, data, result):
+        if result.passed:
+            self.passed += 1
+        elif result.failed:
+            self.failed += 1
+        else:
+            self.skipped += 1
+        elapsed = time.time() - self.start_time
+        total = self.passed + self.failed + self.skipped
+        status = '✓' if result.passed else '✗' if result.failed else '-'
+        print(
+            f" {status} [{elapsed:>6.1f}s] {result.name}  "
+            f"({total} done, {self.failed} failed)"
+        )
+
+    def result_file(self, kind, path):
+        print(f"{kind}:  {path}")
+
+    def close(self):
+        elapsed = time.time() - self.start_time
+        total = self.passed + self.failed + self.skipped
+        print(
+            f"\n{total} tests in {elapsed:.1f}s: "
+            f"{self.passed} passed, {self.failed} failed, "
+            f"{self.skipped} skipped"
+        )
+```
+#### Programmatic usage
+
+When using the [programmatic API](https://robot-framework.readthedocs.io/en/master/autodoc/robot.html#module-robot.run), the `console` option also accepts
+a pre-instantiated Python object:
+
+```python
+from robot import run
+
+run('tests.robot', console=ProgressConsole())
+```
+
+#### Extending built-in console loggers
+
+Custom console loggers can be implemented so that they extend the [built-in console
+loggers](#built-in-console-loggers). The built-in loggers are exposed via the [robot.api.console](https://robot-framework.readthedocs.io/en/master/autodoc/robot.api.html#module-robot.api.console) module
+and their API docs provide more information.
+
+Here is a very simple example of custom console logger that extends the
+`DottedConsole` and disables writing result file paths to the console:
+
+```python
+from robot.api.console import DottedConsole
+
+class DottedWithoutPaths(DottedConsole):
+
+    def result_file(self, kind, path):
+        pass
+```
+
+#### Configuring custom console loggers
+
+Custom console loggers must handle their configuration on their own. Options like
+`--consolewidth`{.option} discussed in the subsequent sections only affect the
+built-in console loggers.
+
 ### Console width
 
-The width of the test execution output in the console can be set using
-the option `--consolewidth (-W)`. The default width is 78 characters.
+The width of console output can be set using the option `--consolewidth (-W)`{.option}.
+The default width is 78 characters.
 
 !!! tip
     On many UNIX-like machines you can use handy `$COLUMNS`
@@ -784,9 +895,9 @@ the option `--consolewidth (-W)`. The default width is 78 characters.
 
 ### Console colors
 
-The `--consolecolors (-C)` option is used to control whether
+The `--consolecolors (-C)`{.option} option is used to control whether
 colors should be used in the console output. Colors are implemented
-using [ANSI escape codes](https://github.com/robotframework/robotframework/issues/5023) with a backup mechanism for older Windows
+using [ANSI escape codes](http://en.wikipedia.org/wiki/ANSI_escape_code) with a backup mechanism for older Windows
 versions that do not support ANSI codes.
 
 This option supports the following case-insensitive values:
@@ -810,7 +921,7 @@ This option supports the following case-insensitive values:
 ### Console links
 
 Result file paths written to the console at the end of the execution are, by default,
-hyperlinks. This behavior can be controlled with the `--consolelinks` option
+hyperlinks. This behavior can be controlled with the `--consolelinks`{.option} option
 that accepts the following case-insensitive values:
 
 `auto`
@@ -820,8 +931,8 @@ that accepts the following case-insensitive values:
 : Links are unconditionally disabled.
 
 The hyperlink support depends also on the console that is used, but nowadays
-the [support is pretty good](https://en.wikipedia.org/wiki/Glob_(programming)). The commonly used [Windows Console](http://docs.python.org/library/sys.html#sys.path) does not
-support links, though, but the newer [Windows Terminal](http://en.wikipedia.org/wiki/ANSI_escape_code) does.
+the [support is pretty good](https://github.com/Alhadis/OSC8-Adoption). The commonly used [Windows Console](https://en.wikipedia.org/wiki/Windows_Console) does not
+support links, though, but the newer [Windows Terminal](https://en.wikipedia.org/wiki/Windows_Terminal) does.
 
 !!! note
     Hyperlink support is new in Robot Framework 7.1.
@@ -829,12 +940,12 @@ support links, though, but the newer [Windows Terminal](http://en.wikipedia.org/
 ### Console markers
 
 Special markers `.` (success) and
-`F` (failure) are shown on the console when using the [verbose output](https://github.com/Alhadis/OSC8-Adoption)
+`F` (failure) are shown on the console when using the [verbose output](#built-in-console-loggers)
 and top level keywords in test cases end. The markers allow following
 the test execution in high level, and they are erased when test cases end.
 
 It is possible to configure when markers
-are used with `--consolemarkers (-K)` option. It supports the following
+are used with `--consolemarkers (-K)`{.option} option. It supports the following
 case-insensitive values:
 
 `auto`
@@ -849,8 +960,8 @@ case-insensitive values:
 
 ## Setting listeners
 
-[Listeners](../extending/listener-interface.md#listeners) can be used to monitor the test execution. When they are taken into
-use from the command line, they are specified using the `--listener`
+[Listeners](../extending/listener-interface.md#listener-interface) can be used to monitor the test execution. When they are taken into
+use from the command line, they are specified using the `--listener`{.option}
 command line option. The value can either be a path to a listener or
 a listener name. See the [Listener interface](../extending/listener-interface.md#listener-interface) section for more details
 about importing listeners and using them in general.

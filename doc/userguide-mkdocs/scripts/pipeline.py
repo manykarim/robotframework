@@ -187,6 +187,7 @@ def stage_fix(dry_run: bool = False):
         ("fix_code_blocks.py",      "Fix code block syntax (runs late to catch post-fix artifacts)"),
         ("fix_bare_refs.py",        "Final bare ref cleanup pass"),
         ("add_legacy_anchors.py",   "Add legacy anchor compatibility"),
+        ("render_roles.py",         "Render role placeholders to attr_list classes (MUST be last)"),
     ]
 
     failed = []
@@ -270,6 +271,21 @@ def stage_validate(dry_run: bool = False) -> Tuple[int, int]:
     # Count INFO-level warnings (broken anchors)
     info_warnings = sum(1 for line in result.stderr.split('\n')
                         if 'INFO' in line and 'contains a link' in line)
+
+    # Content-integrity gate (role-conversion correctness against MD + built HTML)
+    print("  → Content-integrity check ...", end=" ", flush=True)
+    cc = subprocess.run(
+        [sys.executable, str(SCRIPT_DIR / "content_check.py")],
+        capture_output=True, text=True, cwd=str(SCRIPT_DIR)
+    )
+    if cc.returncode == 0:
+        print("PASS")
+    else:
+        print("FAIL (role/placeholder artifacts present)")
+        # Show the HARD section of the report for quick diagnosis
+        for line in cc.stdout.split('\n'):
+            if 'HARD' in line or line.strip().startswith('- ['):
+                print(f"    {line.strip()}")
 
     # Strict build
     print("  → Strict build ...", end=" ", flush=True)

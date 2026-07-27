@@ -1,31 +1,35 @@
-# Result files
+# Execution artifacts
 
-Several result files are created when tests are executed, and all of
-them are somehow related to execution results. This section discusses what
-files are created, how to configure where they are created, and how
+Several execution artifacts are created when tests are executed, and all of
+them are somehow related to execution results. This section discusses which
+result files are created, how to configure where they are created, and how
 to fine-tune their contents.
 
-## Different result files
+## Output directory
 
-This section explains what different result files can be created and
-how to configure where they are created. Result files are configured
-using command line options, which get the path to the result file in
-question as an argument. A special value `NONE` (case-insensitive)
-can be used to disable creating a certain result file.
+The output directory is the place where result files are stored by default.
+The default output directory is the directory where the execution is started
+from, but it can be altered with the `--outputdir (-d)`{.option} option. The path
+set with this option is relative to the execution directory, but it can naturally
+be given also as an absolute path:
 
-### Output directory
+```
+robot --outputdir results example.robot
+robot --outputdir /tmp/outputs example.robot
+```
 
-All result files can be set using an absolute path, in which case they
-are created to the specified place, but in other cases, the path is
-considered relative to the output directory. The default output
-directory is the directory where the execution is started from, but it
-can be altered with the `--outputdir (-d)`{.option} option. The path
-set with this option is, again, relative to the execution directory,
-but can naturally be given also as an absolute path. Regardless of how
-a path to an individual result file is obtained, its parent directory
-is created automatically, if it does not exist already.
+## Result files
+
+This section explains what different result files can be created and how to
+configure them. As discussed above, result file paths are relative to the
+[output directory](#output-directory), but paths can also be absolute. A special value `NONE`
+(case-insensitive) can be used to disable creating a certain result file.
 
 <a id="outputxml"></a>
+
+<a id="output-files"></a>
+
+<a id="output"></a>
 ### Output file
 
 Output files contain all execution results in machine readable XML or JSON
@@ -78,6 +82,7 @@ We hope that external tools are updated soon, but we plan to support this
 option at least until Robot Framework 8.0. If you encounter tools that are
 not compatible, please inform the tool developers about changes.
 
+<a id="log"></a>
 ### Log file
 
 Log files contain details about the executed test cases in HTML
@@ -89,8 +94,8 @@ getting an higher-level overview.
 
 The command line option `--log (-l)`{.option} determines where log
 files are created. Unless the special value `NONE` is used,
-log files are always created and their default name is
-`log.html`{.file}.
+log files are always created. The default value is `log.html`{.file}
+and paths are relative to the [output directory](#output-directory).
 
 ![An example of beginning of a log file](log_passed.png)
 
@@ -104,6 +109,7 @@ log files are always created and their default name is
 
 *An example of a log file with skipped and passed tests*
 
+<a id="report"></a>
 ### Report file
 
 Report files contain an overview of the test execution results in HTML
@@ -116,9 +122,9 @@ color is green, if all tests pass and bright red if any test fails.
 Background can also be yellow, which means that all tests were [skipped](test-execution.md#skipped).
 
 The command line option `--report (-r)`{.option} determines where
-report files are created. Similarly as log files, reports are always
-created unless `NONE` is used as a value, and their default
-name is `report.html`{.file}.
+report files are created. Similarly as with log files, reports files are
+automatically created unless `NONE` is used as a value, the default value is
+`report.html`{.file} and values are relative to the [output directory](#output-directory).
 
 ![An example report file of successful test execution](report_passed.png)
 
@@ -150,18 +156,18 @@ They nowadays contain separate `<testsuite>` elements for each suite,
 `<testsuite>` elements have `timestamp` attribute, and [suite documentation](../creating-test-data/creating-test-suites.md#suite-documentation)
 and [metadata](../creating-test-data/creating-test-suites.md#free-suite-metadata) is stored as `<property>` elements.
 
+<a id="debug-files"></a>
 ### Debug file
 
 Debug files are plain text files that are written during the test
 execution. All messages got from test libraries are written to them,
 as well as information about started and ended test suites, test cases
 and keywords. Debug files can be used for monitoring the test
-execution. This can be done using, for example, a separate
-[fileviewer.py](https://bitbucket.org/robotframework/robottools/src/master/fileviewer/)
-tool, or in UNIX-like systems, simply with the `tail -f` command.
+execution.
 
 Debug files are not created unless the command line option
-`--debugfile (-b)`{.option} is used explicitly.
+`--debugfile (-b)`{.option} is used explicitly. They are relative to the
+[output directory](#output-directory) similarly as other result files.
 
 ### Timestamping result files
 
@@ -178,7 +184,7 @@ robot --timestampoutputs --log mylog.html --report NONE tests.robot
 
 ### Setting titles
 
-The default titles for [logs](execution-artifacts.md#splitting-logs) and [reports](post-processing.md#creating-reports-logs-and-output-files) are generated by prefixing
+The default titles for [logs](output-files.md#splitting-logs) and [reports](post-processing.md#creating-reports-logs-and-output-files) are generated by prefixing
 the name of the top-level test suite with *Test Log*{.name} or
 *Test Report*{.name}. Custom titles can be given from the command line
 using the options `--logtitle`{.option} and `--reporttitle`{.option},
@@ -189,11 +195,6 @@ Example:
 ```
 robot --logtitle "Smoke Test Log" --reporttitle "Smoke Test Report" --include smoke my_tests/
 ```
-
-!!! note
-    Prior to Robot Framework 3.1, underscores in the given titles were
-    converted to spaces. Nowadays spaces need to be escaped or quoted
-    like in the example above.
 
 ### Setting background colors
 
@@ -226,11 +227,12 @@ can be a HTML color name (e.g. `red`), a hexadecimal value
 specified using hexadecimal values `#9e9`, `#f66` and `#fed84f`,
 respectively.
 
+<a id="log-level"></a>
 ## Log levels
 
 ### Available log levels
 
-Messages in [log files](execution-artifacts.md#log) can have different log levels. Some of the
+Messages in [log files](#log-files) can have different log levels. Some of the
 messages are written by Robot Framework itself, but also executed
 keywords can [log information](../extending/creating-test-libraries.md#logging-information) using different levels. The available
 log levels are:
@@ -649,7 +651,7 @@ configured by using the `--maxerrorlines`{.option} command line option.
 The minimum value for this option is 10, and it is also possible to use
 a special value `NONE` to show the full message.
 
-Full error messages are always visible in [log files](execution-artifacts.md#log) as messages of
+Full error messages are always visible in [log files](#log-files) as messages of
 the failed keywords.
 
 !!! note
@@ -699,6 +701,7 @@ the `--prerebotmodifier`{.option} option multiple times. When executing tests,
 it is possible to use `--prerunmodifier`{.option} and
 `--prerebotmodifier`{.option} options together.
 
+<a id="syslog"></a>
 ## System log
 
 Robot Framework has its own plain-text system log where it writes

@@ -194,6 +194,7 @@ nav:
     - Task Execution: executing-tests/task-execution.md
     - Post-Processing: executing-tests/post-processing.md
     - Configuring Execution: executing-tests/configuring-execution.md
+    - Execution Artifacts: executing-tests/execution-artifacts.md
     - Output Files: executing-tests/output-files.md
 
   - Extend:

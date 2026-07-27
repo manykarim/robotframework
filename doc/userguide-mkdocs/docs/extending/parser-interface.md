@@ -8,8 +8,8 @@ even override Robot Framework's own parser.
 
 ## Taking parsers into use
 
-Parsers are taken into use from the command line with the `--parser`
-option using exactly the same semantics as with [listeners](https://robot-framework.readthedocs.io/en/master/autodoc/robot.running.html#robot.running.model.TestSuite.from_string). This includes
+Parsers are taken into use from the command line with the `--parser`{.option}
+option using exactly the same semantics as with [listeners](listener-interface.md#registering-listeners-from-command-line). This includes
 specifying parsers as names or paths, giving arguments to parser classes, and
 so on:
 
@@ -33,11 +33,11 @@ Extensions are case-insensitive and can be specified with or without the leading
 dot. If a parser is implemented as a class, it is possible to set this attribute
 either as a class attribute or as an instance attribute.
 
-Also extensions containing multiple parts like *.example.ext* or
-*.robot.zip* are supported.
+Also extensions containing multiple parts like `.example.ext`{.file} or
+`.robot.zip`{.file} are supported.
 
 !!! note
-    If a parser supports the *.robot* extension, it will be used
+    If a parser supports the `.robot`{.file} extension, it will be used
     for parsing these files instead of the standard parser.
 
 ### `parse` method
@@ -48,8 +48,8 @@ The method must return a [TestSuite](http://robot-framework.readthedocs.org/en/m
 
 In simple cases `parse` can be implemented so that it accepts just a single
 argument that is a [pathlib.Path](https://docs.python.org/library/pathlib.html) object pointing to the file to
-parse. If the parser is interested in defaults for `Test Setup`,
-`Test Teardown`, `Test Tags` and `Test Timeout`
+parse. If the parser is interested in defaults for *Test Setup*{.setting},
+*Test Teardown*{.setting}, *Test Tags*{.setting} and *Test Timeout*{.setting}
 set in higher level [suite initialization files](../creating-test-data/creating-test-suites.md#suite-initialization-files), the `parse` method must
 accept two arguments. In that case the second argument is a [TestDefaults](https://robot-framework.readthedocs.io/en/master/autodoc/robot.running.builder.html#robot.running.builder.settings.TestDefaults) object.
 

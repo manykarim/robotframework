@@ -9,4 +9,5 @@ Running Robot Framework is straightforward: point it at a file or directory and 
 - [Task Execution](task-execution.md)
 - [Post-Processing](post-processing.md)
 - [Configuring Execution](configuring-execution.md)
+- [Execution Artifacts](execution-artifacts.md)
 - [Output Files](output-files.md)

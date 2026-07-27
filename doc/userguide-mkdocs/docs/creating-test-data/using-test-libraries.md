@@ -5,20 +5,20 @@
 Test libraries contain those lowest-level keywords, often called
 *library keywords*, which actually interact with the system under
 test. All test cases always use keywords from some library, often
-through higher-level [user keywords](creating-user-keywords.md#user-keyword). This section explains how to
+through higher-level [user keywords](creating-user-keywords.md#creating-user-keywords). This section explains how to
 take test libraries into use and how to use the keywords they
 provide. [Creating test libraries](../extending/creating-test-libraries.md#creating-test-libraries) is described in a separate
 section.
 
 ## Importing libraries
 
-Test libraries are typically imported using the `Library` setting,
-but it is also possible to use the *Import Library* keyword.
+Test libraries are typically imported using the *Library*{.setting} setting,
+but it is also possible to use the *Import Library*{.name} keyword.
 
 ### Using `Library` setting
 
 Libraries are normally imported in the Settings section using the
-`Library` setting with the library name or path as its value.
+*Library*{.setting} setting with the library name or path as its value.
 Unlike most of the other data, the library name or path
 is both case- and space-sensitive. If a library is in a package,
 the full name including the package name must be used.
@@ -46,10 +46,10 @@ files using them.
 ### Using `Import Library` keyword
 
 Another possibility to take a test library into use is using the
-keyword *Import Library* from the [BuiltIn](#builtin) library. This keyword
+keyword *Import Library*{.name} from the [BuiltIn](#builtin) library. This keyword
 takes the library name or path and possible arguments similarly as the
-`Library` setting. Keywords from the imported library are
-available in the test suite where the *Import Library* keyword was
+*Library*{.setting} setting. Keywords from the imported library are
+available in the test suite where the *Import Library*{.name} keyword was
 used. This approach is useful in cases where the library is not
 available when the test execution starts and only some other keywords
 make it available.
@@ -65,8 +65,8 @@ Example
 
 Libraries to import can be specified either by using the library name
 or the path to the library. These approaches work the same way regardless
-if the library is imported using the `Library` setting or the
-*Import Library* keyword.
+if the library is imported using the *Library*{.setting} setting or the
+*Import Library*{.name} keyword.
 
 ### Using library name
 
@@ -98,7 +98,7 @@ to [resource and variable files](variables.md#variable). The main benefit of thi
 is that there is no need to configure the module search path.
 
 If the library is a file, the path to it must contain extension,
-i.e. *.py*. If a library is implemented
+i.e. `.py`{.file}. If a library is implemented
 as a directory, the path to it must have a trailing forward slash (`/`)
 if the path is relative. With absolute paths the trailing slash is optional.
 Following examples demonstrate these different usages.
@@ -132,7 +132,7 @@ The basic syntax for specifying the new name is having the text
 `AS` (case-sensitive) after the library name and then
 having the new name after that. The specified name is shown in
 logs and must be used in the test data when using keywords' full name
-(*LibraryName.Keyword Name*).
+(*LibraryName.Keyword Name*{.name}).
 
 ```robotframework
 *** Settings ***
@@ -156,7 +156,7 @@ Example
     LocalLib.Another Keyword
 ```
 Setting a custom name to a test library works both when importing a
-library in the Setting section and when using the *Import Library* keyword.
+library in the Setting section and when using the *Import Library*{.name} keyword.
 
 !!! note
     Prior to Robot Framework 6.0 the marker to use when giving a custom name
@@ -201,7 +201,7 @@ documentations:
 ### Remote library
 
 In addition to the normal standard libraries listed above, there is
-also *Remote* library that is totally different than the other standard
+also *Remote*{.name} library that is totally different than the other standard
 libraries. It does not have any keywords of its own but it works as a
 proxy between Robot Framework and actual test library implementations.
 These libraries can be running on other machines than the core
