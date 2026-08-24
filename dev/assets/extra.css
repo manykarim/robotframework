@@ -78,3 +78,96 @@
   white-space: nowrap;
 }
 /* code.codesc relies on the base code styling — no extra rules required. */
+
+/* ---------------------------------------------------------------------------
+   Classed HTML tables ported from doc/userguide/src/userguide.css.
+   Material only styles `table:not([class])`, so tables carrying a class — the
+   log "messages" boxes and the "tabular" inline-style example table — receive
+   NONE of Material's default styling and render bare. These rules restore the
+   original look inside Material's typeset scope, adapted for both the light
+   (default) and dark (slate) palettes. Borders use Material's own variables
+   rather than the RST-only `--border-color`, which Material never defines. Only
+   `messages` and `tabular` occur in the converted Markdown; `example`/
+   `tsv-example` and the standalone RF .html report/log artifacts are
+   deliberately NOT targeted.
+   --------------------------------------------------------------------------- */
+
+/* Log message tables (INFO / WARN / ERROR boxes) */
+.md-typeset table.messages {
+  display: table;
+  width: 100%;
+  max-width: 42rem;
+  margin: 0.6rem 0;
+  border: .05rem solid var(--md-typeset-table-color);
+  border-collapse: collapse;
+  font-family: var(--md-code-font-family, monospace);
+  font-size: .68rem;
+  line-height: 1.4;
+}
+.md-typeset table.messages td {
+  padding: .15em .5em;
+  border: none;
+  vertical-align: top;
+}
+.md-typeset table.messages td.time {
+  width: 12em;
+  white-space: nowrap;
+  letter-spacing: -0.03em;
+}
+.md-typeset table.messages td.level {
+  width: 5em;
+  text-align: center;
+  font-weight: 700;
+}
+.md-typeset table.messages td.error,
+.md-typeset table.messages td.fail {
+  color: #cc0000;
+}
+.md-typeset table.messages td.pass {
+  color: #007a00;
+}
+.md-typeset table.messages td.warn {
+  color: #b25e00;
+}
+
+/* Inline-style example table (RST `tabular` class). Uses a higher-contrast
+   border token than --md-typeset-table-color so the cell grid stays visible
+   (that variable resolves to ~12% opacity and washes the gridlines out,
+   especially in dark mode). */
+.md-typeset table.tabular {
+  display: table;
+  margin: 0.6rem 0;
+  border: .05rem solid var(--md-default-fg-color--lighter);
+  border-collapse: collapse;
+  font-size: .72rem;
+}
+.md-typeset table.tabular caption {
+  caption-side: top;
+  text-align: left;
+  padding-bottom: .4em;
+  font-style: italic;
+  font-size: .72rem;
+}
+.md-typeset table.tabular th,
+.md-typeset table.tabular td {
+  border: .05rem solid var(--md-default-fg-color--lighter);
+  padding: .2em .5em;
+  text-align: left;
+}
+.md-typeset table.tabular th {
+  font-weight: 700;
+}
+
+/* Dark (slate) scheme: brighten the level colors for legibility on dark
+   backgrounds. Keyed on Material's palette attribute (not prefers-color-scheme)
+   so it follows the in-page theme toggle. */
+[data-md-color-scheme="slate"] .md-typeset table.messages td.error,
+[data-md-color-scheme="slate"] .md-typeset table.messages td.fail {
+  color: #ff7a7a;
+}
+[data-md-color-scheme="slate"] .md-typeset table.messages td.pass {
+  color: #6bd66b;
+}
+[data-md-color-scheme="slate"] .md-typeset table.messages td.warn {
+  color: #ffcc4d;
+}
