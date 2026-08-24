@@ -29,6 +29,7 @@
     "executing-tests/output-files.md":          "execution/output-files.md",
     "executing-tests/post-processing.md":       "execution/post-processing.md",
     "executing-tests/result-files.md":          "execution/results.md",
+    "executing-tests/execution-artifacts.md":   "execution/results.md",
     "executing-tests/log_failed.png":           "execution/log_failed.png",
     "executing-tests/log_failed.html":          "execution/log_failed.html",
     "executing-tests/log_passed.png":           "execution/log_passed.png",
