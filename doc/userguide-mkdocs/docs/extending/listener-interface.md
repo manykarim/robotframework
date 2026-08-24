@@ -43,6 +43,7 @@ def start_suite(data, result):
 def end_test(data, result):
     print(f"Test '{result.name}' ended with status {result.status}.")
 ```
+
 Listeners do not need to implement any explicit interface, it is enough to
 simply implement needed methods and they will be recognized automatically.
 There are, however, base classes [robot.api.interfaces.ListenerV2](https://robot-framework.readthedocs.io/en/master/autodoc/robot.api.html#robot.api.interfaces.ListenerV2)
@@ -63,6 +64,7 @@ class Example(ListenerV3):
     def end_test(self, data: running.TestCase, result: result.TestCase):
         print(f"Test '{result.name}' ended with status {result.status}.")
 ```
+
 !!! note
     Optional listener base classes are new in Robot Framework 6.1.
 
@@ -107,8 +109,8 @@ it. If that is needed, [listener version 3](#listener-version-3) can be used ins
 | --- | --- | --- |
 | start_suite | name, attributes | Called when a test suite starts.<br>Contents of the attribute dictionary:<br><ul><li>`id`: Suite id. `s1` for the top level suite, `s1-s1` for its first child suite, `s1-s2` for the second child, and so on.</li><li>`longname`: Suite name including parent suites.</li><li>`doc`: Suite documentation.</li><li>`metadata`: [Free suite metadata](../creating-test-data/creating-test-suites.md#free-suite-metadata) as a dictionary.</li><li>`source`: An absolute path of the file/directory the suite was created from.</li><li>`suites`: Names of the direct child suites this suite has as a list.</li><li>`tests`: Names of the tests this suite has as a list. Does not include tests of the possible child suites.</li><li>`totaltests`: The total number of tests in this suite. and all its sub-suites as an integer.</li><li>`starttime`: Suite execution start time.</li></ul> |
 | end_suite | name, attributes | Called when a test suite ends.<br>Contents of the attribute dictionary:<br><ul><li>`id`: Same as in `start_suite`.</li><li>`longname`: Same as in `start_suite`.</li><li>`doc`: Same as in `start_suite`.</li><li>`metadata`: Same as in `start_suite`.</li><li>`source`: Same as in `start_suite`.</li><li>`starttime`: Same as in `start_suite`.</li><li>`endtime`: Suite execution end time.</li><li>`elapsedtime`: Total execution time in milliseconds as an integer</li><li>`status`: Suite status as string `PASS`, `FAIL` or `SKIP`.</li><li>`statistics`: Suite statistics (number of passed and failed tests in the suite) as a string.</li><li>`message`: Error message if suite setup or teardown has failed, empty otherwise.</li></ul> |
-| start_test | name, attributes | Called when a test case starts.<br>Contents of the attribute dictionary:<br><ul><li>`id`: Test id in format like `s1-s2-t2`, where the beginning is the parent suite id and the last part shows test index in that suite.</li><li>`longname`: Test name including parent suites.</li><li>`originalname`: Test name with possible variables unresolved. New in RF 3.2.</li><li>`doc`: Test documentation.</li><li>`tags`: Test tags as a list of strings.</li><li>`template`: The name of the template used for the test. An empty string if the test not templated.</li><li>`source`: An absolute path of the test case source file. New in RF 4.0.</li><li>`lineno`: Line number where the test starts in the source file. New in RF 3.2.</li><li>`starttime`: Test execution execution start time.</li></ul> |
-| end_test | name, attributes | Called when a test case ends.<br>Contents of the attribute dictionary:<br><ul><li>`id`: Same as in `start_test`.</li><li>`longname`: Same as in `start_test`.</li><li>`originalname`: Same as in `start_test`.</li><li>`doc`: Same as in `start_test`.</li><li>`tags`: Same as in `start_test`.</li><li>`template`: Same as in `start_test`.</li><li>`source`: Same as in `start_test`.</li><li>`lineno`: Same as in `start_test`.</li><li>`starttime`: Same as in `start_test`.</li><li>`endtime`: Test execution execution end time.</li><li>`elapsedtime`: Total execution time in milliseconds as an integer</li><li>`status`: Test status as string `PASS`, `FAIL` or `SKIP`.</li><li>`message`: Status message. Normally an error message or an empty string.</li></ul> |
+| start_test | name, attributes | Called when a test case starts.<br>Contents of the attribute dictionary:<br><ul><li>`id`: Test id in format like `s1-s2-t2`, where the beginning is the parent suite id and the last part shows test index in that suite.</li><li>`longname`: Test name including parent suites.</li><li>`originalname`: Test name with possible variables unresolved. New in RF 3.2.</li><li>`doc`: Test documentation.</li><li>`tags`: Test tags as a list of strings.</li><li>`metadata`: [Free test metadata](../creating-test-data/creating-test-cases.md#free-test-metadata) as a dictionary. New in RF 7.5.</li><li>`template`: The name of the template used for the test. An empty string if the test not templated.</li><li>`source`: An absolute path of the test case source file. New in RF 4.0.</li><li>`lineno`: Line number where the test starts in the source file. New in RF 3.2.</li><li>`starttime`: Test execution execution start time.</li></ul> |
+| end_test | name, attributes | Called when a test case ends.<br>Contents of the attribute dictionary:<br><ul><li>`id`: Same as in `start_test`.</li><li>`longname`: Same as in `start_test`.</li><li>`originalname`: Same as in `start_test`.</li><li>`doc`: Same as in `start_test`.</li><li>`tags`: Same as in `start_test`.</li><li>`metadata`: Same as in `start_test`.</li><li>`template`: Same as in `start_test`.</li><li>`source`: Same as in `start_test`.</li><li>`lineno`: Same as in `start_test`.</li><li>`starttime`: Same as in `start_test`.</li><li>`endtime`: Test execution execution end time.</li><li>`elapsedtime`: Total execution time in milliseconds as an integer</li><li>`status`: Test status as string `PASS`, `FAIL` or `SKIP`.</li><li>`message`: Status message. Normally an error message or an empty string.</li></ul> |
 | start_keyword | name, attributes | Called when a keyword or a control structure such as `IF/ELSE` or `TRY/EXCEPT` starts.<br>With keywords `name` is the full keyword name containing possible library or resource name as a prefix like `MyLibrary.Example Keyword`. With control structures `name` contains string representation of parameters.<br>Keywords and control structures share most of attributes, but control structures can have additional attributes depending on their `type`.<br>Shared attributes:<br><ul><li>`type`: String specifying type of the started item. Possible values are: `KEYWORD`, `SETUP`, `TEARDOWN`, `FOR`, `WHILE`, `ITERATION`, `IF`, `ELSE IF`, `ELSE`, `TRY`, `EXCEPT`, `FINALLY`, `VAR`, `RETURN`, `BREAK`, `CONTINUE` and `ERROR`. All type values were changed in RF 4.0 and in RF 5.0 `FOR ITERATION` was changed to `ITERATION`.</li><li>`kwname`: Name of the keyword without library or resource prefix. String representation of parameters with control structures.</li><li>`libname`: Name of the library or resource file the keyword belongs to. An empty string with user keywords in a test case file and with control structures.</li><li>`doc`: Keyword documentation.</li><li>`args`: Keyword's arguments as a list of strings.</li><li>`assign`: A list of variable names that keyword's return value is assigned to.</li><li>`tags`: [Keyword tags](creating-test-libraries.md#keyword-tags) as a list of strings.</li><li>`source`: An absolute path of the file where the keyword was used. New in RF 4.0.</li><li>`lineno`: Line where the keyword was used. Typically an integer, but can be `None` if a keyword has been executed by a listener. New in RF 4.0.</li><li>`status`: Initial keyword status. `NOT RUN` if keyword is not executed (e.g. due to an earlier failure), `NOT SET` otherwise. New in RF 4.0.</li><li>`starttime`: Keyword execution start time.</li></ul><br>Additional attributes for `FOR` types:<br><ul><li>`variables`: Assigned variables for each loop iteration as a list or strings.</li><li>`flavor`: Type of loop (e.g. `IN RANGE`).</li><li>`values`: List of values being looped over as a list or strings.</li><li>`start`: Start configuration. Only used with `IN ENUMERATE` loops. New in RF 6.1.</li><li>`mode`: Mode configuration. Only used with `IN ZIP` loops. New in RF 6.1.</li><li>`fill`: Fill value configuration. Only used with `IN ZIP` loops. New in RF 6.1.</li></ul><br>Additional attributes for `ITERATION` types with `FOR` loops:<br><ul><li>`variables`: Variables and string representations of their contents for one `FOR` loop iteration as a dictionary.</li></ul><br>Additional attributes for `WHILE` types:<br><ul><li>`condition`: The looping condition.</li><li>`limit`: The maximum iteration limit.</li><li>`on_limit`: What to do if the limit is exceeded. Valid values are `pass` and `fail`. New in RF 7.0.</li><li>`on_limit_message`: The custom error raised when the limit of the WHILE loop is reached. New in RF 6.1.</li></ul><br>Additional attributes for `IF` and `ELSE IF` types:<br><ul><li>`condition`: The conditional expression being evaluated. With `ELSE IF` new in RF 6.1.</li></ul><br>Additional attributes for `EXCEPT` types:<br><ul><li>`patterns`: The exception patterns being matched as a list or strings.</li><li>`pattern_type`: The type of pattern match (e.g. `GLOB`).</li><li>`variable`: The variable containing the captured exception.</li></ul><br>Additional attributes for `RETURN` types:<br><ul><li>`values`: Return values from a keyword as a list or strings.</li></ul><br>Additional attributes for `VAR` types:<br><ul><li>`name`: Variable name.</li><li>`value`: Variable value. A string with scalar variables and a list otherwise.</li><li>`scope`: Variable scope (e.g. `GLOBAL`) as a string.</li></ul><br>Additional attributes for control structures are in general new in RF 6.0. `VAR` is new in RF 7.0. |
 | end_keyword | name, attributes | Called when a keyword or a control structure ends.<br>`name` is the full keyword name containing possible library or resource name as a prefix. For example, `MyLibrary.Example Keyword`.<br>Control structures have additional attributes, which change based on the `type` attribute. For descriptions of all possible attributes, see the `start_keyword` section.<br>Contents of the attribute dictionary:<br><ul><li>`type`: Same as with `start_keyword`.</li><li>`kwname`: Same as with `start_keyword`.</li><li>`libname`: Same as with `start_keyword`.</li><li>`doc`: Same as with `start_keyword`.</li><li>`args`: Same as with `start_keyword`.</li><li>`assign`: Same as with `start_keyword`.</li><li>`tags`: Same as with `start_keyword`.</li><li>`source`: Same as with `start_keyword`.</li><li>`lineno`: Same as with `start_keyword`.</li><li>`starttime`: Same as with `start_keyword`.</li><li>`endtime`: Keyword execution end time.</li><li>`elapsedtime`: Total execution time in milliseconds as an integer</li><li>`status`: Keyword status as string `PASS`, `FAIL`, `SKIP` or `NOT RUN`. `SKIP` and `NOT RUN` are new in RF 4.0.</li></ul> |
 | log_message | message | Called when an executed keyword writes a log message.<br>`message` is a dictionary with the following contents:<br><ul><li>`message`: The content of the message.</li><li>`level`: [Log level](../executing-tests/result-files.md#log-levels) used in logging the message.</li><li>`timestamp`: Message creation time in format `YYYY-MM-DD hh:mm:ss.mil`.</li><li>`html`: String `yes` or `no` denoting whether the message should be interpreted as HTML or not.</li></ul><br>Not called if the message level is below the current [threshold level](../executing-tests/result-files.md#log-levels). |
@@ -215,7 +217,7 @@ an absolute or a relative path to the listener file [similarly as with test
 libraries](../creating-test-data/using-test-libraries.md#using-physical-path-to-library). It is possible to take multiple listeners
 into use by using this option several times:
 
-```
+```text
 robot --listener MyListener tests.robot
 robot --listener path/to/MyListener.py tests.robot
 robot --listener module.Listener --listener AnotherListener tests.robot
@@ -230,7 +232,7 @@ alternative argument separator. This is useful if listener arguments
 themselves contain colons, but requires surrounding the whole value with
 quotes on UNIX-like operating systems:
 
-```
+```text
 robot --listener listener.py:arg1:arg2 tests.robot
 robot --listener "listener.py;arg:with:colons" tests.robot
 robot --listener c:\path\listener.py;d:\first\arg;e:\second\arg tests.robot
@@ -240,7 +242,7 @@ In addition to passing arguments one-by-one as positional arguments, it is
 possible to pass them using the [named argument syntax](../creating-test-data/creating-test-cases.md#named-argument-syntax) similarly as when using
 keywords:
 
-```
+```text
 robot --listener listener.py:name=value tests.robot
 robot --listener "listener.py;name=value:with:colons;second=argument" tests.robot
 ```
@@ -256,9 +258,10 @@ class Listener:
         self.port = post
         self.log = log
 ```
+
 could be used like
 
-```
+```text
 robot --listener Listener:8270:false
 ```
 
@@ -286,7 +289,7 @@ attribute. The value of this attribute should be an instance of the listener
 to use. It may be a totally independent listener or the library itself can
 act as a listener. To avoid listener methods to be exposed as keywords in
 the latter case, it is possible to prefix them with an underscore.
-For example, instead of using `end_suite[it is possible to use](#it-is-possible-to-use)end_suite`.
+For example, instead of using `end_suite` it is possible to use `_end_suite`.
 
 Following examples illustrates using an external listener as well as a library
 acting as a listener itself:
@@ -301,6 +304,7 @@ class LibraryWithExternalListener:
     def example_keyword(self):
          ...
 ```
+
 ```python
 class LibraryItselfAsListener:
     ROBOT_LIBRARY_SCOPE = 'SUITE'
@@ -316,6 +320,7 @@ class LibraryItselfAsListener:
     def example_keyword(self):
          ...
 ```
+
 As the second example above already demonstrated, library listeners can
 specify [listener interface versions](#listener-interface-versions) using the `ROBOT_LISTENER_API_VERSION`
 attribute exactly like any other listener.
@@ -340,6 +345,7 @@ class LibraryItselfAsListener:
     def example_keyword(self):
          ...
 ```
+
 It is also possible to specify multiple listeners for a single library by
 giving `ROBOT_LIBRARY_LISTENER` a value as a list:
 
@@ -352,6 +358,7 @@ class LibraryWithMultipleListeners:
     def example_keyword(self):
          ...
 ```
+
 #### Called listener methods
 
 Library listeners get notifications about all events in suites where
@@ -401,10 +408,11 @@ def end_test(name, attrs):
         print(f"Test '{name}'" failed: {attrs['message']}")
         input("Press enter to continue.")
 ```
+
 If the above example would be saved to, for example, `PauseExecution.py`{.file}
 file, it could be used from the command line like this:
 
-```
+```text
 robot --listener path/to/PauseExecution.py tests.robot
 ```
 
@@ -445,6 +453,7 @@ class Example:
     def close(self):
          self.file.close()
 ```
+
 ### Modifying data and results
 
 The following examples illustrate how to modify the executed tests and suites
@@ -464,6 +473,7 @@ def start_suite(data, result):
 def start_test(data, result):
     data.body.create_keyword(name='Log', args=['Keyword added by listener!'])
 ```
+
 This API is very similar to the [pre-run modifier](../executing-tests/configuring-execution.md#pre-run-modifier) API that can be used
 to modify suites and tests before the whole test execution starts. The main
 benefit of using the listener API is that modifications can be done
@@ -483,6 +493,7 @@ def start_suite(suite, result):
     selector = SelectEveryXthTest(x=2)
     suite.visit(selector)
 ```
+
 #### Accessing library or resource file
 
 It is possible to get more information about the actually executed keyword and
@@ -501,6 +512,7 @@ def start_library_keyword(data: KeywordData,
           f"{implementation.lineno}. The library has {library.scope.name} "
           f"scope and the current instance is {library.instance}.")
 ```
+
 As the above example illustrates, it is possible to get an access to the actual
 library instance. This means that listeners can inspect the library state and also
 modify it. With user keywords it is even possible to modify the keyword itself or,
@@ -542,6 +554,7 @@ class ResultModifier:
     def _message_is_not_relevant(self, message: str) -> bool:
         ...
 ```
+
 A limitation is that modifying the name of the current test suite or test
 case is not possible because it has already been written to the [output.xml](../executing-tests/execution-artifacts.md#outputxml)
 file when listeners are called. Due to the same reason modifying already
@@ -591,6 +604,7 @@ class KeywordPerformanceMonitor:
             result.status = 'FAIL'
             result.message = 'Keyword execution took too long.'
 ```
+
 !!! note
     Changes to status only affect the execution flow starting from
     Robot Framework 7.1.

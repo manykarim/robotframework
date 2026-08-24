@@ -40,7 +40,10 @@ def mask_fenced_blocks(text: str) -> str:
     fence_char = None
     fence_count = 0
     for line in text.split('\n'):
-        m = re.match(r'^(`{3,}|~{3,})(.*)$', line)
+        # Allow a leading indent so fences nested inside a list item are masked
+        # too — otherwise the nested code's `def foo():` line is scanned as a
+        # definition term and gets a bogus `: ` marker injected.
+        m = re.match(r'^[ \t]*(`{3,}|~{3,})(.*)$', line)
         opening_now = False
         closing_now = False
         if m:
@@ -67,9 +70,11 @@ def mask_fenced_blocks(text: str) -> str:
 # Backticks are allowed because backtick-wrapped names are common def-list
 # terms in the RF guide (e.g. `\`robot:exit-on-failure\`` for reserved tags).
 _TERM_RE = re.compile(r'^[^\s#\->\*\d:|][^\n]*$')
-# Body: 3 or 4 leading spaces, first non-space NOT ':' (to stay idempotent),
-# and not a list marker.
-_BODY_RE = re.compile(r'^( {3,4})(?![:\s])(\S[^\n]*)$')
+# Body: 2, 3 or 4 leading spaces, first non-space NOT ':' (to stay idempotent),
+# and not a list marker. 2-space is the RST minimum indent — the
+# ROBOT_LIBRARY_SCOPE list (`TEST`/`SUITE`/`GLOBAL`) uses it, and without it the
+# term merged with its body into one paragraph instead of a <dl>.
+_BODY_RE = re.compile(r'^( {2,4})(?![:\s])(\S[^\n]*)$')
 
 
 def _is_list_marker(line: str) -> bool:
@@ -88,70 +93,85 @@ def convert_definition_lists(content: str) -> Tuple[str, int]:
     n = len(src_lines)
     conversions = 0
 
+    conv = [0]  # boxed so the nested helper can increment it
+
+    def convert_item(term_idx):
+        """Convert one definition item (term at term_idx, body at term_idx+1).
+
+        Returns the index just past the body (start of the next line), or None
+        if term_idx is not a valid term+body pair. Does NOT require a blank line
+        before the term, so CONSECUTIVE items (no blank between them) convert as
+        part of the same definition list — matching docutils, which renders a run
+        of `term\\n  body\\nterm\\n  body` as a single multi-item <dl>.
+        """
+        body_idx = term_idx + 1
+        if term_idx >= n or body_idx >= n:
+            return None
+        term_m = mask_lines[term_idx]
+        body_m = mask_lines[body_idx]
+        if term_m == '' or body_m == '':          # inside a fence (masked blank)
+            return None
+        if not _TERM_RE.match(term_m) or _is_list_marker(term_m):
+            return None
+        bmatch = _BODY_RE.match(body_m)            # 2-4 space body, not `: ` already
+        if not bmatch:
+            return None
+        ts = term_m.strip()
+        if (ts.startswith('|') or ts.startswith('<') or ts.startswith('!!!')
+                or ts.startswith('???') or re.match(r'^https?://', ts)):
+            return None
+
+        body_indent = len(bmatch.group(1))
+        out[body_idx] = f': {bmatch.group(2)}'
+        conv[0] += 1
+
+        # Re-indent the rest of the definition body to 4 spaces so multi-line and
+        # multi-paragraph definitions stay inside the <dd>. Internal blank lines
+        # are kept while a following line is still indented to the body column; a
+        # blank followed by a column-0 line (or a dedent) ends the definition.
+        j = body_idx + 1
+        while j < n:
+            cont = mask_lines[j]
+            if cont == '':
+                k = j + 1
+                while k < n and mask_lines[k] == '':
+                    k += 1
+                if k < n and re.match(r'^ {' + str(body_indent) + r',}\S', mask_lines[k]):
+                    j += 1               # internal blank — keep, stay in def
+                    continue
+                break                    # blank ends the definition
+            cm = re.match(r'^( +)(\S.*)$', cont)
+            if cm and len(cm.group(1)) >= body_indent:
+                extra = len(cm.group(1)) - body_indent
+                src_m = re.match(r'^( +)(\S.*)$', src_lines[j])
+                text = src_m.group(2) if src_m else src_lines[j].strip()
+                out[j] = ' ' * (4 + extra) + text
+                j += 1
+                continue
+            break
+        return j
+
     i = 0
     while i < n - 2:
         prev_blank = (i == 0) or (mask_lines[i].strip() == '')
         if not prev_blank:
             i += 1
             continue
-        # Term candidate is i+1; body candidate is i+2
-        term_idx = i + 1
-        body_idx = i + 2
-        if term_idx >= n or body_idx >= n:
-            break
-
-        term_line_masked = mask_lines[term_idx]
-        body_line_masked = mask_lines[body_idx]
-
-        # Term/body must both be in unmasked region (mask sets fenced lines to '').
-        # If either was inside a fence, masked == ''.
-        if term_line_masked == '' or body_line_masked == '':
+        end = convert_item(i + 1)
+        if end is None:
             i += 1
             continue
-
-        if not _TERM_RE.match(term_line_masked):
-            i += 1
-            continue
-        if _is_list_marker(term_line_masked):
-            i += 1
-            continue
-        body_match = _BODY_RE.match(body_line_masked)
-        if not body_match:
-            i += 1
-            continue
-
-        # Skip table rows (pipes), HTML tags, bare URLs, admonition headers.
-        term_stripped = term_line_masked.strip()
-        if term_stripped.startswith('|') or term_stripped.startswith('<'):
-            i += 1
-            continue
-        if re.match(r'^https?://', term_stripped):
-            i += 1
-            continue
-        if term_stripped.startswith('!!!') or term_stripped.startswith('???'):
-            i += 1
-            continue
-
-        body_text = body_match.group(2)
-        # def_list extension expects ': ' at column 0; use the canonical form.
-        out[body_idx] = f': {body_text}'
-        conversions += 1
-
-        # Skip past body so we don't re-evaluate continuation lines.
-        j = body_idx + 1
-        while j < n:
-            cont = mask_lines[j]
-            if cont == '':
-                # blank line might end def or be inside a multi-paragraph def;
-                # safest: treat blank as end-of-def for next-iteration scan.
+        # Keep converting CONSECUTIVE items (no blank between them) as part of
+        # the same <dl>; without this, only the blank-preceded first item was
+        # converted and the rest collapsed into a run-on paragraph.
+        while end < n - 1:
+            nxt = convert_item(end)
+            if nxt is None:
                 break
-            if re.match(r'^( {3,4})\S', cont):
-                # continuation line stays as-is
-                j += 1
-                continue
-            break
-        i = j
+            end = nxt
+        i = end
 
+    conversions = conv[0]
     return '\n'.join(out), conversions
 
 

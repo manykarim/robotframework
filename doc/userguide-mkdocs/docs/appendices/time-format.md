@@ -42,7 +42,7 @@ times. The available time specifiers are:
 
 Examples:
 
-```
+```text
 1 min 30 secs
 1.5 minutes
 90 s

@@ -343,6 +343,7 @@ Positional and named
 Intermediate missing
     Dynamic    x      c=z           # [x, d1, z]    # [x], {c: z}
 ```
+
 !!! note
     Prior to Robot Framework 3.1, all normal named arguments were
     mapped to positional arguments and the optional `kwargs` was
@@ -388,6 +389,7 @@ Positional as named and free named
     Dynamic    a=1    x=1           # [], {a: 1, x: 1}
     Dynamic    b=2    x=1    a=1    # [], {a: 1, b: 2, x: 1}
 ```
+
 !!! note
     Prior to Robot Framework 3.1, normal named arguments were mapped
     to positional arguments but nowadays they are part of the

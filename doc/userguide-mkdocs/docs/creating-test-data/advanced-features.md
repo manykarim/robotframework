@@ -18,20 +18,20 @@ highest priority based on its scope. The keyword's scope is determined
 on the basis of how the keyword in question is created:
 
 1. Created as a user keyword in the currently executed [suite file](creating-test-suites.md#suite-files).
-   These keywords have the highest priority and they are always used, even
-   if there are other keywords with the same name elsewhere.
+    These keywords have the highest priority and they are always used, even
+    if there are other keywords with the same name elsewhere.
 
 2. Created in a resource file and imported either directly or
-   indirectly from another resource file. This is the second-highest
-   priority.
+    indirectly from another resource file. This is the second-highest
+    priority.
 
 3. Created in an external test library. These keywords are used, if
-   there are no user keywords with the same name. However, if there is
-   a keyword with the same name in the standard library, a warning is
-   displayed.
+    there are no user keywords with the same name. However, if there is
+    a keyword with the same name in the standard library, a warning is
+    displayed.
 
 4. Created in a standard library. These keywords have the lowest
-   priority.
+    priority.
 
 ### Specifying a keyword explicitly
 
@@ -190,6 +190,7 @@ Run Keyword with Timeout
     [Timeout]    ${timeout}
     Run Keyword    ${keyword}    @{args}    &{kwargs}
 ```
+
 A user keyword timeout is applicable during the execution of that user
 keyword. If the total time of the whole keyword is longer than the
 timeout value, the currently executed keyword is stopped. User keyword

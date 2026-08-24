@@ -52,6 +52,7 @@ Second Example
         Log    ${var}
     END
 ```
+
 The `FOR` loop in *Example*{.name} above is executed twice, so that first
 the loop variable `${animal}` has the value `cat` and then
 `dog`. The loop consists of two *Log*{.name} keywords. In the
@@ -86,6 +87,7 @@ Example
     \    Log    2nd keyword
     Log    Outside loop
 ```
+
 The old syntax was deprecated in Robot Framework 3.2 and the support for it was
 removed altogether in Robot Framework 4.0.
 
@@ -104,6 +106,7 @@ Handle Table
         END
     END
 ```
+
 There can be multiple nesting levels and loops can also be combined with
 other control structures:
 
@@ -123,6 +126,7 @@ Multiple nesting levels
         END
     END
 ```
+
 ### Using several loop variables
 
 It is possible to iterate over multiple values in one iteration by using
@@ -147,6 +151,7 @@ Multiple loop variables
         Create    ${name}    ${id}
     END
 ```
+
 ### `FOR-IN-RANGE` loop
 
 All `FOR` loops in the previous section iterated over a sequence. That is the most
@@ -212,6 +217,7 @@ Float parameters
         Log    ${index}
     END
 ```
+
 ### `FOR-IN-ENUMERATE` loop
 
 Sometimes it is useful to loop over a list and also keep track of your location
@@ -244,6 +250,7 @@ FOR-IN-ENUMERATE
         My Keyword    ${index}    ${item}
     END
 ```
+
 Starting from Robot Framework 4.0, it is possible to specify a custom start index
 by using `start=<index>` syntax as the last item of the `FOR ... IN ENUMERATE ...`
 header:
@@ -264,6 +271,7 @@ Start as variable
         My Keyword    ${index}    ${item}
     END
 ```
+
 The `start=<index>` syntax must be explicitly used in the `FOR` header and it cannot
 itself come from a variable. If the last actual item to enumerate would start with
 `start=`, it needs to be escaped like `start\=`.
@@ -282,6 +290,7 @@ FOR-IN-ENUMERATE with two values per iteration
         Log    "${en}" in English is "${fi}" in Finnish (index: ${index})
     END
 ```
+
 If you only use one loop variable with `FOR-IN-ENUMERATE` loops, that variable
 will become a Python tuple containing the index and the iterated value:
 
@@ -293,6 +302,7 @@ FOR-IN-ENUMERATE with one loop variable
         Log    Index is ${x}[0] and item is ${x}[1].
     END
 ```
+
 !!! note
     `FOR-IN-ENUMERATE` loops with only one loop variable is a new
     feature in Robot Framework 3.2.
@@ -322,6 +332,7 @@ FOR-IN-ZIP
         Log Many    ${number}    ${name}
     END
 ```
+
 As the example above illustrates, `FOR-IN-ZIP` loops require their own custom
 separator `IN ZIP` (case-sensitive) between loop variables and values.
 Values used with `FOR-IN-ZIP` loops must be lists or list-like objects.
@@ -343,6 +354,7 @@ FOR-IN-ZIP with lists from variable
         Log Many    ${number}    ${name}
     END
 ```
+
 The number of lists to iterate over is not limited, but it must match
 the number of loop variables. Alternatively, there can be just one loop
 variable that then becomes a Python tuple getting items from all lists.
@@ -365,6 +377,7 @@ FOR-IN-ZIP with one variable
         Log Many    ${items}[0]    ${items}[1]    ${items}[2]
     END
 ```
+
 Starting from Robot Framework 6.1, it is possible to configure what to do if
 lengths of the iterated items differ. By default, the shortest item defines how
 many iterations there are and values at the end of longer ones are ignored.
@@ -415,6 +428,7 @@ LONGEST mode with custom fill value
         Log    ${c}: ${n}
     END
 ```
+
 !!! note
     The behavior if list lengths differ will change in the future
     so that the `STRICT` mode will be the default. If that is not desired,
@@ -450,6 +464,7 @@ Multiple dictionaries and extra items in 'key=value' syntax
         Log    Key is '${key}' and value is '${value}'.
     END
 ```
+
 Typically it is easiest to use the dictionary iteration syntax so that keys
 and values get separate variables like in the above examples. With normal `FOR`
 loops it is also possible to use just a single variable that will become
@@ -476,6 +491,7 @@ Two loop variables with FOR-IN-ENUMERATE
         Log    On round ${index} key is '${item}[0]' and value is '${item}[1]'.
     END
 ```
+
 In addition to iterating over names and values in dictionaries, it is possible
 to iterate over keys and then possibly fetch the value based on it. This syntax
 requires using dictionaries as [list variables](variables.md#list-variables):
@@ -487,6 +503,7 @@ Iterate over keys
         Log    Key is '${key}' and value is '${DICT}[${key}]'.
     END
 ```
+
 !!! note
     Iterating over keys and values in dictionaries is a new feature in
     Robot Framework 3.2. With earlier version it is possible to iterate
@@ -510,6 +527,7 @@ Variable conversion
         Log    ${item}     formatter=repr
     END
 ```
+
 !!! note
     Variable type conversion is new in Robot Framework 7.3.
 
@@ -536,6 +554,7 @@ Example
     Repeat Keyword    42 times    My Keyword
     Repeat Keyword    ${var}    Another Keyword    argument
 ```
+
 <a id="while"></a>
 ## `WHILE loops`
 
@@ -558,6 +577,7 @@ Example
         ${rc} =    Keyword that returns zero on success
     END
 ```
+
 The `WHILE` loop condition is evaluated in Python so that Python builtins like
 `len()` are available and modules are imported automatically to support usages
 like `math.pi * math.pow(${radius}, 2) < 10`.
@@ -614,6 +634,7 @@ No limit
         Log    This runs forever.
     END
 ```
+
 !!! note
     Support for using `times` and `x` suffixes with iteration counts
     is new in Robot Framework 7.0.
@@ -644,6 +665,7 @@ Continue when time limit is reached
     END
     Log    This will be executed normally.
 ```
+
 By default, the error message raised when the limit is reached is
 `WHILE loop was aborted because it did not finish within the limit of 0.5
 seconds. Use the 'limit' argument to increase or remove the limit if
@@ -657,6 +679,7 @@ Limit as iteration count
         Log    This is run 0.5 seconds.
     END
 ```
+
 !!! note
     `on_limit_message` configuration parameter is new in Robot Framework 6.1.
 
@@ -680,6 +703,7 @@ Nesting WHILE
         END
     END
 ```
+
 ### Removing unnecessary keywords from outputs
 
 `WHILE` loops with multiple iterations often create lots of output and
@@ -744,6 +768,7 @@ Invalid BREAK
     [Documentation]    This keyword fails due to invalid syntax.
     BREAK
 ```
+
 !!! note
     `BREAK` and `CONTINUE` statements are new in Robot Framework 5.0 similarly
     as `WHILE`. Earlier versions supported controlling `FOR` loops using
@@ -785,6 +810,7 @@ Example
        Another keyword
    END
 ```
+
 The condition is evaluated in Python so that Python builtins like
 `len()` are available and modules are imported automatically to support usages like
 `platform.system() == 'Linux'` and `math.ceil(${x}) == 1`.
@@ -814,6 +840,7 @@ Example
         Another keyword
     END
 ```
+
 ### `ELSE IF` branches
 
 Robot Framework also supports `ELSE IF` branches that have their own condition
@@ -839,6 +866,7 @@ Example
         Fail    Unexpected rc: ${rc}
     END
 ```
+
 Notice that this example uses the `${rc}` variable in the special `$rc` format to
 avoid evaluation failures if it is not a number. See the aforementioned
 [Evaluating expressions](../appendices/evaluating-expressions.md#evaluating-expressions) appendix for more information about this syntax.
@@ -866,6 +894,7 @@ Inline IF
     IF    $condition1    Keyword    argument
     IF    $condition2    RETURN
 ```
+
 The inline `IF` syntax supports also `ELSE` and `ELSE IF` branches:
 
 ```robotframework
@@ -876,6 +905,7 @@ Inline IF/ELSE
 Inline IF/ELSE IF/ELSE
     IF    $cond1    Keyword 1    ELSE IF    $cond2    Keyword 2    ELSE IF    $cond3    Keyword 3    ELSE    Keyword 4
 ```
+
 As the latter example above demonstrates, inline `IF` with several `ELSE IF`
 and `ELSE` branches starts to get hard to understand. Long inline `IF`
 structures can be [split into multiple lines](test-data-syntax.md#dividing-data-to-several-rows) using the common `...`
@@ -939,6 +969,7 @@ One item without logging value
 Multiple items
     Log items    a    b    c
 ```
+
 ### Other ways to execute keywords conditionally
 
 There are also other methods to execute keywords conditionally:
@@ -996,6 +1027,7 @@ First example
     END
     Keyword Outside
 ```
+
 In the above example, if `Some Keyword` passes, the `EXCEPT` branch is not run
 and execution continues after the `TRY/EXCEPT` structure. If the keyword fails
 with a message `Error message` (case-sensitive), the `EXCEPT` branch is executed.
@@ -1030,6 +1062,7 @@ Multiple messages with one EXCEPT
         Error handler
     END
 ```
+
 It is also possible to have an `EXCEPT` without messages, in which case it matches
 any error. There can be only one such `EXCEPT` and it must follow possible
 other `EXCEPT` branches:
@@ -1052,6 +1085,7 @@ Match any after testing more specific errors
         Error Handler 2
     END
 ```
+
 ### Matching errors using patterns
 
 By default matching an error using `EXCEPT` requires an exact match. That can be
@@ -1102,6 +1136,7 @@ Explicit exact match
         Error Handler 2
     END
 ```
+
 !!! note
     Remember that the backslash character often used with regular expressions
     is an [escape character](test-data-syntax.md#escaping) in Robot Framework data. It thus needs to be
@@ -1128,6 +1163,7 @@ Capture error
         Error Handler 3    ${error}
     END
 ```
+
 ### Using `ELSE` to execute keywords when there are no errors
 
 Optional `ELSE` branches make it possible to execute keywords if there is no error.
@@ -1148,6 +1184,7 @@ ELSE branch
     END
     Keyword Outside
 ```
+
 In the above example, if `Some Keyword` passes, the `ELSE` branch is executed,
 and if it fails with message `X` or `Y`, the appropriate `EXCEPT` branch run.
 In all these cases execution continues after the whole `TRY/EXCEPT/ELSE` structure.
@@ -1168,11 +1205,12 @@ Handle everything
         Log    No error occurred!
     END
 ```
+
 ### Using `FINALLY` to execute keywords regardless are there errors or not
 
 Optional `FINALLY` branches make it possible to execute keywords both when there
 is an error and when there is not. They are thus suitable for cleaning up
-after a keyword execution somewhat similarly as [teardowns](../executing-tests/test-execution.md#handling-teardowns). There can be only one
+after a keyword execution somewhat similarly as [teardowns](../executing-tests/test-execution.md#skips-teardowns). There can be only one
 `FINALLY` branch and it must always be last. They can be used in combination with
 `EXCEPT` and `ELSE` branches and having also `TRY/FINALLY` structure is possible:
 
@@ -1197,6 +1235,7 @@ TRY/FINALLY
         Close Connection
     END
 ```
+
 ### Other ways to handle errors
 
 There are also other methods to execute keywords conditionally:
@@ -1264,6 +1303,7 @@ Nesting
         END
     END
 ```
+
 As the above examples demonstrates, groups can have a name, but the name is
 optional. Groups can also be nested freely with each others and with other
 control structures.
@@ -1313,6 +1353,7 @@ Upper case should be
     ${actual} =    Convert To Upper Case    ${char}
     Should Be Equal    ${actual}    ${expected}
 ```
+
 ### Programmatic usage
 
 One of the primary usages for groups is making it possible to create structured
@@ -1331,3 +1372,4 @@ class GroupAdder(SuiteVisitor):
         group.body.create_keyword(name='Log', args=['Hello, world!'])
         group.body.create_keyword(name='No Operation')
 ```
+

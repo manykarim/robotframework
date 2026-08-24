@@ -17,7 +17,7 @@ otherwise [post-processed](post-processing.md#post-processing-outputs) with the 
 
 ### Synopsis
 
-```
+```text
 robot [options] data
 python -m robot [options] data
 python path/to/robot/ [options] data
@@ -48,7 +48,7 @@ are illustrated in the examples below. Note that in these examples, as
 well as in other examples in this section, only the `robot` script
 is used, but other execution approaches could be used similarly.
 
-```
+```text
 robot tests.robot
 robot path/to/my_tests/
 robot c:\robot\tests.robot
@@ -72,7 +72,7 @@ often quite long and complicated. In most cases, it is thus better to
 use the `--name`{.option} option for overriding it, as in the second
 example below:
 
-```
+```text
 robot my_tests.robot your_tests.robot
 robot --name Example path/to/tests/pattern_*.robot
 ```
@@ -82,7 +82,7 @@ Starting from Robot Framework 6.1, it is also possible to define a
 suite. The path to the init file is given similarly to the
 test case files:
 
-```
+```text
 robot __init__.robot my_tests.robot other_tests.robot
 ```
 
@@ -99,7 +99,7 @@ in this chapter.
 When options are used, they must always be given between the runner
 script and the data sources. For example:
 
-```
+```text
 robot -L debug my_tests.robot
 robot --include smoke --variable HOST:10.0.0.42 path/to/tests/
 ```
@@ -171,7 +171,7 @@ Many command line options take arguments as *simple patterns*. These
 
 Examples:
 
-```
+```text
 --test Example*        # Matches tests with name starting 'Example'.
 --test Example[1-2]    # Matches tests 'Example1' and 'Example2'.
 --include f??          # Matches tests with a tag that starts with 'f' is three characters long.
@@ -204,7 +204,7 @@ case-insensitive, this works even if tags themselves would be upper case like `P
 `AND`
 : The whole pattern matches if all individual patterns match:
 
-```
+```text
 --include fooANDbar     # Matches tests containing tags 'foo' and 'bar'.
 --exclude xANDyANDz     # Matches tests containing tags 'x', 'y', and 'z'.
 ```
@@ -212,33 +212,31 @@ case-insensitive, this works even if tags themselves would be upper case like `P
 `OR`
 : The whole pattern matches if any individual pattern matches:
 
-```
+```text
 --include fooORbar      # Matches tests containing either tag 'foo' or tag 'bar'.
 --exclude xORyORz       # Matches tests containing any of tags 'x', 'y', or 'z'.
 ```
 
 `NOT`
 : The whole pattern matches if the pattern on the left side of `NOT` matches,
-   but the pattern on the right side does not. If used multiple times, none of
-   the patterns after the first `NOT` can match:
+    but the pattern on the right side does not. If used multiple times, none of
+    the patterns after the first `NOT` can match:
 
-```
---include fooNOTbar     # Matches tests containing tag 'foo' but not tag 'bar'.
---exclude xNOTyNOTz     # Matches tests containing tag 'x' but not tag 'y' or tag 'z'.
-```
+```text
+   --include fooNOTbar     # Matches tests containing tag 'foo' but not tag 'bar'.
+   --exclude xNOTyNOTz     # Matches tests containing tag 'x' but not tag 'y' or tag 'z'.
 
-   The pattern can also start with `NOT`. In that case the pattern matches
-   if the pattern after `NOT` does not match:
+The pattern can also start with `NOT`. In that case the pattern matches
+if the pattern after `NOT` does not match::
 
-```
---include NOTfoo        # Matches tests not containing tag 'foo'.
---include NOTxANDy      # Matches tests not containing tags 'x' and 'y'.
+   --include NOTfoo        # Matches tests not containing tag 'foo'.
+   --include NOTxANDy      # Matches tests not containing tags 'x' and 'y'.
 ```
 
 The above operators can also be used together. The operator precedence,
 from highest to lowest, is `AND`, `OR` and `NOT`:
 
-```
+```text
 --include xANDyORz        # Matches tests containing either tags 'x' and 'y', or tag 'z'.
 --include xORyNOTz        # Matches tests containing either tag 'x' or 'y', but not tag 'z'.
 --include xNOTyANDz       # Matches tests containing tag 'x', but not tags 'y' and 'z'.
@@ -281,7 +279,7 @@ the command line. All executed test suites and test cases, as well as
 their statuses, are shown there in real time. The example below shows the
 output from executing a simple test suite with only two test cases:
 
-```
+```text
 ==============================================================================
 Example test suite
 ==============================================================================
@@ -380,6 +378,7 @@ Example below illustrates how errors and warnings look like in the log file.
   </tr>
 </table>
 
+<a id="read-more-arguments"></a>
 ## Argument files
 
 Argument files allow placing all or some command line options and arguments
@@ -404,7 +403,7 @@ Argument files can contain any characters without escaping, but spaces in
 the beginning and end of lines are ignored. Additionally, empty lines and
 lines starting with a hash mark (`#`) are ignored:
 
-```
+```text
 --doc This is an example (where "special characters" are ok!)
 --metadata X:Value with spaces
 --variable NAME:Hello, world!
@@ -417,7 +416,7 @@ space. It is possible to use either an equal
 sign (=) or any number of spaces. As an example, the following three lines are
 identical:
 
-```
+```text
 --name An Example
 --name=An Example
 --name       An Example
@@ -441,7 +440,7 @@ Environment variables can be used in format `$NAME` and `${NAME}`. In addition t
 that, default values are supported like `${NAME=default}`. If a literal dollar sign
 is needed, it can be escaped by doubling it like `$$not_var`:
 
-```
+```text
 # expandvars: true
 --name $NAME
 --doc ${NAME}v${VERSION}
@@ -453,7 +452,7 @@ Environment variables are not limited to option values. They can also contain
 option names, both names and values, and using the comment character even enables
 conditional options:
 
-```
+```text
 # expandvars: true
 --${NAME} ${VALUE}
 ${NAME_AND_VALUE}
@@ -475,7 +474,7 @@ option was. This means that options in argument files can override options
 before it, and its options can be overridden by options after it. It is possible
 to use `--argumentfile`{.option} option multiple times or even recursively:
 
-```
+```text
 robot --argumentfile all_options_and_arguments.txt
 robot --argumentfile defaults.args --name Example tests.robot
 robot -A first.txt -A second.txt -A third.txt tests.robot
@@ -487,11 +486,12 @@ Special argument file name `STDIN` can be used to read arguments from the
 standard input stream instead of a file. This can be useful when generating
 arguments with a script:
 
-```
+```text
 generate_arguments.sh | robot --argumentfile STDIN
 generate_arguments.sh | robot --name Example --argumentfile STDIN tests.robot
 ```
 
+<a id="usage-instructions"></a>
 ## Getting help and version information
 
 Both when executing tests and when post-processing outputs, it is possible
@@ -506,10 +506,10 @@ version and the platform type:
 ```bash
 $ robot --version
 Robot Framework 7.4 (Python 3.14.0 on linux)
-```
 
-   C:\>rebot --version
-   Rebot 7.3.1 (Python 3.13.7 on win32)
+C:\>rebot --version
+Rebot 7.3.1 (Python 3.13.7 on win32)
+```
 
 When help or version information is printed to the console, the execution
 exits with a special [return code](#return-codes) 251 by default. Starting from Robot
@@ -553,6 +553,7 @@ robot --name Firefox --variable BROWSER:Firefox --output out/fx.xml --log none -
 robot --name IE --variable BROWSER:IE --output out/ie.xml --log none --report none  $* login
 rebot --name Login --outputdir out --output login.xml out/fx.xml out/ie.xml
 ```
+
 ### Batch file example
 
 Implementing the above shell script example using batch files is not very
@@ -565,6 +566,7 @@ robot --name Firefox --variable BROWSER:Firefox --output out\fx.xml --log none -
 robot --name IE --variable BROWSER:IE --log none --output out\ie.xml --report none %* login
 rebot --name Login --outputdir out --output login.xml out\fx.xml out\ie.xml
 ```
+
 !!! note
     Prior to Robot Framework 3.1 `robot` and `rebot` commands were
     implemented as batch files on Windows and using them in another
@@ -595,6 +597,7 @@ run_cli(['--name', 'Firefox', '--variable', 'BROWSER:Firefox', '--output', 'out/
 run_cli(['--name', 'IE', '--variable', 'BROWSER:IE', '--output', 'out/ie.xml'] + common, exit=False)
 rebot_cli(['--name', 'Login', '--outputdir', 'out', 'out/fx.xml', 'out/ie.xml'])
 ```
+
 !!! note
     `exit=False` is needed because by default `run_cli` exits to
     system with the correct [return code](#return-codes). `rebot_cli` does that too,
@@ -613,6 +616,7 @@ like in this example:
 Example
     Log to console    Executing!
 ```
+
 If the above content would be in a file `example.robot`{.file} and that file
 would be executable, it could be executed from the command line like below.
 Starting from Robot Framework 3.2, individually executed files can have any
@@ -622,6 +626,7 @@ would be named just `example`{.file}.
 ```bash
 ./example.robot
 ```
+
 This trick does not work when executing a directory but can be handy when
 executing a single file. It is probably more often useful when
 [automating tasks](../creating-test-data/creating-tasks.md#creating-tasks) than when automating tests.
@@ -678,6 +683,7 @@ The typical way of invoking pdb by inserting:
 ```python
 import pdb; pdb.set_trace()
 ```
+
 at the location you want to break into debugger will not work correctly
 with Robot Framework, as the standard output stream is
 redirected during keyword execution. Instead, you can use the following:
@@ -685,10 +691,12 @@ redirected during keyword execution. Instead, you can use the following:
 ```python
 import sys, pdb; pdb.Pdb(stdout=sys.__stdout__).set_trace()
 ```
+
 from within a python library or alternatively:
 
 ```robotframework
 Evaluate    pdb.Pdb(stdout=sys.__stdout__).set_trace()    modules=sys, pdb
 ```
+
 can be used directly in a test case.
 

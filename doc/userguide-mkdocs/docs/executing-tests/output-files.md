@@ -201,7 +201,7 @@ the extension and the base name of each file. The example below would,
 for example, create output files like
 `output-20080604-163225.xml`{.file} and `mylog-20080604-163225.html`{.file}:
 
-```
+```text
 robot --timestampoutputs --log mylog.html --report NONE tests.robot
 ```
 
@@ -215,7 +215,7 @@ respectively.
 
 Example:
 
-```
+```text
 robot --logtitle "Smoke Test Log" --reporttitle "Smoke Test Report" --include smoke my_tests/
 ```
 
@@ -233,7 +233,7 @@ These colors can be customized by using the `--reportbackground`{.option}
 command line option, which takes two or three colors separated with a colon
 as an argument:
 
-```
+```text
 --reportbackground blue:red
 --reportbackground blue:red:orange
 --reportbackground #00E:#E00
@@ -272,28 +272,28 @@ log levels are:
 
 `ERROR`
 : Used for displaying errors. Errors are shown in [the console and in
-   the Test Execution Errors section in log files](basic-usage.md#errors-and-warnings-during-execution), but they
-   do not affect test case statuses. If the [--exitonerror option is enabled](test-execution.md#stopping-on-parsing-or-execution-error),
-   errors stop the whole execution, though,
+    the Test Execution Errors section in log files](basic-usage.md#errors-and-warnings-during-execution), but they
+    do not affect test case statuses. If the [--exitonerror option is enabled](test-execution.md#stopping-on-parsing-or-execution-error),
+    errors stop the whole execution, though,
 
 `WARN`
 : Used for displaying warnings. Warnings are shown in [the console and in
-   the Test Execution Errors section in log files](basic-usage.md#errors-and-warnings-during-execution), but they
-   do not affect test case statuses.
+    the Test Execution Errors section in log files](basic-usage.md#errors-and-warnings-during-execution), but they
+    do not affect test case statuses.
 
 `INFO`
 : The default level for normal messages. By default,
-   messages below this level are not shown in the log file.
+    messages below this level are not shown in the log file.
 
 `DEBUG`
 : Used for debugging purposes. Useful, for example, for
-   logging what libraries are doing internally. When a keyword fails,
-   a traceback showing where in the code the failure occurred is
-   logged using this level automatically.
+    logging what libraries are doing internally. When a keyword fails,
+    a traceback showing where in the code the failure occurred is
+    logged using this level automatically.
 
 `TRACE`
 : More detailed debugging level. The keyword arguments and return values
-   are automatically logged using this level.
+    are automatically logged using this level.
 
 ### Setting log level
 
@@ -334,7 +334,7 @@ that all messages are shown. The default visible log level can be changed using
 `--loglevel`{.option} option by giving the default after the normal log level
 separated by a colon:
 
-```
+```text
 --loglevel DEBUG:INFO
 ```
 
@@ -382,7 +382,7 @@ somewhat difficult to read. By default all suites are shown, but you can
 control this with the command line option `--suitestatlevel`{.option} which
 takes the level of suites to show as an argument:
 
-```
+```text
 --suitestatlevel 3
 ```
 
@@ -395,7 +395,7 @@ used to select which tags to display, similarly as
 `--include`{.option} and `--exclude`{.option} are used to [select test
 cases](configuring-execution.md#by-tag-names):
 
-```
+```text
 --tagstatinclude some-tag --tagstatinclude another-tag
 --tagstatexclude owner-*
 --tagstatinclude prefix-* --tagstatexclude prefix-13
@@ -414,7 +414,7 @@ The following examples illustrate creating combined tag statistics using
 different patterns, and the figure below shows a snippet of the resulting
 *Statistics by Tag*{.name} table:
 
-```
+```text
 --tagstatcombine owner-*
 --tagstatcombine smokeANDmytag
 --tagstatcombine smokeNOTowner-janne*
@@ -429,7 +429,7 @@ is, by default, just the given pattern. If this is not good enough, it
 is possible to give a custom name after the pattern by separating them
 with a colon (`:`):
 
-```
+```text
 --tagstatcombine "prio1ORprio2:High priority tests"
 ```
 
@@ -455,7 +455,7 @@ where "N" is the index of the match starting from 1.
 The following examples illustrate the usage of this option, and the
 figure below shows a snippet of the resulting *Statistics by Tag*{.name} table when example test data is executed with these options:
 
-```
+```text
 --tagstatlink mytag:http://www.google.com:Google
 --tagstatlink example-bug-*:http://example.com
 --tagstatlink owner-*:mailto:%1@domain.com?subject=Acceptance_Tests:Send_Mail
@@ -479,7 +479,7 @@ they are combined together and separated with an ampersand.
 
 Examples:
 
-```
+```text
 --tagdoc mytag:Example
 --tagdoc "regression:See http://example.com/info.html"
 --tagdoc "owner-*:Original author"
@@ -518,8 +518,8 @@ or warnings](../extending/creating-test-libraries.md#errors-and-warnings) are no
 
 `PASSED`
 : Remove keyword data from passed test cases. In most cases, log files
-   created using this option contain enough information to investigate
-   possible failures.
+    created using this option contain enough information to investigate
+    possible failures.
 
 `FOR`
 : Remove all passed iterations from [FOR loops](../creating-test-data/control-structures.md#for-loops) except the last one.
@@ -529,26 +529,26 @@ or warnings](../extending/creating-test-libraries.md#errors-and-warnings) are no
 
 `WUKS`
 : Remove all failing keywords inside [BuiltIn](../creating-test-data/using-test-libraries.md#builtin) keyword
-   *Wait Until Keyword Succeeds*{.name} except the last one.
+    *Wait Until Keyword Succeeds*{.name} except the last one.
 
 `NAME:<pattern>`
 : Remove data from all keywords matching the given pattern regardless the
-   keyword status. The pattern is matched against the full name of the keyword,
-   prefixed with the possible library or resource file name like
-   `MyLibrary.Keyword Name`. The pattern is case, space, and underscore
-   insensitive, and it supports [simple patterns](basic-usage.md#simple-patterns) with `*`, `?` and `[]`
-   as wildcards.
+    keyword status. The pattern is matched against the full name of the keyword,
+    prefixed with the possible library or resource file name like
+    `MyLibrary.Keyword Name`. The pattern is case, space, and underscore
+    insensitive, and it supports [simple patterns](basic-usage.md#simple-patterns) with `*`, `?` and `[]`
+    as wildcards.
 
 `TAG:<pattern>`
 : Remove data from keywords with tags that match the given pattern. Tags are
-   case and space insensitive and they can be specified using [tag patterns](basic-usage.md#tag-patterns)
-   where `*`, `?` and `[]` are supported as wildcards and `AND`, `OR` and `NOT`
-   operators can be used for combining individual tags or patterns together.
-   Can be used both with [library keyword tags](../extending/creating-test-libraries.md#keyword-tags) and [user keyword tags](../creating-test-data/creating-user-keywords.md#user-keyword-tags).
+    case and space insensitive and they can be specified using [tag patterns](basic-usage.md#tag-patterns)
+    where `*`, `?` and `[]` are supported as wildcards and `AND`, `OR` and `NOT`
+    operators can be used for combining individual tags or patterns together.
+    Can be used both with [library keyword tags](../extending/creating-test-libraries.md#keyword-tags) and [user keyword tags](../creating-test-data/creating-user-keywords.md#user-keyword-tags).
 
 Examples:
 
-```
+```text
 rebot --removekeywords all --output removed.xml output.xml
 robot --removekeywords passed --removekeywords for tests.robot
 robot --removekeywords name:HugeKeyword --removekeywords name:resource.* tests.robot
@@ -580,15 +580,15 @@ supports the following modes:
 
 `NAME:<pattern>`
 : Flatten keywords matching the given pattern. Pattern matching rules are
-   same as when [removing keywords](#removing-keywords) using the `NAME:<pattern>` mode.
+    same as when [removing keywords](#removing-keywords) using the `NAME:<pattern>` mode.
 
 `TAG:<pattern>`
 : Flatten keywords with tags matching the given pattern. Pattern matching
-   rules are same as when [removing keywords](#removing-keywords) using the `TAG:<pattern>` mode.
+    rules are same as when [removing keywords](#removing-keywords) using the `TAG:<pattern>` mode.
 
 Examples:
 
-```
+```text
 robot --flattenkeywords name:HugeKeyword --flattenkeywords name:resource.* tests.robot
 rebot --flattenkeywords foritem --output flattened.xml original.xml
 ```
@@ -626,18 +626,18 @@ in log file similar to failed keywords. Expanding supports the following modes:
 
 `NAME:<pattern>`
 : Expand keywords matching the given pattern. Pattern matching rules are
-   same as when [removing keywords](#removing-keywords) using the `NAME:<pattern>` mode.
+    same as when [removing keywords](#removing-keywords) using the `NAME:<pattern>` mode.
 
 `TAG:<pattern>`
 : Expand keywords with tags matching the given pattern. Pattern matching
-   rules are same as when [removing keywords](#removing-keywords) using the `TAG:<pattern>` mode.
+    rules are same as when [removing keywords](#removing-keywords) using the `TAG:<pattern>` mode.
 
 If you need to expand keywords matching different names or patterns, you can
 use the `--expandkeywords`{.option} multiple times.
 
 Examples:
 
-```
+```text
 robot --expandkeywords name:SeleniumLibrary.CapturePageScreenshot tests.robot
 rebot --expandkeywords tag:example --expandkeywords tag:another output.xml
 ```
@@ -666,7 +666,7 @@ milliseconds to hours can be omitted. For example, `2008-06-11
 
 Examples:
 
-```
+```text
 rebot --starttime 20080611-17:59:20.495 output1.xml output2.xml
 rebot --starttime 20080611-175920 --endtime 20080611-180242 *.xml
 rebot --starttime 20110302-1317 --endtime 20110302-11418 myoutput.xml
@@ -714,17 +714,18 @@ class ExecutionTimeChecker(SuiteVisitor):
             test.status = 'FAIL'
             test.message = 'Test execution took too long.'
 ```
+
 If the above modifier would be in file `ExecutionTimeChecker.py`{.file}, it
 could be used, for example, like this:
 
-```
+```text
 # Specify modifier as a path when running tests. Maximum time is 42 seconds.
 robot --prerebotmodifier path/to/ExecutionTimeChecker.py:42 tests.robot
-```
 
-    # Specify modifier as a name when using Rebot. Maximum time is 3.14 seconds.
-    # ExecutionTimeChecker.py must be in the module search path.
-    rebot --prerebotmodifier ExecutionTimeChecker:3.14 output.xml
+# Specify modifier as a name when using Rebot. Maximum time is 3.14 seconds.
+# ExecutionTimeChecker.py must be in the module search path.
+rebot --prerebotmodifier ExecutionTimeChecker:3.14 output.xml
+```
 
 If more than one model modifier is needed, they can be specified by using
 the `--prerebotmodifier`{.option} option multiple times. When executing tests,
@@ -766,3 +767,4 @@ export ROBOT_SYSLOG_LEVEL=DEBUG
 
 robot --name Syslog_example path/to/tests
 ```
+

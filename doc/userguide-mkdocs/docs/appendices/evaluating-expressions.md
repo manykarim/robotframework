@@ -27,6 +27,7 @@ Evaluate keyword
 Should Be True keyword
     Should Be True    ${x} > 0
 ```
+
 Notice that instead of creating complicated
 expressions, it is often better to move the logic into a [test library](../creating-test-data/using-test-libraries.md#using-test-libraries).
 That typically eases maintenance and also enhances execution speed.
@@ -65,6 +66,7 @@ Access modules
     Should Be Equal      ${{round(math.pi, 2)}}    ${3.14}
     Should Start With    ${{robot.__version__}}    4.
 ```
+
 A limitation of using modules is that nested modules like `rootmod.submod`
 can only be used if the root module automatically imports the submodule. That is
 not always the case and using such modules is not possible. An concrete example
@@ -92,6 +94,7 @@ Evaluate keyword with list comprehension
     ${items} =    Evaluate    [json.loads(item) for item in ('1', '"b"')]    modules=json
     Log    ${items}
 ```
+
 The *Evaluate*{.name} keyword also supports custom evaluation namespaces if further
 customization is needed. See its documentation in the [BuiltIn](../creating-test-data/using-test-libraries.md#builtin) library for more details.
 
@@ -127,6 +130,7 @@ Using normal variable syntax
         Log    Output contains FAIL
     END
 ```
+
 ### Special `$variable` syntax
 
 Quoting strings is not that convenient, but there are cases where replacing the variable
@@ -156,6 +160,7 @@ Only possible using special variable syntax
     Should Be True    $example is not None
     Should Be True    len($result) > 1 and $result[1] == 'OK'
 ```
+
 Using the `$variable` syntax slows down expression evaluation a little.
 This should not typically matter, but should be taken into account if
 complex expressions are evaluated often and there are strict time

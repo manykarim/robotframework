@@ -48,6 +48,7 @@ Setting Variables
     ${value} =    Get Some Value
     Should Be Equal    ${value}    Expected value
 ```
+
 !!! note
     Although test case names can contain any character, using `?` and
     especially `*` is not generally recommended because they are
@@ -67,19 +68,22 @@ below and explained later in this section.
 *[Documentation]*{.setting}
 : Used for specifying a [test case documentation](#test-case-name-and-documentation).
 
-*[Setup]*{.setting}, *[Teardown]*{.setting}
-: Specify [test setup and teardown](#test-setup-and-teardown).
-
 *[Tags]*{.setting}
 : Used for [tagging test cases](#tagging-test-cases).
 
+*[Metadata]*{.setting}
+: Used for setting [free test metadata](#free-test-metadata) as name-value pairs.
+
+*[Setup]*{.setting}, *[Teardown]*{.setting}
+: Specify [test setup and teardown](#test-setup-and-teardown).
+
 *[Template]*{.setting}
 : Specifies the [template keyword](#test-templates) to use. The test itself will contain only
-   data to use as arguments to that keyword.
+    data to use as arguments to that keyword.
 
 *[Timeout]*{.setting}
 : Used for setting a [test case timeout](advanced-features.md#test-case-timeout). [Timeouts](advanced-features.md#timeouts) are discussed in
-   their own section.
+    their own section.
 
 !!! note
     Setting names are case-insensitive, but the format used above is
@@ -97,6 +101,7 @@ Test With Settings
     [Tags]    dummy    owner-johndoe
     Log    Hello, world!
 ```
+
 ### Test case related settings in the Setting section
 
 The Setting section can have the following test case related
@@ -114,7 +119,7 @@ test case specific settings listed earlier.
 
 *Test Timeout*{.setting}
 : The default value for [test case timeout](advanced-features.md#test-case-timeout). [Timeouts](advanced-features.md#timeouts) are discussed in
-   their own section.
+    their own section.
 
 ## Using arguments
 
@@ -157,6 +162,7 @@ Example
     Copy File    ${CURDIR}/file.txt    ${TEMPDIR}/stuff
     No Operation
 ```
+
 ### Default values
 
 Arguments often have default values which can either be given or
@@ -178,6 +184,7 @@ Example
     Create File    ${TEMPDIR}/utf-8.txt         Hyvä esimerkki
     Create File    ${TEMPDIR}/iso-8859-1.txt    Hyvä esimerkki    ISO-8859-1
 ```
+
 <a id="varargs-usage"></a>
 ### Variable number of arguments
 
@@ -198,6 +205,7 @@ Example
     Remove Files    ${TEMPDIR}/f1.txt    ${TEMPDIR}/f2.txt    ${TEMPDIR}/f3.txt
     @{paths} =    Join Paths    ${TEMPDIR}    f1.txt    f2.txt    f3.txt    f4.txt
 ```
+
 <a id="named-argument"></a>
 <a id="named-argument-syntax"></a>
 ### Named arguments
@@ -264,6 +272,7 @@ Run Program
     [Arguments]    @{args}
     Run Process    program.py    @{args}    # Named arguments are not recognized from inside @{args}
 ```
+
 If keyword needs to accept and pass forward any named arguments, it must be
 changed to accept [free named arguments](#free-named-arguments). See [free named argument examples](#free-named-argument-examples)
 for a wrapper keyword version that can pass both positional and named
@@ -312,6 +321,7 @@ List files
     [Arguments]    ${path}=.    ${options}=
     Execute command    ls ${options} ${path}
 ```
+
 <a id="kwargs-usage"></a>
 ### Free named arguments
 
@@ -350,6 +360,7 @@ Free Named Arguments
     Run Process    program.py    arg1    arg2    cwd=/home/user
     Run Process    program.py    argument    shell=True    env=${ENVIRON}
 ```
+
 See [Free keyword arguments (**kwargs)](../extending/creating-test-libraries.md#free-keyword-arguments-kwargs) section under [Creating test
 libraries](../extending/creating-test-libraries.md#creating-test-libraries) for more information about using the free named arguments syntax
 in your custom test libraries.
@@ -468,6 +479,7 @@ ${MAX AMOUNT}      ${5000000}
 Amount cannot be larger than ${MAX AMOUNT}
     # ...
 ```
+
 The *[Documentation]*{.setting} setting allows setting free form
 documentation for a test case. That text is shown in the command line
 output and in the resulting logs and reports.
@@ -501,13 +513,47 @@ Variables
     [Documentation]    Executed at ${HOST} by ${USER}
     No Operation
 ```
+
 It is important that test cases have clear and descriptive names, and
 in that case they normally do not need any documentation. If the logic
 of the test case needs documenting, it is often a sign that keywords
 in the test case need better names and they are to be enhanced,
 instead of adding extra documentation. Finally, metadata, such as the
-environment and user information in the last example above, is often
-better specified using [tags](../extending/creating-test-libraries.md#keyword-tags).
+environment and user information in the last example above, can also
+be specified as [free test metadata](#free-test-metadata) or using [tags](../extending/creating-test-libraries.md#keyword-tags), depending on the
+use case.
+
+## Free test metadata
+
+In addition to documentation, test cases can also have free metadata. This
+metadata is defined as name-value pairs using the *[Metadata]*{.setting}
+setting in the test case, similarly as [free suite metadata](creating-test-suites.md#free-suite-metadata) is defined
+for test suites.
+
+Name of the metadata is the first argument given to the *[Metadata]*{.setting}
+setting and the remaining arguments specify its value. The value is handled
+similarly as [test case documentation](#test-case-name-and-documentation), which means that it supports
+[HTML formatting](../appendices/documentation-formatting.md#documentation-formatting) and [variables](variables.md#variables), and that longer values can be [split into
+multiple rows](test-data-syntax.md#dividing-data-to-several-rows). A test case can have any number of *[Metadata]*{.setting}
+settings, and each of them adds one name-value pair.
+
+```robotframework
+*** Test Cases ***
+Example
+    [Metadata]    Owner              John Doe
+    [Metadata]    Environment        Staging
+    [Metadata]    Longer Value
+    ...           Longer metadata values can be split into multiple
+    ...           rows. Also *simple* _formatting_ is supported.
+    No Operation
+```
+
+Test metadata is shown in reports and logs similarly as test documentation.
+It is also stored in [output files](../executing-tests/result-files.md#output-file) and is available to [listeners](../extending/listener-interface.md#listener-interface)
+and other tools that process execution results.
+
+!!! note
+    Test case metadata is new in Robot Framework 7.5.
 
 <a id="test-case-tags"></a>
 
@@ -530,20 +576,20 @@ There are multiple ways how to specify tags for test cases explained below:
 
 *Test Tags*{.setting} setting in the Settings section
 : All tests in a test case file with this setting always get specified tags.
-   If this setting is used in a [suite initialization file](creating-test-suites.md#suite-initialization-files), all tests
-   in child suites get these tags.
+    If this setting is used in a [suite initialization file](creating-test-suites.md#suite-initialization-files), all tests
+    in child suites get these tags.
 
 *[Tags]*{.setting} setting with each test case
 : Tests get these tags in addition to tags specified using the *Test Tags*{.setting}
-   setting. The *[Tags]*{.setting} setting also allows removing tags set with
-   *Test Tags*{.setting} by using the `-tag` syntax.
+    setting. The *[Tags]*{.setting} setting also allows removing tags set with
+    *Test Tags*{.setting} by using the `-tag` syntax.
 
 `--settag`{.option} command line option
 : All tests get tags set with this option in addition to tags they got elsewhere.
 
 *Set Tags*{.name}, *Remove Tags*{.name}, *Fail*{.name} and *Pass Execution*{.name} keywords
 : These [BuiltIn](using-test-libraries.md#builtin) keywords can be used to manipulate tags dynamically
-   during the test execution.
+    during the test execution.
 
 Example:
 
@@ -584,6 +630,7 @@ Set Tags and Remove Tags keywords
     Set Tags    example    another
     Remove Tags    requirement: *
 ```
+
 As the example shows, tags can be created using variables, but otherwise they
 preserve the exact name used in the data. When tags are compared, for example,
 to collect statistics, to select test to be executed, or to remove duplicates,
@@ -656,6 +703,7 @@ Own and no default
     [Tags]    own
     No Operation
 ```
+
 New syntax:
 
 ```robotframework
@@ -787,6 +835,7 @@ Using variables
     Do Something
     [Teardown]    ${TEARDOWN}
 ```
+
 The name of the keyword to be executed as a setup or a teardown can be a
 variable. This facilitates having different setups or teardowns in
 different environments by giving the keyword name as a variable from
@@ -829,6 +878,7 @@ Templated test case
     [Template]    Example keyword
     first argument    second argument
 ```
+
 As the example illustrates, it is possible to specify the
 template for an individual test case using the *[Template]*{.setting}
 setting. An alternative approach is using the *Test Template*{.setting}
@@ -861,6 +911,7 @@ Templated test case
     second round 1    second round 2
     third round 1     third round 2
 ```
+
 Templated tests are special so that all iterations are executed even if one
 or more of them is failed or skipped. The aggregated result of a templated
 test with multiple iterations is:
@@ -906,6 +957,7 @@ The result of ${calculation} should be ${expected}
     ${result} =    Calculate    ${calculation}
     Should Be Equal    ${result}     ${expected}
 ```
+
 When embedded arguments are used with templates, the number of arguments in
 the template keyword name must match the number of arguments it is used with.
 The argument names do not need to match the arguments of the original keyword,
@@ -927,6 +979,7 @@ New arguments
     [Template]    The ${meaning} of ${life} should be 42
     result    21 * 2
 ```
+
 The main benefit of using embedded arguments with templates is that
 argument names are specified explicitly. When using normal arguments,
 the same effect can be achieved by naming the columns that contain
@@ -951,6 +1004,7 @@ Template with FOR loop
         1st arg    ${index}
     END
 ```
+
 ### Templates with `IF/ELSE` structures
 
 [IF/ELSE structures](control-structures.md#ifelse-structures) can be also used together with templates.
@@ -967,6 +1021,7 @@ Template with FOR and IF
         END
     END
 ```
+
 ## Different test case styles
 
 There are several different ways in which test cases may be written. Test
@@ -978,7 +1033,7 @@ the same workflow with varying input data.
 ### Keyword-driven style
 
 Workflow tests, such as the *Valid Login*{.name} test described
-[earlier](#earlier), are constructed from several keywords and their possible
+[earlier](../executing-tests/configuring-execution.md#earlier), are constructed from several keywords and their possible
 arguments. Their normal structure is that first the system is taken
 into the initial state (*Open Login Page*{.name} in the *Valid Login*{.name} example), then something is done to the system (*Input Name*{.name}, *Input Password*{.name}, *Submit Credentials*{.name}), and
 finally it is verified that the system behaved as expected
@@ -1010,6 +1065,7 @@ Empty User Name                   ${EMPTY}         ${VALID PASSWORD}
 Empty Password                    ${VALID USER}    ${EMPTY}
 Empty User Name and Password      ${EMPTY}         ${EMPTY}
 ```
+
 !!! tip
     Naming columns like in the example above makes tests easier to
     understand. This is possible because on the header row other

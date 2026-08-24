@@ -13,7 +13,7 @@ option using exactly the same semantics as with [listeners](listener-interface.m
 specifying parsers as names or paths, giving arguments to parser classes, and
 so on:
 
-```
+```text
 robot --parser MyParser tests.custom
 robot --parser path/to/MyParser.py tests.custom
 robot --parser Parser1:arg --parser Parser2:a1:a2 path/to/tests
@@ -94,6 +94,7 @@ def parse(source):
     test.body.create_keyword(name='Log', args=['Hello!'])
     return suite
 ```
+
 ### Parser implemented as class
 
 The second parser is implemented as a class that accepts the extension to use
@@ -117,6 +118,7 @@ class ExampleParser:
             test.body.create_keyword(name='Log', args=['Hello!'])
         return suite
 ```
+
 ### Parser extending optional base class
 
 This parser extends the optional [Parser](https://robot-framework.readthedocs.io/en/master/autodoc/robot.api.html#robot.api.interfaces.Parser) base class. It supports parsing suite
@@ -150,6 +152,7 @@ class ExampleParser(Parser):
         return TestSuite(TestSuite.name_from_source(source.parent), doc='Example',
                          source=source, metadata={'Example': 'Value'})
 ```
+
 ### Parser as preprocessor
 
 The final example parser acts as a preprocessor for Robot Framework data files

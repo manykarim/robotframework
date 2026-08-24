@@ -31,6 +31,7 @@ be created by using the `\n` [escape sequence](../creating-test-data/test-data-s
 Documentation    First line.\n\nSecond paragraph. This time\nwith multiple lines.
 Metadata         Example list    - first item\n- second item\n- third
 ```
+
 !!! note
     As explained in the [Paragraphs](#paragraphs) section below, the single newline in
     `Second paragraph, this time\nwith multiple lines.` does not actually
@@ -56,6 +57,7 @@ Metadata
 ...    - second item
 ...    - third
 ```
+
 No automatic newline is added if a line already ends with a literal newline
 or if it ends with an [escaping backslash](../creating-test-data/test-data-syntax.md#escaping):
 
@@ -94,6 +96,7 @@ Preformatted text
     ...    | Example
     ...    |     Keyword
 ```
+
 !!! note
     Preserving spaces in documentation and metadata is new in Robot Framework 6.1.
     With earlier versions spaces need to be escaped with a backslash.
@@ -115,6 +118,7 @@ Documentation
 ...    Second paragraph, this time created
 ...    with multiple lines.
 ```
+
 will be formatted in HTML like this:
 
 <div class="doc">
@@ -135,10 +139,10 @@ need to learn it.
 
 The documentation syntax supports inline styles **bold**, *italics* and `code`.
 Bold text can be created by having an asterisk before and after the
-selected word or words, for example `*this is bold*[. The italics
+selected word or words, for example `*this is bold*`. The italics
 style works similarly, but the special character to use is an
-underscore, for example,](../creating-test-data/control-structures.md#for)[italics](#italics)[. It is also possible to have
-bold italics with the syntax](../creating-test-data/index.md#syntax)*bold italics*_`.
+underscore, for example, `_italics_`. It is also possible to have
+bold italics with the syntax `_*bold italics*_`.
 
 The code style is created using double backticks like ``` ``code`` ```{.codesc}.
 The result is monospaced text with light gray background.
@@ -208,7 +212,7 @@ If neither `link` nor `content` is an image, the end result is
 a normal link where `link` is the link target and `content`
 the visible text:
 
-```
+```text
 [file.html|this file] -> <a href="file.html">this file</a>
 [http://host|that host] -> <a href="http://host">that host</a>
 ```
@@ -218,7 +222,7 @@ the visible text:
 If `content` is an image, you get a link where the link content is an
 image. Link target is created by `link` and it can be either text or image:
 
-```
+```text
 [robot.html|robot.png] -> <a href="robot.html"><img src="robot.png"></a>
 [robot.html|data:image/png;base64,oooxxx=] -> <a href="robot.html"><img src="data:image/png;base64,oooxxx="></a>
 [image.jpg|thumb.jpg] -> <a href="image.jpg"><img src="thumb.jpg"></a>
@@ -230,7 +234,7 @@ If `link` is an image but `content` is not, the syntax creates an
 image where the `content` is the title text shown when mouse is over
 the image:
 
-```
+```text
 [robot.jpeg|Robot rocks!] -> <img src="robot.jpeg" title="Robot rocks!">
 [data:image/png;base64,oooxxx=|Robot rocks!] -> <img src="data:image/png;base64,oooxxx=" title="Robot rocks!">
 ```
@@ -241,21 +245,21 @@ If documentation gets longer, it is often a good idea to split it into sections.
 It is possible to separate sections with headers using syntax `= My Header =`,
 where the number of equal signs denotes the header level:
 
-```
+```text
 = First section =
+
+== Subsection ==
+
+Some text.
+
+== Second subsection ==
+
+More text.
+
+= Second section =
+
+You probably got the idea.
 ```
-
-    == Subsection ==
-
-    Some text.
-
-    == Second subsection ==
-
-    More text.
-
-    = Second section =
-
-    You probably got the idea.
 
 Notice that only three header levels are supported and that spaces between
 equal signs and the header text are mandatory.
@@ -268,7 +272,7 @@ cells can be created by surrounding the cell content with equal signs
 and optional spaces like `= Header =` or `=Header=`. Tables
 cells can also contain links and formatting such as bold and italics:
 
-```
+```text
 | =A= |  =B=  | = C =  |
 | _1_ | Hello | world! |
 | _2_ | Hi    |
@@ -293,14 +297,14 @@ List items can be split into multiple lines by indenting continuing lines with
 one or more spaces. A line that does not start with `- `{.codesc} and is not
 indented ends the list:
 
-```
+```text
 Example:
 - a list item
 - second list item is split
   to multiple lines
-```
 
-  This is outside the list.
+This is outside the list.
+```
 
 The above documentation is formatted like this in HTML:
 
@@ -323,7 +327,7 @@ but all other whitespace is preserved.
 In the following documentation, the two middle lines form a preformatted
 block when converted to HTML:
 
-```
+```text
 Doc before block:
 | inside block
 |     some    additional whitespace
@@ -344,13 +348,13 @@ Horizontal rulers (the `<hr>` tag) make it possible to separate larger
 sections from each others, and they can be created by having three or more
 hyphens alone on a line:
 
-```
+```text
 Some text here.
+
+---
+
+More text...
 ```
-
-   ---
-
-   More text...
 
 The above documentation is formatted like this:
 
@@ -413,13 +417,13 @@ that are not documented here.
 Python-[Markdown](https://en.wikipedia.org/wiki/Markdown) is an optional dependency and users need to [install](https://python-markdown.github.io/install/) it
 themselves. That is typically done by running:
 
-```
+```text
 pip install markdown
 ```
 
 If syntax highlighting is needed, also [Pygments](http://pygments.org/) needs to be installed:
 
-```
+```text
 pip install pygments
 ```
 
@@ -427,9 +431,10 @@ pip install pygments
 
 Markdown supports inline styles **bold**, *italics* and `code`. Bold text can
 be created by surrounding text with two asterisks or underscores like
-`**this is bold**[ or ](https://python-markdown.github.io/extensions/tables/)this is [bold](https://python-markdown.github.io/extensions/toc/)`. The italics style works similarly,
-but there must be only a single asterisk or underscore like `*italics*[or](../executing-tests/configuring-execution.md#selecting-files-by-name-or-path)italics_`. Using three asterisks or underscores produces bold italics like
-`***bold italics***[ or ](https://python-markdown.github.io/extensions/code_hilite/#syntax)_bold [[italics](#italics)](#italics)`.
+`**this is bold**` or `__this is bold__`. The italics style works similarly,
+but there must be only a single asterisk or underscore like `*italics*` or
+`_italics_`. Using three asterisks or underscores produces bold italics like
+`***bold italics***` or `___bold italics___`.
 
 The code style is created using backticks like `` `code` ``{.codesc}.
 Asterisks or underscores do not have a special meaning inside backticks,
@@ -441,6 +446,7 @@ Example:
 ```markdown
 Here we have some **bold text**, some *italics* and finally some `code`.
 ```
+
 ### Linking
 
 #### Inline links
@@ -455,6 +461,7 @@ Example:
 [Robot Framework](http://robotframework.org) development is supported by
 [Robot Framework Foundation](http://robotframework.org/foundation "Join us!").
 ```
+
 #### Reference links
 
 Markdown also supports reference links like `[link text][reference]`. This
@@ -472,6 +479,7 @@ Example:
 [robot]: http://robotframework.org
 [foundation]: http://robotframework.org/foundation "Join us!"
 ```
+
 If the link text matches the reference name, it is possible to omit the refence
 name like `[reference][]`. The empty reference part can also be dropped altogether
 like `[reference]`, but this syntax is not supported by all Markdown flavors.
@@ -486,6 +494,7 @@ Example:
 [Robot Framework]: http://robotframework.org
 [Robot Framework Foundation]: http://robotframework.org/foundation "Join us!"
 ```
+
 Depending on the context, there may also be automatic reference
 targets available. For example, [Libdoc](../supporting-tools/libdoc.md#libdoc) makes keywords, section headers
 and argument types available as link targets automatically.
@@ -498,11 +507,13 @@ links and the surrounding angle brackets are removed:
 ```markdown
 Our website is at <http://example.com>. You can reach us via <info@example.com>.
 ```
+
 URLs are recognized also without special formatting:
 
 ```markdown
 Robot Framework website is at http://robotframework.org.
 ```
+
 !!! note
     Automatic URL detection is not a standard Markdown feature, but various
     Markdown implementations support it for convenience.
@@ -521,6 +532,7 @@ Header 1 | Header 2 | Header 3
 First    | Second   | Third
 a        | b        | c
 ```
+
 Headers are center aligned and other cells left aligned by default. That can
 be controlled by starting or ending the hyphen line with a colon like `:---` (left),
 `---:` (right) and `:--:` (center), but this then affects the whole column.
@@ -533,10 +545,11 @@ Example:
 | First  |  Second  |  Third |
 | a      |     b    |      c |
 ```
+
 Tables support inline styles and links, but not block level content like lists.
 
 !!! note
-    Tables are supported via Python-Markdown's [tables](#tables) plugin.
+    Tables are supported via Python-Markdown's [tables](https://python-markdown.github.io/extensions/tables/) plugin.
 
 !!! note
     Tables are not a standard Markdown feature and neither the original
@@ -554,6 +567,7 @@ with one or more spaces:
 - First item.
 - Second item.
 ```
+
 #### Ordered lists
 
 Ordered lists are created with a number followed by a period and one or more
@@ -563,6 +577,7 @@ spaces:
 1. First item.
 2. Second item.
 ```
+
 #### Splitting lines
 
 If a list item is long, it can be split to multiple lines. Indenting lines
@@ -575,6 +590,7 @@ Example:
   split to multiple lines.
 - The second item is short.
 ```
+
 #### Nested content
 
 Nested lists are supported, but they *must be indented by four spaces*.
@@ -590,6 +606,7 @@ Example:
     1. Nested ordered item.
     2. Another nested item.
 ```
+
 If a list item has multiple paragraphs or other content such as tables, also they
 *must be indented with four spaces*. The initial content can be aligned to
 the same level to avoid inconsistent alignment.
@@ -611,6 +628,7 @@ Example:
     a  | b  | c
     1  | 2  | 3
 ```
+
 !!! note
     The required list item indentation varies between Markdown implementations
     and some implementations also require empty lines before lists. Test your
@@ -626,7 +644,6 @@ Example:
 
 ```markdown
 # Top level heading
-```
 
 ## Second level
 
@@ -638,6 +655,7 @@ Some content.
 
 The end.
 ```
+
 Alternatively headers can be underlined with `=` (level 1) and `-` (level 2).
 This syntax supports only two header levels.
 
@@ -657,6 +675,7 @@ Second level again
 
 The end.
 ```
+
 ### Table of contents
 
 Table of contents can be inserted by using a `%TOC%` marker. It is generated
@@ -671,7 +690,6 @@ Example:
 # Top level
 
 This section is included in TOC.
-```
 
 ## Second level
 
@@ -685,6 +703,7 @@ This section is not included in TOC.
 
 This section is included in TOC.
 ```
+
 [Libdoc](../supporting-tools/libdoc.md#libdoc) supports the `%TOC%` marker also when [creating table of contents](../supporting-tools/libdoc.md#creating-table-of-contents)
 with the Robot Framework custom format. In that format only the top level
 headers are included in the generated table of contents.
@@ -692,8 +711,7 @@ headers are included in the generated table of contents.
 !!! note
     Generating table of contents is not a standard Markdown feature and
     even the marker used by Robot Framework is different to what
-    Python-Markdown's [toc](#toc) plugin uses by default.
-```
+    Python-Markdown's [toc](https://python-markdown.github.io/extensions/toc/) plugin uses by default.
 
 ### Code blocks
 
@@ -717,6 +735,7 @@ def hello(name):
 hello("Robot")
 ```
 ````
+
 #### Syntax highlighting
 
 If a language is specified and [Pygments](http://pygments.org/) syntax highlighter is installed,
@@ -737,10 +756,11 @@ def hello(name):
     """
     print(f"Hello, {name}!")
 ````
+
 #### Indented code blocks
 
 Code blocks can also be created by using four space indentation. The used
-[CodeHilite](#codehilite) plugin supports highlighting also in that case if the code
+[CodeHilite](https://python-markdown.github.io/extensions/code_hilite/#syntax) plugin supports highlighting also in that case if the code
 starts with shebang like `#!python` or with three colons followed by
 the language name like `:::robotframework`.
 
@@ -765,6 +785,7 @@ from the normal text. The syntax is as follows:
 !!! type "Optional title"
     Admonition text. Can contain multiple paragraphs and normal formatting.
 ```
+
 Robot Framework supports certain admonition types so that they have a different
 styles:
 
@@ -787,6 +808,7 @@ Markdown is a great documentation syntax!
 !!! warning "Interoperability risk"
     Differences between Markdown flavors can cause problems.
 ```
+
 !!! note
     Admonitions are implemented using Python-Markdown's
     [Admonition](https://python-markdown.github.io/extensions/admonition/)

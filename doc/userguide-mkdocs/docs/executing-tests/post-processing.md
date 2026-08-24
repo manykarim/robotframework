@@ -18,7 +18,7 @@ and merging results.
 
 ### Synopsis
 
-```
+```text
 rebot [options] outputs
 python -m robot.rebot [options] outputs
 python path/to/robot/rebot.py [options] outputs
@@ -59,7 +59,7 @@ not sensible to create the exactly same files, but, for example,
 having one report with all test cases and another with only some
 subset of tests can be useful:
 
-```
+```text
 rebot output.xml
 rebot path/to/output_file.xml
 rebot --include smoke --name Smoke_Tests c:\results\output.xml
@@ -76,7 +76,7 @@ create them by using the `--output (-o)`{.option} option. Log and report
 are created by default, but they can be disabled by using value `NONE`
 (case-insensitive) if they are not needed:
 
-```
+```text
 rebot --include smoke --output smoke.xml --log none --report none original.xml
 ```
 
@@ -89,7 +89,7 @@ generating an overall report from all outputs. Combining results is
 extremely easy, all that needs to be done is giving several output
 files as arguments:
 
-```
+```text
 rebot output1.xml output2.xml
 rebot outputs/*.xml
 ```
@@ -103,7 +103,7 @@ and spaces. These automatically generated names are not that good, and
 it is often a good idea to use `--name`{.option} to give a more
 meaningful name:
 
-```
+```text
 rebot --name "Browser Compatibility" firefox.xml opera.xml safari.xml ie.xml
 rebot --include smoke --name Smoke c:\results\*.xml
 ```
@@ -117,7 +117,7 @@ Merging is done by using `--merge (-R)`{.option} option which changes the way ho
 Rebot combines two or more output files. This option itself takes no
 arguments and all other command line options can be used with it normally:
 
-```
+```text
 rebot --merge original.xml merged.xml
 rebot --merge --name Example first.xml second.xml third.xml
 ```
@@ -153,7 +153,7 @@ and original tests preserved.
 This usage is best illustrated by a practical example using
 `--rerunfailed`{.option} and `--merge`{.option} together:
 
-```
+```text
 robot --output original.xml tests                          # first execute all tests
 robot --rerunfailed original.xml --output rerun.xml tests  # then re-execute failing
 rebot --merge original.xml rerun.xml                       # finally merge results
@@ -176,7 +176,7 @@ Another important use case for the `--merge`{.option} option is merging results
 got when running a test suite in pieces using, for example, `--include`{.option}
 and `--exclude`{.option} options:
 
-```
+```text
 robot --include smoke --output smoke.xml tests   # first run some tests
 robot --exclude smoke --output others.xml tests  # then run others
 rebot --merge smoke.xml others.xml               # finally merge results
@@ -194,21 +194,21 @@ Rebot can create and process output files also in the [JSON](../creating-test-da
 Creating JSON output files is done using the normal `--output`{.option} option
 so that the specified file has a `.json`{.file} extension:
 
-```
+```text
 rebot --output output.json output.xml
 ```
 
 When reading output files, JSON files are automatically recognized by
 the extension:
 
-```
+```text
 rebot output.json
 rebot output1.json output2.json
 ```
 
 When combining or merging results, it is possible to mix JSON and XML output files:
 
-```
+```text
 rebot output1.xml output2.json
 rebot --merge original.xml rerun.json
 ```

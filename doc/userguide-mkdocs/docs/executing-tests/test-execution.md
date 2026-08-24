@@ -91,6 +91,7 @@ User keyword teardown is run after the keyword is executed otherwise, regardless
 the status. User keyword teardowns are executed fully even if some of their
 keywords would fail.
 
+<a id="randomizes"></a>
 ### Execution order
 
 Test cases in a test suite are executed in the same order as they are defined
@@ -105,7 +106,7 @@ directory, it is possible to add prefixes like `01`{.file} and
 included in the generated test suite name if they are separated from
 the base name of the suite with two underscores:
 
-```
+```text
 01__my_suite.robot -> My Suite
 02__another_suite.robot -> Another Suite
 ```
@@ -160,6 +161,11 @@ parts that could actually uncover problems in the tested application.
 In cases where execution cannot continue do to external factors,
 it is often safer to [skip](#skip) the test.
 
+<a id="selects-failed-test-suites"></a>
+
+<a id="selects-failed-tests"></a>
+
+<a id="continueonfailure"></a>
 ### FAIL
 
 The most common reason for a test to get the FAIL status is that one of the keywords
@@ -183,7 +189,7 @@ running them at all. It works based on [tags](../extending/creating-test-librari
 `examp??` and `tagANDanother`. If it is used multiple times, all tests matching any of
 specified tags or tag patterns are skipped:
 
-```
+```text
 --skip require-network
 --skip windowsANDversion9?
 --skip python2.* --skip python3.[0-6]
@@ -208,6 +214,7 @@ As variable
    [Tags]    ${SKIP}
    Log    This is not executed by default
 ```
+
 The difference between `--skip`{.option} and `--exclude`{.option} is that with
 the latter tests are [omitted from the execution altogether](configuring-execution.md#by-tag-names) and they will not
 be shown in logs and reports. With the former they are included, but not actually
@@ -247,7 +254,7 @@ The command line option `--skiponfailure`{.option} can be used to automatically 
 failed tests skipped. It works based on [tags](../extending/creating-test-libraries.md#keyword-tags) and supports [tag patterns](basic-usage.md#tag-patterns) like
 the `--skip`{.option} option discussed above:
 
-```
+```text
 --skiponfailure not-ready
 --skiponfailure experimentalANDmobile
 ```
@@ -261,6 +268,7 @@ Example
     [Tags]    robot:skip-on-failure
     Fail      this test will be marked as skipped instead of failed
 ```
+
 The motivation for this functionality is allowing execution of tests that are not yet
 ready or that are testing a functionality that is not yet ready. Instead of such tests
 failing, they will be marked skipped and their tags can be used to separate them
@@ -340,6 +348,7 @@ Continue with templates
     this    fails
     this    is run
 ```
+
 If this behavior is not desired, the special `robot:stop-on-failure` and
 `robot:recursive-stop-on-failure` tags can be used to [disable it](#disabling-continue-on-failure-using-tags).
 
@@ -355,13 +364,13 @@ When a test ends and there have been continuable failures,
 the test will be marked failed. If there are more than one failure,
 all of them will be enumerated in the final error message:
 
-```
+```text
 Several failures occurred:
+
+1) First error message.
+
+2) Second error message.
 ```
-
-  1) First error message.
-
-  2) Second error message.
 
 Test execution ends also if a normal failure occurs after a continuable
 failure. Also in that case all the failures will be listed in the
@@ -383,6 +392,7 @@ Example
     Run Keyword and Continue on Failure    Should be Equal    1    2
     Log    This is executed but test fails in the end
 ```
+
 ### Enabling continue-on-failure using tags
 
 All keywords executed as part of test cases or user keywords which are
@@ -410,6 +420,7 @@ User Keyword 2
     Should be Equal    3    4
     Log    This is executed
 ```
+
 These tags also affect the continue-on-failure mode with different [control
 structures](../creating-test-data/control-structures.md#control-structures). For example, the below test case will execute the
 *Do Something*{.name} keyword ten times regardless does it succeed or not:
@@ -422,6 +433,7 @@ Example
         Do Something
     END
 ```
+
 Setting `robot:continue-on-failure` within a test case or a user keyword
 will not propagate the continue-on-failure behavior into user keywords
 they call. If such recursive behavior is needed, the
@@ -446,6 +458,7 @@ User Keyword 2
     Should be Equal    5    6
     Log    This is executed
 ```
+
 Setting `robot:continue-on-failure` or `robot:recursive-continue-on-failure` in a
 test case does NOT alter the behaviour of a failure in the keyword(s) executed
 as part of the *[Setup]*{.setting}: The test case is marked as failed and no
@@ -486,6 +499,7 @@ Keyword
     Should be Equal    this    fails
     Should be Equal    this    is not run
 ```
+
 The `robot:stop-on-failure` tag affects only test cases and user keywords
 where it is used and does not propagate to user keywords they call nor to
 their own teardowns. If recursive behavior affecting all called user keywords
@@ -506,6 +520,7 @@ Example
     Run Keyword and Continue on Failure    Should be Equal    1    2
     Log    This is executed regardless the tag
 ```
+
 If `robot:recursive-stop-on-failure` and `robot:continue-on-failure` are used
 together in the same test or keyword, execution is stopped in called keywords
 if there are failures, but continues in the test or keyword using these tags.
@@ -535,6 +550,7 @@ Example
         Error Handler Keyword
     END
 ```
+
 For more details see the separate [TRY/EXCEPT syntax](../creating-test-data/control-structures.md#tryexcept-syntax) section.
 
 ### BuiltIn keywords
@@ -624,6 +640,9 @@ tests are actually run.
     an error and stops the execution if the `--exitonerror`{.option} option
     is used.
 
+<a id="skips-teardowns"></a>
+
+<a id="skipteardownonexit"></a>
 ### Handling teardowns
 
 By default teardowns of the tests and suites that have been started are

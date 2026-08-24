@@ -149,6 +149,7 @@ My Keyword
     [Arguments]    ${path}
     Directory Should Exist    ${path}
 ```
+
 Because tabs and consecutive spaces are considered separators, they must
 be escaped if they are needed in keyword arguments or elsewhere
 in the actual data. It is possible to use special escape syntax like
@@ -198,6 +199,7 @@ makes the data easier to read.
 | My Keyword         | [Arguments]            | ${path} |
 |                    | Directory Should Exist | ${path} |
 ```
+
 When using the pipe separated format, consecutive spaces or tabs inside
 arguments do not need to be escaped. Similarly empty columns do not need
 to be escaped except [if they are at the end](#escaping). Possible pipes surrounded by
@@ -274,6 +276,7 @@ containing Robot Framework data are ignored as well.
    def example():
        print('Hello, world!')
 ```
+
 Robot Framework supports reStructuredText files using `.robot.rst`{.file},
 `.rst`{.file} and `.rest`{.file} extensions. To avoid parsing unrelated
 reStructuredText files, only files with the `.robot.rst`{.file} extension
@@ -341,6 +344,7 @@ def example():
     print('Hello, world!')
 ```
 ````
+
 Robot Framework supports Markdown files using `.robot.md`{.file},
 `.md`{.file} and `.markdown`{.file} extensions. To avoid parsing unrelated
 Markdown files, only files with the `.robot.md`{.file} extension
@@ -348,9 +352,71 @@ are parsed by default when executing a directory. Parsing files with
 the `.md`{.file} or `.markdown`{.file} extension [can be enabled](../executing-tests/configuring-execution.md#selecting-files-to-parse) by using
 either `--parseinclude`{.option} or `--extension`{.option} option.
 
+#### Living documentation
+
+In software development, the term *living documentation* is commonly used when
+acceptance tests are written in such a way that they can be used as an
+executable specification. The executable specification acts as the single
+source of truth from which both the specification document and the test
+automation is derived. When the specification changes, the test changes,
+implying a compliant system when the tests pass.
+
+A common issue is that test automation requires documentation files to use
+the syntax of the selected automation tool, but the people responsible for
+the specification typically do not work well with such syntax-rich files.
+Robot Framework data files can in general be written using style that can
+work reasonably well with all stakeholders, but embedding Robot Framework
+data to Markdown files makes it even more convenient.
+
+!!! tip
+    You can use Markdown comment blocks created using the `<!--- comment -->`
+    syntax for hiding technical content from generated HTML files.
+
+Example:
+
+````markdown
+# Feature title
+
+Free text introducing the feature. You can use tables, lists, images,
+etc. if needed.
+
+<!---  Markdown comment block hiding technical details.
+
+```robotframework
+*** Settings ***
+Resource        example.resource
+
+*** Test Cases ***
+```
+
+-->
+
+## Business Rule 1
+
+In Specification by Example, test cases are usually grouped per business
+rule. Example scenarios illustrate the behavior of the rule. The scenarios
+are what links the specification document and Robot Framework together. The
+scenarios stay visible to both sides and are not inside a comment block.
+
+```robotframework
+Scenario 1
+    Given we want to use BDD
+    When we use Given/When/Then prefixes
+    Then everything works fine.
+```
+
+Some additional in-between explanation.
+
+```robotframework
+Scenario 2
+    There is not need to use BDD if that adds no benefits
+    Complicated syntax should be avoided anyway
+```
+````
+
 !!! note
     Using [Markdown](https://en.wikipedia.org/wiki/Markdown) files with Robot Framework does not require any
-    external Python module to be installed.
+    external Markdown module or tool to be installed.
 
 !!! note
     Markdown support is new in Robot Framework 7.5.
@@ -392,6 +458,7 @@ data = suite.to_json()
 # Save JSON data to a file with custom indentation.
 suite.to_json('data.rbt', indent=2)
 ```
+
 If you would rather work with Python data and then convert that to JSON
 or some other format yourself, you can use [TestSuite.to_dict](https://robot-framework.readthedocs.io/en/master/autodoc/robot.running.html#robot.running.model.TestSuite.to_dict) instead.
 
@@ -412,6 +479,7 @@ suite = TestSuite.from_json('{"name": "Suite", "tests": [{"name": "Test"}]}')
 # Execute suite. Notice that log and report needs to be created separately.
 suite.run(output='example.xml')
 ```
+
 If you have data as a Python dictionary, you can use [TestSuite.from_dict](https://robot-framework.readthedocs.io/en/master/autodoc/robot.running.html#robot.running.model.TestSuite.from_dict)
 instead. Regardless of how a suite is recreated, it exists only in memory and
 original data files on the file system are not recreated.
@@ -558,6 +626,7 @@ Using ${EMPTY}
     Do Something    first arg    ${EMPTY}
     Do Something    ${EMPTY}     second arg
 ```
+
 When using the [pipe separated format](#pipe-separated-format), empty values need to be escaped
 only when they are at the end of the row:
 
@@ -569,6 +638,7 @@ only when they are at the end of the row:
 | Using ${EMPTY}     | Do Something | first arg | ${EMPTY}   |
 |                    | Do Something |           | second arg |
 ```
+
 #### Handling spaces
 
 Spaces, especially consecutive spaces, as part of arguments for keywords or
@@ -633,6 +703,7 @@ Example
     Do X    first argument    second argument    third argument    fourth argument    fifth argument    sixth argument
     ${var} =    Get X    first argument passed to this keyword is pretty long    second argument passed to this keyword is long too
 ```
+
 ```robotframework
 *** Settings ***
 Documentation      Here we have documentation for this suite.
@@ -691,7 +762,7 @@ code like `fi`. Both names and codes are case and space insensitive and also
 the hyphen (`-`) is ignored. To enable multiple languages, the
 `--language`{.option} option needs to be used multiple times:
 
-```
+```text
 robot --language Finnish testit.robot
 robot --language pt --language ptbr testes.robot
 ```
@@ -700,7 +771,7 @@ The same `--language`{.option} option is also used when activating
 [custom language files](#custom-language-files). With them the value can be either a path to the file or,
 if the file is in the [module search path](../executing-tests/configuring-execution.md#module-search-path), the module name:
 
-```
+```text
 robot --language Custom.py tests.robot
 robot --language MyLang tests.robot
 ```
@@ -716,12 +787,12 @@ a line `Language: <value>` (case-insensitive) before any of the section
 headers. The value after the colon is interpreted the same way as with
 the `--language`{.option} option:
 
-```
+```text
 Language: Finnish
-```
 
-    *** Asetukset ***
-    Dokumentaatio        Example using Finnish.
+*** Asetukset ***
+Dokumentaatio        Example using Finnish.
+```
 
 If there is a need to enable multiple languages, the `Language:` line
 can be repeated. These configuration lines cannot be in comments so something like
@@ -790,6 +861,7 @@ class Example(Language):
     given_prefixes = ['Assuming']
     true_strings = ['OK', '\N{THUMBS UP SIGN}']
 ```
+
 Assuming the above code would be in file `example.py`{.file}, a path to that
 file or just the module name `example` could be used when the language file
 is [activated](#enabling-languages).

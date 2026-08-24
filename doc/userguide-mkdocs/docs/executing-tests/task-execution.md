@@ -1,4 +1,6 @@
 <a id="executing-tasks"></a>
+
+<a id="generic-automation"></a>
 # Task execution
 
 Robot Framework can be used also for other automation purposes than test

@@ -35,6 +35,7 @@ Resource    ../resources/login.resource
 Resource    package/example.resource
 Resource    ${RESOURCES}/common.resource
 ```
+
 The user keywords and variables defined in a resource file are
 available in the file that takes that resource file into
 use. Similarly available are also all keywords and variables from the
@@ -100,6 +101,7 @@ Input Password
     [Arguments]    ${password}
     Input Text    password_field    ${password}
 ```
+
 ### Resource files using reStructuredText format
 
 The [reStructuredText data format](test-data-syntax.md#restructuredtext-data-format) that can be used with [suite files](creating-test-suites.md#suite-files)  works
@@ -111,6 +113,7 @@ normal resource files:
 *** Settings ***
 Resource         example.rst
 ```
+
 When parsing resource files using the reStructuredText format, Robot Framework
 ignores all data outside code blocks containing Robot Framework data exactly
 the same way as when parsing [reStructuredText suite files](test-data-syntax.md#restructuredtext-data-format).
@@ -154,6 +157,7 @@ resource files:
 *** Settings ***
 Resource         example.md
 ```
+
 When parsing resource files using the Markdown format, Robot Framework
 ignores all data outside fenced code blocks with the `robotframework` or `robot`
 language tag exactly the same way as when parsing [Markdown suite files](test-data-syntax.md#markdown-data-format).
@@ -196,6 +200,7 @@ normal resource files:
 *** Settings ***
 Resource         example.rsrc
 ```
+
 Resource files can be converted to JSON using [ResourceFile.to_json](https://robot-framework.readthedocs.io/en/master/autodoc/robot.running.html#robot.running.model.ResourceFile.to_json) and
 recreated using [ResourceFile.from_json](https://robot-framework.readthedocs.io/en/master/autodoc/robot.running.html#robot.running.model.ResourceFile.from_json):
 

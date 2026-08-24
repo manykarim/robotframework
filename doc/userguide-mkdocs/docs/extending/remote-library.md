@@ -55,6 +55,7 @@ Library    Remote    http://127.0.0.1:8270       AS    Example1
 Library    Remote    http://example.com:8080/    AS    Example2
 Library    Remote    http://10.0.0.2/example    1 minute    AS    Example3
 ```
+
 The URL used by the first example above is also the default address
 that the Remote library uses if no address is given.
 
@@ -168,18 +169,18 @@ the keywords they contain. They are briefly explained below and documented
 more thoroughly in the subsequent sections.
 
 1. Remote servers can implement the same methods as the [dynamic library API](dynamic-library-api.md#dynamic-library-api)
-   has. This means `get_keyword_names` method and optional `get_keyword_arguments`,
-   `get_keyword_types`, `get_keyword_tags` and `get_keyword_documentation` methods.
-   Notice that using "camel-case names" like `getKeywordNames` is not
-   possible similarly as in the normal dynamic API.
+    has. This means `get_keyword_names` method and optional `get_keyword_arguments`,
+    `get_keyword_types`, `get_keyword_tags` and `get_keyword_documentation` methods.
+    Notice that using "camel-case names" like `getKeywordNames` is not
+    possible similarly as in the normal dynamic API.
 
 2. Starting from Robot Framework 4.0, remote servers can have a single
-   `get_library_information` method that returns all library and keyword
-   information as a single dictionary. If a remote server has this method,
-   the other getter methods like `get_keyword_names` are not used at all.
-   This approach has the benefit that there is only one XML-RPC call to get
-   information while the approach explained above requires several calls per
-   keyword. With bigger libraries the difference can be significant.
+    `get_library_information` method that returns all library and keyword
+    information as a single dictionary. If a remote server has this method,
+    the other getter methods like `get_keyword_names` are not used at all.
+    This approach has the benefit that there is only one XML-RPC call to get
+    information while the approach explained above requires several calls per
+    keyword. With bigger libraries the difference can be significant.
 
 Regardless how remote servers provide information about their keywords, they
 must have `run_keyword` method that is used when keywords are executed.
@@ -238,7 +239,7 @@ but not if it is `['count=1', 'caseless=True']`.
 
 Remote servers can also provide [general library documentation](dynamic-library-api.md#getting-general-library-documentation) to
 be used when generating documentation with the [Libdoc](../supporting-tools/libdoc.md#libdoc) tool. This information
-is got by calling `get_keyword_documentation[ with special values ](#-with-special-values-)intro__`
+is got by calling `get_keyword_documentation` with special values `__intro__`
 and `__init__`.
 
 !!! note
@@ -260,7 +261,7 @@ in the previous section. If some information is not available, it can be omitted
 from the info dictionary altogether.
 
 `get_library_information` supports also returning general library documentation
-to be used with [Libdoc](../supporting-tools/libdoc.md#libdoc). It is done by including special `__intro__[ and ](#-and-)init__`
+to be used with [Libdoc](../supporting-tools/libdoc.md#libdoc). It is done by including special `__intro__` and `__init__`
 entries into the returned library information dictionary.
 
 For example, a Python library like
@@ -278,9 +279,10 @@ def example(a: int, b=True):
 def another():
     pass
 ```
+
 could be mapped into this kind of library information dictionary:
 
-```
+```text
 {
     '__intro__': {'doc': 'Library documentation'}
     'example': {'args': ['a', 'b=True'],
@@ -344,6 +346,7 @@ arguments.
 def run_keyword(name, args, kwargs=None):
     # ...
 ```
+
 ```java
 public Map run_keyword(String name, List args) {
     // ...
@@ -351,203 +354,6 @@ public Map run_keyword(String name, List args) {
 
 public Map run_keyword(String name, List args, Map kwargs) {
     // ...
-
-<a id="keyword-section"></a>
-
-<a id="setting-variables-from-keyword-return-values"></a>
-
-<a id="earlier"></a>
-
-<a id="generic-automation"></a>
-
-<a id="parse-only-these-files"></a>
-
-<a id="parse-only-matching-files"></a>
-
-<a id="sets-the-name"></a>
-
-<a id="sets-the-documentation"></a>
-
-<a id="sets-free-metadata"></a>
-
-<a id="sets-the-tags"></a>
-
-<a id="selects-the-test-cases-by-name"></a>
-
-<a id="selects-the-test-suites"></a>
-
-<a id="selects-failed-test-suites"></a>
-
-<a id="selects-failed-tests"></a>
-
-<a id="selects-the-test-cases"></a>
-
-<a id="continueonfailure"></a>
-
-<a id="skips-teardowns"></a>
-
-<a id="skipteardownonexit"></a>
-
-<a id="dryrun"></a>
-
-<a id="randomizes"></a>
-
-<a id="individual-variables"></a>
-
-<a id="create-result-files"></a>
-
-<a id="robot-framework-6x-compatible-format"></a>
-
-<a id="adds-a-timestamp"></a>
-
-<a id="split-log-file"></a>
-
-<a id="sets-a-title"></a>
-
-<a id="sets-background-colors"></a>
-
-<a id="error-lines"></a>
-
-<a id="sets-the-threshold-level"></a>
-
-<a id="levels-to-show"></a>
-
-<a id="includes-only-these-tags"></a>
-
-<a id="excludes-these-tags"></a>
-
-<a id="combined-statistics-based-on-tags"></a>
-
-<a id="documentation-to-the-specified-tags"></a>
-
-<a id="external-links"></a>
-
-<a id="sets-a-listener"></a>
-
-<a id="test-suites-are-empty"></a>
-
-<a id="empty-test-suites"></a>
-
-<a id="console-output-type"></a>
-
-<a id="sets-the-width"></a>
-
-<a id="specifies-are-colors"></a>
-
-<a id="markers-on-the-console"></a>
-
-<a id="read-more-arguments"></a>
-
-<a id="version-information"></a>
-
-<a id="expand-keywords"></a>
-
-<a id="removes-keyword-data"></a>
-
-<a id="flattens-keywords"></a>
-
-<a id="starting-time"></a>
-
-<a id="ending-time"></a>
-
-<a id="keyword-section"></a>
-
-<a id="setting-variables-from-keyword-return-values"></a>
-
-<a id="earlier"></a>
-
-<a id="generic-automation"></a>
-
-<a id="parse-only-these-files"></a>
-
-<a id="parse-only-matching-files"></a>
-
-<a id="sets-the-name"></a>
-
-<a id="sets-the-documentation"></a>
-
-<a id="sets-free-metadata"></a>
-
-<a id="sets-the-tags"></a>
-
-<a id="selects-the-test-cases-by-name"></a>
-
-<a id="selects-the-test-suites"></a>
-
-<a id="selects-failed-test-suites"></a>
-
-<a id="selects-failed-tests"></a>
-
-<a id="selects-the-test-cases"></a>
-
-<a id="continueonfailure"></a>
-
-<a id="skips-teardowns"></a>
-
-<a id="skipteardownonexit"></a>
-
-<a id="dryrun"></a>
-
-<a id="randomizes"></a>
-
-<a id="individual-variables"></a>
-
-<a id="create-result-files"></a>
-
-<a id="robot-framework-6x-compatible-format"></a>
-
-<a id="adds-a-timestamp"></a>
-
-<a id="split-log-file"></a>
-
-<a id="sets-a-title"></a>
-
-<a id="sets-background-colors"></a>
-
-<a id="error-lines"></a>
-
-<a id="sets-the-threshold-level"></a>
-
-<a id="levels-to-show"></a>
-
-<a id="includes-only-these-tags"></a>
-
-<a id="excludes-these-tags"></a>
-
-<a id="combined-statistics-based-on-tags"></a>
-
-<a id="documentation-to-the-specified-tags"></a>
-
-<a id="external-links"></a>
-
-<a id="sets-a-listener"></a>
-
-<a id="test-suites-are-empty"></a>
-
-<a id="empty-test-suites"></a>
-
-<a id="console-output-type"></a>
-
-<a id="sets-the-width"></a>
-
-<a id="specifies-are-colors"></a>
-
-<a id="markers-on-the-console"></a>
-
-<a id="read-more-arguments"></a>
-
-<a id="version-information"></a>
-
-<a id="expand-keywords"></a>
-
-<a id="removes-keyword-data"></a>
-
-<a id="flattens-keywords"></a>
-
-<a id="starting-time"></a>
-
-<a id="ending-time"></a>
+}
 ```
-
-#### }
 

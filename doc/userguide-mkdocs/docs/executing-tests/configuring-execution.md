@@ -5,6 +5,9 @@ for configuring the [test execution](basic-usage.md#starting-test-execution) or 
 Options related to the generated [execution artifacts](execution-artifacts.md#execution-artifacts) are discussed in
 the next section.
 
+<a id="parse-only-these-files"></a>
+
+<a id="parse-only-matching-files"></a>
 ## Selecting files to parse
 
 ### Executing individual files
@@ -22,7 +25,7 @@ on the extension:
 
 Examples:
 
-```
+```text
 robot example.robot    # Standard Robot Framework parser.
 robot example.tsv      # Must be compatible with the standard parser.
 robot example.rst      # reStructuredText parser.
@@ -63,7 +66,7 @@ has slightly different semantics depending on the value it is used with:
 
 Examples:
 
-```
+```text
 robot --parseinclude example.robot tests       # Parse `example.robot` files anywhere under `tests`.
 robot -I example_*.robot -I ???.robot tests    # Parse files matching `example_*.robot` or `???.robot` under `tests`.
 robot -I tests/example.robot tests             # Parse only `tests/example.robot`.
@@ -107,14 +110,14 @@ Matching extensions is case insensitive and the leading dot can be omitted.
 If there is a need to parse more than one kind of files, it is possible to
 use a colon `:` to separate extensions:
 
-```
+```text
 robot --extension rst path/to/tests    # Parse only *.rst files.
 robot -F robot:rst path/to/tests       # Parse *.robot and *.rst files.
 ```
 
 The above is equivalent to the following `--parseinclude`{.option} usage:
 
-```
+```text
 robot --parseinclude *.rst path/to/tests
 robot -I *.robot -I *.rst path/to/tests
 ```
@@ -136,6 +139,7 @@ Robot Framework offers several command line options for selecting
 which test cases to execute. The same options work also when [executing
 tasks](task-execution.md#executing-tasks) and when post-processing outputs with [Rebot](post-processing.md#rebot).
 
+<a id="selects-the-test-cases-by-name"></a>
 ### By test names
 
 The easiest way to select only some tests to be run is using the
@@ -144,7 +148,7 @@ selecting tests by their names. Given names are case, space and underscore
 insensitive and they also support [simple patterns](basic-usage.md#simple-patterns). The option can be
 used multiple times to match multiple tests:
 
-```
+```text
 --test Example                   # Match only tests with name 'Example'.
 --test example*                  # Match tests starting with 'example'.
 --test first --test second       # Match tests with name 'first' or 'second'.
@@ -153,7 +157,7 @@ used multiple times to match multiple tests:
 To pinpoint a test more precisely, it is possible to prefix the test name
 with a suite name:
 
-```
+```text
 --test mysuite.mytest            # Match test 'mytest' in suite 'mysuite'.
 --test root.sub.test             # Match test 'test' in suite 'sub' in suite 'root'.
 --test *.sub.test                # Match test 'test' in suite 'sub' anywhere.
@@ -171,6 +175,7 @@ it is typically easier to select them [by suite names](#by-suite-names) or [by t
 When [executing tasks](task-execution.md#executing-tasks), it is possible to use the `--task`{.option} option
 as an alias for `--test`{.option}.
 
+<a id="selects-the-test-suites"></a>
 ### By suite names
 
 Tests can be selected also by suite names with the `--suite (-s)`{.option}
@@ -180,7 +185,7 @@ insensitive and support [simple patterns](basic-usage.md#simple-patterns). To pi
 more precisely, it is possible to prefix the name with the parent suite
 name:
 
-```
+```text
 --suite Example                  # Match only suites with name 'Example'.
 --suite example*                 # Match suites starting with 'example'.
 --suite first --suite second     # Match suites with name 'first' or 'second'.
@@ -201,7 +206,7 @@ above allows matching suites with a parent suite anywhere.
 If both `--suite`{.option} and `--test`{.option} options are used, only the
 specified tests in specified suites are selected:
 
-```
+```text
 --suite mysuite --test mytest    # Match test 'mytest' if its inside suite 'mysuite'.
 ```
 
@@ -210,13 +215,13 @@ the appropriate suite file or directory directly. The main difference is
 that if a file or directory is run directly, possible higher level
 [suite initialization files](../creating-test-data/creating-test-suites.md#suite-initialization-files) are ignored:
 
-```
+```text
 # Root suite is 'Tests' and its possible initialization file is used.
 robot --suite example path/to/tests
-```
 
-  # Root suite is 'Example' and higher level initialization files are ignored.
-  robot path/to/tests/example.robot
+# Root suite is 'Example' and higher level initialization files are ignored.
+robot path/to/tests/example.robot
+```
 
 Prior to Robot Framework 6.1, files not matching the `--suite`{.option} option
 were not parsed at all for performance reasons. This optimization was not
@@ -225,6 +230,7 @@ the default suite name that is got from the file or directory name. New
 `--parseinclude`{.option} option has been added to [explicitly select which
 files are parsed](#selecting-files-by-name-or-path) if this kind of parsing optimization is needed.
 
+<a id="selects-the-test-cases"></a>
 ### By tag names
 
 It is possible to include and exclude test cases by [tag](../creating-test-data/creating-test-cases.md#tagging-test-cases) names with the
@@ -235,7 +241,7 @@ matching tag are not. If both are used, only tests with a tag
 matching the former option, and not with a tag matching the latter,
 are selected:
 
-```
+```text
 --include example
 --exclude not_ready
 --include regression --exclude long_lasting
@@ -251,7 +257,7 @@ In addition to specifying a tag to match fully, it is possible to use
 `AND`, `OR`, and `NOT` operators can be used for
 combining individual tags or patterns together:
 
-```
+```text
 --include feature-4?
 --exclude bug*
 --include fooANDbar
@@ -278,6 +284,7 @@ As variable
    [Tags]    ${EXCLUDE}
    Log    This is not executed by default
 ```
+
 Selecting test cases by tags is a very flexible mechanism and allows
 many interesting possibilities:
 
@@ -298,7 +305,7 @@ Options `--include`{.option} and `--exclude`{.option} can be used in combination
 with `--suite`{.option} and `--test`{.option} discussed in the previous section.
 In that case tests that are selected must match all selection criteria:
 
-```
+```text
 --suite example --include tag    # Match test if it is in suite 'example' and has tag 'tag'.
 --suite example --exclude tag    # Match test if it is in suite 'example' and does not have tag 'tag'.
 --test ex* --include tag         # Match test if its name starts with 'ex' and it has tag 'tag'.
@@ -326,7 +333,7 @@ tests from an earlier [output file](result-files.md#output-file) for re-executio
 for example, if running all tests takes a lot of time and one wants to
 iteratively fix failing test cases.
 
-```
+```text
 robot tests                             # first execute all tests
 robot --rerunfailed output.xml tests    # then re-execute failing
 ```
@@ -360,12 +367,13 @@ selected individually with the `--suite`{.option} option. It is possible to furt
 fine-tune the list of selected tests by using `--test`{.option}, `--suite`{.option},
 `--include`{.option} and `--exclude`{.option} options.
 
+<a id="test-suites-are-empty"></a>
 ### When no tests match selection
 
 By default when no tests match the selection criteria test execution fails
 with an error like:
 
-```
+```text
 [ ERROR ] Suite 'Example' contains no tests matching tag 'xxx'.
 ```
 
@@ -392,6 +400,7 @@ running tests.
 
 ## Setting metadata
 
+<a id="sets-the-name"></a>
 ### Setting suite name
 
 When Robot Framework parses test data, [suite names](../creating-test-data/creating-test-suites.md#suite-name) are created
@@ -399,10 +408,11 @@ from file and directory names. The name of the top-level test suite
 can, however, be overridden with the command line option
 `--name (-N)`{.option}:
 
-```
+```text
 robot --name "Custom name" tests.robot
 ```
 
+<a id="sets-the-documentation"></a>
 ### Setting suite documentation
 
 In addition to [defining documentation in the test data](../creating-test-data/creating-test-suites.md#suite-documentation), documentation
@@ -417,7 +427,7 @@ lines.
 
 Examples:
 
-```
+```text
 robot --doc "Example documentation" tests.robot
 robot --doc doc.txt tests.robot    # Documentation read from doc.txt if it exits.
 ```
@@ -425,9 +435,10 @@ robot --doc doc.txt tests.robot    # Documentation read from doc.txt if it exits
 !!! note
     Reading documentation from an external file is new in Robot Framework 4.1.
 
-          Prior to Robot Framework 3.1, underscores in documentation were
-          converted to spaces same way as with the `--name`{.option} option.
+    Prior to Robot Framework 3.1, underscores in documentation were
+    converted to spaces same way as with the `--name`{.option} option.
 
+<a id="sets-free-metadata"></a>
 ### Setting free suite metadata
 
 [Free suite metadata](../creating-test-data/creating-test-suites.md#free-suite-metadata) may also be given from the command line with the
@@ -445,7 +456,7 @@ the value must be separated with a space from the `name:` part.
 
 Examples:
 
-```
+```text
 robot --metadata Name:Value tests.robot
 robot --metadata "Another Name:Another value, now with spaces" tests.robot
 robot --metadata "Read From File:meta.txt" tests.robot    # Value read from meta.txt if it exists.
@@ -455,9 +466,10 @@ robot --metadata "Path As Value: meta.txt" tests.robot    # Value always used as
 !!! note
     Reading metadata value from an external file is new in Robot Framework 4.1.
 
-          Prior to Robot Framework 3.1, underscores in the value were
-          converted to spaces same way as with the `--name`{.option} option.
+    Prior to Robot Framework 3.1, underscores in the value were
+    converted to spaces same way as with the `--name`{.option} option.
 
+<a id="sets-the-tags"></a>
 ### Setting test tags
 
 The command line option `--settag (-G)`{.option} can be used to set
@@ -516,7 +528,7 @@ need to be escaped when used on the console.
 
 Examples:
 
-```
+```text
 --pythonpath libs
 --pythonpath /opt/testlibs:mylibs.zip:yourlibs
 --pythonpath /opt/testlibs --pythonpath mylibs.zip --pythonpath yourlibs
@@ -543,7 +555,7 @@ with the `--variablefile (-V)`{.option} option. Variables and variable
 files are explained in separate chapters, but the following examples
 illustrate how to use these options:
 
-```
+```text
 --variable name:value
 --variable OS:Linux --variable IP:10.0.0.42
 --variablefile path/to/variables.py
@@ -551,6 +563,7 @@ illustrate how to use these options:
 --variable ENVIRONMENT:Windows --variablefile c:\resources\windows.py
 ```
 
+<a id="dryrun"></a>
 ## Dry run
 
 Robot Framework supports so called *dry run* mode where the tests are
@@ -607,7 +620,7 @@ what was randomized and what seed was used.
 
 Examples:
 
-```
+```text
 robot --randomize tests my_test.robot
 robot --randomize all:12345 path/to/tests
 ```
@@ -678,16 +691,17 @@ start index.
 ```python
 ../api/code_examples/SelectEveryXthTest.py
 ```
+
 If the above pre-run modifier is in a file `SelectEveryXthTest.py`{.file} and
 the file is in the [module search path](#module-search-path), it could be used like this:
 
-```
+```text
 # Specify the modifier as a path. Run every second test.
 robot --prerunmodifier path/to/SelectEveryXthTest.py:2 tests.robot
-```
 
-    # Specify the modifier as a name. Run every third test, starting from the second.
-    robot --prerunmodifier SelectEveryXthTest:3:1 tests.robot
+# Specify the modifier as a name. Run every third test, starting from the second.
+robot --prerunmodifier SelectEveryXthTest:3:1 tests.robot
+```
 
 ### Example: Exclude tests by name
 
@@ -698,16 +712,17 @@ option.
 ```python
 ../api/code_examples/ExcludeTests.py
 ```
+
 Assuming the above modifier is in a file named `ExcludeTests.py`{.file}, it
 could be used like this:
 
-```
+```text
 # Exclude test named 'Example'.
 robot --prerunmodifier path/to/ExcludeTests.py:Example tests.robot
-```
 
-  # Exclude all tests ending with 'something'.
-  robot --prerunmodifier path/to/ExcludeTests.py:*something tests.robot
+# Exclude all tests ending with 'something'.
+robot --prerunmodifier path/to/ExcludeTests.py:*something tests.robot
+```
 
 ### Example: Disable setups and teardowns
 
@@ -718,17 +733,18 @@ it easy to do that temporarily for a single run:
 ```python
 ../api/code_examples/disable.py
 ```
+
 Assuming that the above modifiers are all in a file named `disable.py`{.file}
 and this file is in the [module search path](#module-search-path), setups and teardowns could be
 disabled, for example, as follows:
 
-```
+```text
 # Disable suite teardowns.
 robot --prerunmodifier disable.SuiteTeardown tests.robot
-```
 
-  # Disable both test setups and teardowns by using '--prerunmodifier' twice.
-  robot --prerunmodifier disable.TestSetup --prerunmodifier disable.TestTeardown tests.robot
+# Disable both test setups and teardowns by using '--prerunmodifier' twice.
+robot --prerunmodifier disable.TestSetup --prerunmodifier disable.TestTeardown tests.robot
+```
 
 !!! note
     Prior to Robot Framework 4.0 `setup` and `teardown` were accessed via
@@ -740,6 +756,7 @@ robot --prerunmodifier disable.SuiteTeardown tests.robot
 There are various command line options to control how execution is reported
 on the console.
 
+<a id="console-output-type"></a>
 ### Built-in console loggers
 
 Robot Framework has several built-in console loggers that provide output on
@@ -767,7 +784,7 @@ are shortcuts for `--console dotted` and `--console quiet`, respectively.
 
 Examples:
 
-```
+```text
 robot --console quiet tests.robot
 robot --dotted tests.robot
 ```
@@ -781,7 +798,7 @@ module name, or a dotted class name, with optional arguments separated by colons
 
 Examples:
 
-```
+```text
 robot --console path/to/myconsole.py tests.robot
 robot --console MyConsole --pythonpath /path/to/consoles tests.robot
 robot --console CustomConsole.py:arg1:arg2 tests.robot
@@ -798,8 +815,9 @@ hooks it is interested in.
     would take effect, but this behaviour may change without notice. Use the
     [Listener interface](../extending/listener-interface.md#listener-interface) if you need to legitimately modify them.
 
-   Support for custom console loggers is new in Robot Framework 7.5.
+    Support for custom console loggers is new in Robot Framework 7.5.
 
+<a id="earlier"></a>
 #### Example
 
 The following example shows a custom console that provides a compact progress
@@ -849,6 +867,7 @@ class ProgressConsole:
             f"{self.skipped} skipped"
         )
 ```
+
 #### Programmatic usage
 
 When using the [programmatic API](https://robot-framework.readthedocs.io/en/master/autodoc/robot.html#module-robot.run), the `console` option also accepts
@@ -884,6 +903,7 @@ Custom console loggers must handle their configuration on their own. Options lik
 `--consolewidth`{.option} discussed in the subsequent sections only affect the
 built-in console loggers.
 
+<a id="sets-the-width"></a>
 ### Console width
 
 The width of console output can be set using the option `--consolewidth (-W)`{.option}.
@@ -893,6 +913,7 @@ The default width is 78 characters.
     On many UNIX-like machines you can use handy `$COLUMNS`
     environment variable like `--consolewidth $COLUMNS`.
 
+<a id="specifies-are-colors"></a>
 ### Console colors
 
 The `--consolecolors (-C)`{.option} option is used to control whether
@@ -937,6 +958,7 @@ support links, though, but the newer [Windows Terminal](https://en.wikipedia.org
 !!! note
     Hyperlink support is new in Robot Framework 7.1.
 
+<a id="markers-on-the-console"></a>
 ### Console markers
 
 Special markers `.` (success) and
@@ -958,6 +980,7 @@ case-insensitive values:
 `off`
 : Markers are disabled.
 
+<a id="sets-a-listener"></a>
 ## Setting listeners
 
 [Listeners](../extending/listener-interface.md#listener-interface) can be used to monitor the test execution. When they are taken into

@@ -227,6 +227,7 @@ def fix_headings_inside_code_blocks(content: str, verbose: bool = False) -> Tupl
     result = []
     in_code = False
     open_backticks = 0
+    open_info = ''
 
     i = 0
     while i < len(lines):
@@ -241,19 +242,25 @@ def fix_headings_inside_code_blocks(content: str, verbose: bool = False) -> Tupl
             if not in_code:
                 in_code = True
                 open_backticks = backticks
+                open_info = info
                 result.append(line)
                 i += 1
                 continue
             else:
                 if backticks >= open_backticks and not info:
                     in_code = False
+                    open_info = ''
                     result.append(line)
                     i += 1
                     continue
 
         # If inside a code block and we see a markdown heading (## or higher).
         # Single # is skipped because it's ambiguous with code comments.
-        if in_code and re.match(r'^#{2,6}\s+\S', stripped):
+        # Skip demo fences (4+ backticks, or a markup language) — a `##` there is
+        # literal Markdown sample content, so splitting would corrupt the demo and
+        # desync fence tracking for the rest of the file.
+        is_demo_fence = open_backticks >= 4 or open_info.lower() in _MARKUP_DEMO_LANGS
+        if in_code and not is_demo_fence and re.match(r'^#{2,6}\s+\S', stripped):
             # Close the code block before the heading
             # Remove trailing blank lines from the code block
             while result and not result[-1].strip():
@@ -281,6 +288,12 @@ def fix_headings_inside_code_blocks(content: str, verbose: bool = False) -> Tupl
 
 
 _FENCE_RE = re.compile(r'^[ \t]*`{3,}.*$')
+
+# Fences opened with these info strings (or with 4+ backticks) are *demos* that
+# deliberately show Markdown/markup source, so `##`-style lines inside them are
+# literal sample content, not real section headings. The heading-in-code split
+# must never fire inside such fences.
+_MARKUP_DEMO_LANGS = {'markdown', 'md', 'text', 'rest', 'rst', 'restructuredtext'}
 
 
 def _scan_fence_ranges(lines: List[str]) -> List[Tuple[int, int]]:

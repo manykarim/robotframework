@@ -24,6 +24,7 @@ Process invoice
     Submit information to backend system
     Validate information is visible in web UI
 ```
+
 It is an error to have both tests and tasks in same file.
 
 ## Task related settings

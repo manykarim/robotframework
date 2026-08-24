@@ -37,6 +37,7 @@ Library    my.package.TestLibrary
 Library    LibraryAcceptingArguments    arg1    arg2
 Library    ${LIBRARY}
 ```
+
 It is possible to import test libraries in [suite files](creating-test-suites.md#suite-files),
 [resource files](resource-files.md#resource-files) and [suite initialization files](creating-test-suites.md#suite-initialization-files). In all these
 cases, all the keywords in the imported library are available in that
@@ -61,6 +62,7 @@ Example
     Import Library    MyLibrary    arg1    arg2
     KW From MyLibrary
 ```
+
 ## Specifying library to import
 
 Libraries to import can be specified either by using the library name
@@ -82,6 +84,7 @@ Library    OperatingSystem
 Library    CustomLibrary    possible    arguments
 Library    librarymodule.LibraryClass
 ```
+
 The biggest benefit of this approach is that when the module search
 path has been configured, often using a custom [start-up script](../executing-tests/basic-usage.md#start-up-script),
 normal users do not need to think where libraries actually are
@@ -109,6 +112,7 @@ Library    PythonLibrary.py
 Library    relative/path/PythonDirLib/    possible    arguments
 Library    ${RESOURCES}/Example.py
 ```
+
 ## Setting custom name to library
 
 The library name is shown in test logs before keyword names, and if
@@ -139,6 +143,7 @@ logs and must be used in the test data when using keywords' full name
 Library    packagename.TestLib    AS    TestLib
 Library    ${LIBRARY}    AS    MyName
 ```
+
 Possible arguments to the library are placed between the
 original library name and the `AS` marker. The following example
 illustrates how the same library can be imported several times with
@@ -155,6 +160,7 @@ Example
     RemoteLib.Some Keyword    another arg    whatever
     LocalLib.Another Keyword
 ```
+
 Setting a custom name to a test library works both when importing a
 library in the Setting section and when using the *Import Library*{.name} keyword.
 
@@ -179,7 +185,7 @@ documentations:
   - [BuiltIn](#builtin)
   - [Collections](#collections)
   - [DateTime](#datetime)
-  - [Dialogs](#dialogs)
+  - [Dialogs](../supporting-tools/libdoc.md#dialogs)
   - [OperatingSystem](#operatingsystem)
   - [Process](#process)
   - [Screenshot](#screenshot)

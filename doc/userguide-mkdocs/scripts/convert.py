@@ -27,6 +27,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Optional, Dict, List, Tuple
 
+from codespan_mask import mask_code_spans, restore_code_spans
+
 
 @dataclass
 class ConversionStats:
@@ -264,7 +266,13 @@ class RstToMarkdownConverter:
             # Pattern 1: Block admonition with content on following lines only
             # .. type::
             #    content here
-            block_pattern = rf'\.\.\s+{rst_type}::\s*\n((?:[ \t]+[^\n]*\n)+)'
+            #    (blank lines are captured too so MULTI-PARAGRAPH admonitions are
+            #    fully consumed — a bare `(?:[ \t]+[^\n]*\n)+` stopped at the first
+            #    blank line, leaving paragraphs 2+ at their RST indent to render as
+            #    a code block. The blank-line alternative is guarded by a lookahead
+            #    for a following indented line so the capture still ends at the
+            #    blank line that precedes the next (column-0) block.)
+            block_pattern = rf'\.\.\s+{rst_type}::\s*\n((?:[ \t]+[^\n]*\n|[ \t]*\n(?=[ \t]+\S))+)'
 
             def replace_block(match, mtype=mkdocs_type):
                 text = match.group(1)
@@ -276,7 +284,11 @@ class RstToMarkdownConverter:
             # Pattern 2: Inline admonition - content starts on same line, may continue
             # .. type:: content here
             #           more content (indented continuation)
-            inline_pattern = rf'\.\.\s+{rst_type}::\s+([^\n]+(?:\n[ \t]+[^\n]+)*)'
+            # Internal blank lines are captured (guarded by a lookahead for a
+            # following indented line) so MULTI-PARAGRAPH inline admonitions are
+            # fully consumed; without it paragraphs 2+ kept their RST indent and
+            # rendered as a code block inside the note.
+            inline_pattern = rf'\.\.\s+{rst_type}::\s+([^\n]*(?:\n[ \t]+[^\n]*|\n[ \t]*(?=\n[ \t]+\S))*)'
 
             def replace_inline(match, mtype=mkdocs_type):
                 text = match.group(1)
@@ -388,7 +400,12 @@ class RstToMarkdownConverter:
             code_content = '\n'.join(processed_lines)
 
             fence = self._block_fence(code_content)
-            return f'{fence}{lang}\n{code_content}\n{fence}\n'
+            # Trailing blank line: the capture regex swallows the RST blank line
+            # that separated this block from the following paragraph, so without
+            # it the next paragraph is absorbed into the code block's <p> (an
+            # invalid <p><div class="highlight">… text</p>). Emit a blank line
+            # after the closing fence to restore the separation.
+            return f'{fence}{lang}\n{code_content}\n{fence}\n\n'
 
         content = re.sub(pattern, replace_code_block, content)
         return content
@@ -487,6 +504,17 @@ class RstToMarkdownConverter:
         return self._apply_outside_fences(content, self._convert_cross_references_text, robust=True)
 
     def _convert_cross_references_text(self, content: str) -> str:
+        # Inline code spans (RST default-role `code`, :literal:/:code:, and the
+        # reduced ``literals``) must not be scanned for RST references: an
+        # underscore-bearing code token like `number.__abs__()`, `sys.__stdout__`
+        # or `__intro__` would otherwise be mis-parsed by the anonymous/named
+        # passes below and have a bogus [text](url) injected INSIDE the span, and
+        # a `ref`__ resolver can straddle from one span's closing backtick across
+        # the prose into the next span. Mask every genuine code span to an inert
+        # sentinel before the four reference passes and restore it just before
+        # returning (see codespan_mask for the pairing rationale).
+        content, _masked_spans = mask_code_spans(content)
+
         # Pattern for `text <target>`_ style references.
         # Allow one or two trailing underscores so RST embedded-target anonymous
         # references (`text <Target_>`__) are fully consumed and don't leave a
@@ -518,8 +546,11 @@ class RstToMarkdownConverter:
 
         content = re.sub(explicit_pattern, replace_explicit_ref, content)
 
-        # Pattern for `text`_ style references (backticked)
-        backtick_pattern = r'`([^`]+)`_(?!_)'
+        # Pattern for `text`_ style references (backticked). The opening-backtick
+        # lookbehind (mirroring the anonymous twin in _resolve_anonymous_references)
+        # stops the pattern starting at one code span's CLOSING backtick, swallowing
+        # the prose between two spans, and eating the next span's leading underscore.
+        backtick_pattern = r'(?<![`\w])`([^`]+)`_(?!_)'
 
         def replace_backtick_ref(match):
             text = match.group(1).strip()
@@ -594,6 +625,10 @@ class RstToMarkdownConverter:
             return f'[{text}](#{slug})'
 
         content = re.sub(word_pattern, replace_word_ref, content)
+
+        # Restore the masked inline code spans verbatim. Nothing containing the
+        # sentinel may leak to later pipeline stages.
+        content = restore_code_spans(content, _masked_spans)
 
         return content
 
@@ -1037,12 +1072,22 @@ class RstToMarkdownConverter:
         MD:
             ![Caption text](path/to/image.png)
         """
-        # Figure with caption
-        pattern = r'\.\.\s+figure::\s*([^\n]+)\n(?:\s*:[^:]+:[^\n]*\n)*(?:\s*\n)?\s*([^\n]*)'
+        # Figure with an optional caption. The caption is an INDENTED block that
+        # follows the directive/options; a following column-0 paragraph is NOT
+        # the caption. The old pattern captured the next line unconditionally, so
+        # a caption-less figure (image + :width: only) swallowed the following
+        # paragraph as its caption (seen on the libdoc page).
+        pattern = re.compile(
+            r'^[ \t]*\.\.[ \t]+figure::[ \t]*([^\n]+)\n'
+            r'((?:[ \t]+:[^\n]*\n)*)'                       # options (:width: etc.)
+            r'((?:[ \t]*\n)?(?:[ \t]+[^\n]+\n?)*)',         # indented caption block
+            re.MULTILINE,
+        )
 
         def replace_figure(match):
             path = match.group(1).strip()
-            caption = match.group(2).strip() if match.group(2) else ''
+            caption_block = match.group(3) or ''
+            caption = ' '.join(ln.strip() for ln in caption_block.split('\n') if ln.strip())
             self.stats.figures_converted += 1
 
             # Adjust path if needed (remove src/ prefix if present for MkDocs)
@@ -1052,11 +1097,11 @@ class RstToMarkdownConverter:
             alt_text = caption if caption else 'Figure'
 
             if caption:
-                return f'![{alt_text}]({path})\n\n*{caption}*\n'
+                return f'![{alt_text}]({path})\n\n*{caption}*\n\n'
             else:
-                return f'![{alt_text}]({path})\n'
+                return f'![{alt_text}]({path})\n\n'
 
-        content = re.sub(pattern, replace_figure, content)
+        content = pattern.sub(replace_figure, content)
 
         # Simple image directive
         img_pattern = r'\.\.\s+image::\s*([^\n]+)'
@@ -1073,7 +1118,96 @@ class RstToMarkdownConverter:
         # Numbered list with #.
         content = re.sub(r'^#\.\s+', '1. ', content, flags=re.MULTILINE)
 
+        content = self._reindent_ordered_continuations(content)
+
         return content
+
+    def _reindent_ordered_continuations(self, content: str) -> str:
+        """Re-indent enumerated-list continuation blocks to 4 spaces.
+
+        RST indents an enumerated-list item's continuation content to align with
+        the text after the marker — 3 columns for a single-digit ``N. `` marker.
+        Python-Markdown (tab_length 4) needs 4-space indentation for a
+        blank-line-separated continuation paragraph to stay inside the ``<li>``;
+        at 3 spaces the paragraph terminates the list and the next ``N.`` opens a
+        fresh ``<ol>`` restarting at 1. Bump each continuation line by ``4 -
+        marker_width`` (i.e. +1 for single-digit markers; a no-op for ``10. ``
+        which is already 4-wide).
+
+        Conservative and scoped: only column-0 ordered markers are handled;
+        lines inside fenced code blocks are left untouched (nested code in a list
+        item is a separate concern); an item ends at the first non-blank line
+        indented less than the marker width.
+        """
+        lines = content.split('\n')
+        out: List[str] = []
+        marker_re = re.compile(r'^(\d+\.[ \t]+)\S')
+        fence_re = re.compile(r'^[ \t]*(`{3,}|~{3,})')
+        in_fence = False
+        marker_width = 0   # >0 while inside an ordered-list item's continuation
+        shift = 0
+        for line in lines:
+            fm = fence_re.match(line)
+            if fm:
+                in_fence = not in_fence
+                out.append(line)             # fenced blocks left as-is
+                continue
+            if in_fence:
+                out.append(line)
+                continue
+
+            mm = marker_re.match(line)
+            if mm:
+                marker_width = len(mm.group(1))
+                shift = max(0, 4 - marker_width)
+                out.append(line)
+                continue
+
+            if marker_width:
+                stripped = line.strip()
+                if stripped == '':
+                    out.append(line)          # blank line — item may continue
+                    continue
+                indent = len(line) - len(line.lstrip(' '))
+                if indent >= marker_width:
+                    out.append(' ' * shift + line if shift else line)
+                    continue
+                # non-blank line indented less than the marker → item ended
+                marker_width = 0
+                shift = 0
+            out.append(line)
+
+        return '\n'.join(out)
+
+    def _process_includes(self, content: str, rst_path: Path) -> str:
+        """Inline ``.. include:: <file>`` directives, resolving the path relative
+        to the including RST file.
+
+        With the ``:literal:`` option the file is emitted as a fenced ``text``
+        block (the copyright notice uses this). Without it, the raw file content
+        is inlined. A missing/unresolvable file falls back to the previous
+        behaviour (the directive is dropped).
+        """
+        pattern = re.compile(
+            r'^[ \t]*\.\.[ \t]+include::[ \t]+(?P<target>\S+)[ \t]*\n'
+            r'(?P<options>(?:[ \t]+:[^\n]*\n)*)',
+            re.MULTILINE,
+        )
+
+        def repl(match):
+            target = match.group('target')
+            options = match.group('options') or ''
+            try:
+                path = (rst_path.parent / target).resolve()
+                text = path.read_text(encoding='utf-8', errors='replace').rstrip('\n')
+            except (OSError, ValueError):
+                return ''  # unresolved include — drop (previous behaviour)
+            if ':literal:' in options:
+                fence = self._block_fence(text)
+                return f'{fence}text\n{text}\n{fence}\n'
+            return text + '\n'
+
+        return pattern.sub(repl, content)
 
     def remove_rst_directives(self, content: str) -> str:
         """Remove or convert remaining RST directives."""
@@ -1218,23 +1352,52 @@ class RstToMarkdownConverter:
                     continue
 
                 rewritten, has_marker = self._strip_literal_marker(block_text)
-                if has_marker and i + 2 < len(blocks):
+                if (has_marker and i + 2 < len(blocks)
+                        and blocks[i + 1][0] == 'blank'
+                        and blocks[i + 2][0] == 'text'
+                        and self._dedent_block(blocks[i + 2][1]) is not None):
                     blank_kind, blank_text, blank_trailing = blocks[i + 1]
-                    next_kind, next_text, next_trailing = blocks[i + 2]
-                    if blank_kind == 'blank' and next_kind == 'text':
-                        dedented = self._dedent_block(next_text)
-                        if dedented is not None:
-                            body, language = dedented
-                            if rewritten.strip():
-                                output.append(rewritten + trailing)
-                                output.append(blank_text + blank_trailing)
-                            fence = self._block_fence(body)
-                            fence_open = f'{fence}{language}' if language else fence
-                            output.append(f'{fence_open}\n{body}\n{fence}')
-                            output.append(next_trailing)
-                            self.stats.literal_blocks_converted += 1
-                            i += 3
-                            continue
+                    # Collect the FULL literal block: consecutive indented text
+                    # blocks AND the blank lines between them. An internal blank
+                    # line must NOT truncate the block — the old code fenced only
+                    # blocks[i+2] and left the remaining indented lines as stray
+                    # prose (and, being still-indented, they rendered as a second
+                    # code block or leaked a fake heading). Stop at the first
+                    # dedented (column-0) text block.
+                    segs = []
+                    j = i + 2
+                    while j < len(blocks):
+                        bk, bt, btr = blocks[j]
+                        if bk == 'text':
+                            if self._dedent_block(bt) is None:
+                                break
+                            segs.append((bt, btr))
+                            j += 1
+                        elif (j + 1 < len(blocks) and blocks[j + 1][0] == 'text'
+                              and self._dedent_block(blocks[j + 1][1]) is not None):
+                            segs.append((bt, btr))   # internal blank — keep
+                            j += 1
+                        else:
+                            break
+                    combined = ''.join(t + tr for t, tr in segs).rstrip('\n')
+                    dedented = self._dedent_block(combined)
+                    if dedented is not None:
+                        body, language = dedented
+                        if rewritten.strip():
+                            output.append(rewritten + trailing)
+                            output.append(blank_text + blank_trailing)
+                        fence = self._block_fence(body)
+                        # A bare `::` literal block holds plain output/text
+                        # (tracebacks, `*INFO*` logs), not code. Emit an explicit
+                        # `text` language so mkdocs.yml's `default_lang: python`
+                        # does not colorize it. Explicit `.. sourcecode:: X`
+                        # blocks (which carry a language) are unaffected.
+                        fence_open = f'{fence}{language}' if language else f'{fence}text'
+                        output.append(f'{fence_open}\n{body}\n{fence}')
+                        output.append(blocks[j - 1][2])
+                        self.stats.literal_blocks_converted += 1
+                        i = j
+                        continue
 
                 if has_marker:
                     output.append(rewritten + trailing)
@@ -1647,6 +1810,12 @@ class RstToMarkdownConverter:
         """
         self.reset_file_state()
         content = rst_path.read_text(encoding='utf-8')
+
+        # Inline `.. include:: <file>` directives before anything strips them.
+        # remove_rst_directives used to delete the directive line and silently
+        # drop the included content (e.g. the entire copyright notice, included
+        # via `.. include:: COPYRIGHT.txt` with the `:literal:` option).
+        content = self._process_includes(content, rst_path)
 
         # Apply conversions in order
         content = self.extract_link_targets(content)

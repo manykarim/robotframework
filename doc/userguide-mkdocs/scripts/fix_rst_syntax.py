@@ -18,6 +18,8 @@ import sys
 from pathlib import Path
 from typing import Tuple
 
+from codespan_mask import mask_code_spans, restore_code_spans
+
 
 DOCS_DIR = Path(__file__).parent.parent / "docs"
 
@@ -200,8 +202,17 @@ def convert_anonymous_links(content: str, filename: str) -> Tuple[str, list]:
                 anchor = text.lower().replace(' ', '-')
                 return f'[{text}](#{anchor})'
 
-        # Replace `text`__ patterns
-        line = re.sub(r'`([^`]+)`__', replace_anon_ref, line)
+        # Replace `text`__ patterns. Mask genuine code spans first so this
+        # substitution can only ever match a real anonymous reference: without it
+        # the pattern starts at one code span's CLOSING backtick, swallows the
+        # prose between two spans, and eats the next span's leading `__` (turning
+        # `__intro__`/`__init__` into `__intro__[ and ](#-and-)init__`, and
+        # `**this is bold**`/`__this is bold__` into a broken merged span). An
+        # opening-backtick lookbehind is not enough — a closing backtick may be
+        # preceded by `*`/`>`/`)` etc. — so pair-based masking is required.
+        masked, saved = mask_code_spans(line)
+        masked = re.sub(r'`([^`]+)`__', replace_anon_ref, masked)
+        line = restore_code_spans(masked, saved)
         result.append(line)
 
     return '\n'.join(result), warnings
@@ -303,9 +314,12 @@ def convert_list_table(content: str) -> str:
                     if current_row:
                         table_rows.append(current_row)
                     current_row = [stripped[4:]]  # Remove "* - "
-                # Continuation of row with  -
-                elif re.match(r'^  - ', stripped):
-                    current_row.append(stripped[4:])  # Remove "  - "
+                # Continuation cell of the current row: "  - value" in the RST,
+                # which becomes "- value" after strip(). The old pattern matched
+                # "^  - " against the STRIPPED line, so it never matched and every
+                # second (translation) column was silently dropped.
+                elif stripped.startswith('- ') and current_row:
+                    current_row.append(stripped[2:])  # Remove "- "
                 # Empty line within table
                 elif stripped == '':
                     pass

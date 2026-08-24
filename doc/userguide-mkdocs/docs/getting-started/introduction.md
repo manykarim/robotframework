@@ -75,7 +75,7 @@ diagram below.
 
 *Robot Framework architecture*
 
-The [test data](../index.md#creating-test-data) is in simple, easy-to-edit tabular format. When
+The [test data](#creating-test-data) is in simple, easy-to-edit tabular format. When
 Robot Framework is started, it processes the data, [executes test
 cases](../executing-tests/basic-usage.md#executing-test-cases) and generates logs and reports. The core framework does not
 know anything about the target under test, and the interaction with it
@@ -84,7 +84,7 @@ interfaces directly or use lower level test tools as drivers.
 
 ## Screenshots
 
-Following screenshots show examples of the [test data](../index.md#creating-test-data) and created
+Following screenshots show examples of the [test data](#creating-test-data) and created
 [reports](../executing-tests/post-processing.md#creating-reports-logs-and-output-files) and [logs](../executing-tests/execution-artifacts.md#splitting-logs).
 
 ![Test case file](testdata_screenshots.png)
@@ -120,8 +120,8 @@ The Smart Way](http://www.catb.org/~esr/faqs/smart-questions.html).
 
 robotframework-[users](http://groups.google.com/group/robotframework-users)
 : General discussion about all Robot Framework related
-   issues. Questions and problems can be sent to this list. Used also
-   for information sharing for all users.
+    issues. Questions and problems can be sent to this list. Used also
+    for information sharing for all users.
 
 robotframework-[announce](http://groups.google.com/group/robotframework-announce)
 : An announcements-only mailing list where only moderators can send

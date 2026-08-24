@@ -46,6 +46,7 @@ Exactly same settings are available when [creating tasks](../creating-test-data/
 | Name | Description |
 | --- | --- |
 | [Documentation] | Used for specifying a [test case documentation](../creating-test-data/creating-test-cases.md#test-case-name-and-documentation). |
+| [Metadata] | Used for setting [free test metadata](../creating-test-data/creating-test-cases.md#free-test-metadata). |
 | [Tags] | Used for [tagging test cases](../creating-test-data/creating-test-cases.md#tagging-test-cases). |
 | [Setup] | Used for specifying a [test setup](../creating-test-data/creating-test-cases.md#test-setup-and-teardown). |
 | [Teardown] | Used for specifying a [test teardown](../creating-test-data/creating-test-cases.md#test-setup-and-teardown). |

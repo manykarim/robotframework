@@ -1,4 +1,6 @@
 
+<a id="keyword-section"></a>
+
 <a id="user-keyword"></a>
 # Creating user keywords
 
@@ -33,6 +35,7 @@ Title Should Start With
     ${title} =    Get Title
     Should Start With    ${title}    ${expected}
 ```
+
 Most user keywords take some arguments. This important feature is used
 already in the second example above, and it is explained in detail
 [later in this section](#user-keyword-arguments), similarly as [user keyword return
@@ -61,15 +64,15 @@ this section.
 
 *[Setup]*{.setting}, *[Teardown]*{.setting}
 : Specify [user keyword setup and teardown](#user-keyword-setup-and-teardown). *[Setup]*{.setting} is new in
-   Robot Framework 7.0.
+    Robot Framework 7.0.
 
 *[Timeout]*{.setting}
 : Sets the possible [user keyword timeout](advanced-features.md#user-keyword-timeout). [Timeouts](advanced-features.md#timeouts) are discussed
-   in a section of their own.
+    in a section of their own.
 
 *[Return]*{.setting}
 : Specifies [user keyword return values](#user-keyword-return-values). Deprecated in Robot Framework 7.0,
-   the [RETURN](#return) statement should be used instead.
+    the [RETURN](#return) statement should be used instead.
 
 !!! note
     The format used above is recommended, but setting names are
@@ -115,6 +118,7 @@ Short documentation in multiple lines
     ...                an empty line.
     No Operation
 ```
+
 Sometimes keywords need to be removed, replaced with new ones, or
 deprecated for other reasons.  User keywords can be marked deprecated
 by starting the documentation with `*DEPRECATED*`, which will
@@ -140,8 +144,8 @@ user keyword tags:
 
 *[Tags]*{.setting} setting with each keyword
 : Keywords get these tags in addition to possible tags specified using the
-   *Keyword Tags*{.setting} setting. The *[Tags]*{.setting} setting also allows
-   removing tags set with *Keyword Tags*{.setting} by using the `-tag` syntax.
+    *Keyword Tags*{.setting} setting. The *[Tags]*{.setting} setting also allows
+    removing tags set with *Keyword Tags*{.setting} by using the `-tag` syntax.
 
 ```robotframework
 *** Settings ***
@@ -162,6 +166,7 @@ Remove common tag
     [Tags]    own    -html
     No Operation
 ```
+
 Keyword tags can be specified using variables, the `-tag` syntax supports
 patterns, and so on, exactly as [test case tags](creating-test-cases.md#test-case-tags).
 
@@ -200,6 +205,7 @@ Tags on own line
     [Arguments]    ${first}    ${second}
     Log Many    ${first}    ${second}
 ```
+
 As the latter example demonstrates, the syntax for defining tags is similar
 to how Libdoc handles [argument, return value and exception documentation](../supporting-tools/libdoc.md#arguments-return-values-exceptions-and-tags).
 
@@ -258,6 +264,7 @@ Three Arguments
     Log    2nd argument: ${arg2}
     Log    3rd argument: ${arg3}
 ```
+
 ### Default values with user keywords
 
 When creating user keywords, positional arguments are sufficient in
@@ -303,6 +310,7 @@ One Required And One With Default
     Should Be Equal    ${a}    ${b}
     Should Be Equal    ${c}    ${a} and ${b}
 ```
+
 When a keyword accepts several arguments with default values and only
 some of them needs to be overridden, it is often handy to use the
 [named arguments](creating-test-cases.md#named-arguments) syntax. When this syntax is used with user
@@ -315,6 +323,7 @@ below and `${arg1}` would still get its default value.
 Example
     Two Arguments With Defaults    arg2=new value
 ```
+
 As all Pythonistas must have already noticed, the syntax for
 specifying default arguments is heavily inspired by Python syntax for
 function default values.
@@ -348,6 +357,7 @@ Required, Default, Varargs
         Log    ${item}
     END
 ```
+
 Notice that if the last keyword above is used with more than one
 argument, the second argument `${opt}` always gets the given
 value instead of the default value. This happens even if the given
@@ -370,6 +380,7 @@ Varargs with user keywords
     Required, Default, Varargs    required    optional
     Required, Default, Varargs    arg1    arg2    arg3    arg4    arg5
 ```
+
 Again, Pythonistas probably notice that the variable number of
 arguments syntax is very close to the one in Python.
 
@@ -395,6 +406,7 @@ Run Program
     [Arguments]    @{args}    &{config}
     Run Process    program.py    @{args}    &{config}
 ```
+
 The last example above shows how to create a wrapper keyword that
 accepts any positional or named argument and passes them forward.
 See [free named argument examples](creating-test-cases.md#free-named-argument-examples) for a full example with same keyword.
@@ -422,6 +434,7 @@ Without Varargs
     [Arguments]    @{}    ${first}    ${second}
     Log Many    ${first}    ${second}
 ```
+
 Named-only arguments can be used together with [positional arguments](#positional-arguments-with-user-keywords) as
 well as with [free named arguments](#free-named-arguments-with-user-keywords). When using free named arguments, they
 must be last:
@@ -436,6 +449,7 @@ With Free Named
     [Arguments]    @{varargs}    ${named only}    &{free named}
     Log Many    @{varargs}    ${named only}    &{free named}
 ```
+
 When passing named-only arguments to keywords, their order does not matter
 other than they must follow possible positional arguments. The keywords above
 could be used, for example, like this:
@@ -452,6 +466,7 @@ Example
     With Free Named    positional    named only=value    x=1    y=2
     With Free Named    foo=a    bar=b    named only=c    quux=d
 ```
+
 Named-only arguments can have default values similarly as [normal user
 keyword arguments](#default-values-with-user-keywords). A minor difference is that the order of arguments
 with and without default values is not important.
@@ -504,6 +519,7 @@ Move
     [Arguments]    ${direction: Literal["LEFT", "RIGHT"]}
     Log    Turning ${direction}.
 ```
+
 !!! tip
     Using `Literal`, like in the above example, is a convenient way to
     limit what values are accepted.
@@ -535,6 +551,7 @@ Log releases
         Log    RF 7.3 ${version} was released on ${date.day}.${date.month}.${date.year}.
     END
 ```
+
 !!! note
     Argument conversion with user keywords is new in Robot Framework 7.3.
 
@@ -554,6 +571,7 @@ Normal arguments
 Embedded arguments
     Select cat from list
 ```
+
 As the example illustrates, embedding arguments to keyword names
 can make the data easier to read and understand even for people without
 any Robot Framework experience.
@@ -580,6 +598,7 @@ Select ${animal} from list
     Open Page    Pet Selection
     Select Item From List    animal_list    ${animal}
 ```
+
 As the above example shows, embedded arguments are specified simply by using
 variables in keyword names. The arguments used in the name are naturally
 available inside the keyword and they have different values depending on how
@@ -603,6 +622,7 @@ Number of ${animals} should be
     Select Items From List    animal_list    ${animals}
     Number of Selected List Items Should Be    ${count}
 ```
+
 Other than the special name, keywords with embedded
 arguments are created just like other user keywords. They are also used the same
 way as other keywords except that spaces and underscores are not ignored in their
@@ -628,6 +648,7 @@ Select ${animal} from list
     Open Page    Pet Selection
     Select Item From List    animal_list    ${animal}
 ```
+
 ### Embedded arguments matching wrong values
 
 One tricky part in using embedded arguments is making sure that the
@@ -648,6 +669,7 @@ Example
 Select ${city} ${team}
     Log    Selected ${team} from ${city}.
 ```
+
 An easy solution to this problem is surrounding arguments with double quotes or
 other characters not used in the actual values. This fixed example works so
 that cities and teams match correctly:
@@ -662,6 +684,7 @@ Example
 Select "${city}" "${team}"
     Log    Selected ${team} from ${city}.
 ```
+
 This approach is not enough to resolve all conflicts, but it helps in common
 cases and is generally recommended. Another benefit is that it makes arguments
 stand out from rest of the keyword.
@@ -702,6 +725,7 @@ Execute "${cmd}"
 Execute "${cmd}" with "${opts}"
     Run Process    ${cmd} ${opts}    shell=True
 ```
+
 When this kind of conflicts occur, Robot Framework tries to automatically select
 the best match and use that. In the above example, *Execute "${cmd}" with "${opts}"*{.name}
 is considered a better match than the more generic *Execute "${cmd}"*{.name} and
@@ -728,6 +752,7 @@ ${type} Framework
 Robot ${action}
     Should Be Equal    ${action}    uprising
 ```
+
 Keywords that accept only "normal" arguments or no arguments at all are
 considered to match better than keywords accepting embedded arguments.
 For example, if the following keyword is added to the above example,
@@ -739,6 +764,7 @@ succeeds:
 Robot Framework
     No Operation
 ```
+
 Before looking which match is best, Robot Framework checks are some of the matching
 keywords implemented in the same file as the caller keyword. If there are such keywords,
 they are given precedence over other keywords. Alternatively, [library search order](advanced-features.md#library-search-order)
@@ -812,6 +838,7 @@ Select ${animal:(?i)cat|dog}
     [Documentation]    Inline flag `(?i)` makes the pattern case-insensitive.
     Log    Selected ${animal}!
 ```
+
 !!! note
     Support for inline flags is new in Robot Framework 7.2.
 
@@ -880,6 +907,7 @@ Fails
 Deadline is ${deadline:\d{4}-\d{2}-\d{2}}
     Should Be Equal    ${deadline}    2011-06-27
 ```
+
 Another limitation of using variables is that their actual values are not matched
 against custom regular expressions. As the result keywords may be called with
 values that their custom regexps would not allow. This behavior is deprecated
@@ -907,6 +935,7 @@ Deadline is ${deadline: date:\d{4}-\d{2}-\d{2}}
     Should Be Equal    ${deadline.month}    ${5}
     Should Be Equal    ${deadline.day}      ${30}
 ```
+
 Because the type separator is a colon followed by a space (e.g. `${arg: int}`)
 and the pattern separator is just a colon (e.g. `${arg:\d+}`), there typically
 are no conflicts when using only a type or only a pattern. The only exception
@@ -950,10 +979,12 @@ Result should be ${expected}
     ${result} =    Get Result
     Should Be Equal    ${result}    ${expected}
 ```
+
 !!! note
     Embedded arguments feature in Robot Framework is inspired by
     how *step definitions* are created in the popular BDD tool [Cucumber](https://cucumber.io).
 
+<a id="setting-variables-from-keyword-return-values"></a>
 ## User keyword return values
 
 Similarly as library keywords, also user keywords can return values.
@@ -1005,6 +1036,7 @@ Find Index
     END
     RETURN    ${-1}
 ```
+
 If you want to test the above examples yourself, you can use them with these test cases:
 
 ```robotframework
@@ -1031,6 +1063,7 @@ Advanced
     ${index} =    Find Index    non existing    ${list}
     Should Be Equal    ${index}    ${-1}
 ```
+
 !!! note
     `RETURN` syntax is case-sensitive similarly as [IF](control-structures.md#if) and [FOR](control-structures.md#for).
 
@@ -1058,6 +1091,7 @@ Return One Value
 Return Three Values
     [Return]    a    b    c
 ```
+
 !!! note
     The *[Return]*{.setting} setting was deprecated in Robot Framework 7.0
     and the `RETURN` statement should be used instead. If there is a need
@@ -1102,6 +1136,7 @@ Find Index
     END
     Return From Keyword    ${-1}
 ```
+
 !!! note
     These keywords are effectively deprecated and the `RETURN` statement should be
     used unless there is a need to support also older versions than Robot Framework
@@ -1162,6 +1197,7 @@ Private Keyword
     [Tags]    robot:private
     No Operation
 ```
+
 Using the `robot:private` tag does not outright prevent using the keyword
 outside the file where it is created, but such usages will cause a warning.
 If there is both a public and a private keyword with the same name,

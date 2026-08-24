@@ -15,7 +15,7 @@ arguments.
 
 ### Synopsis
 
-```
+```text
 python -m robot.testdoc [options] data_sources output_file
 ```
 
@@ -68,7 +68,7 @@ Testdoc can be executed as an installed module like
 
 Examples:
 
-```
+```text
 python -m robot.testdoc my_test.robot testdoc.html
 python path/to/robot/testdoc.py --name "Smoke tests" --include smoke path/to/tests smoke.html
 ```

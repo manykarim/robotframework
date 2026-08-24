@@ -26,7 +26,7 @@ earlier as an input.
 
 ### Synopsis
 
-```
+```text
 libdoc [options] library_or_resource output_file
 libdoc [options] library_or_resource list|show|version [names]
 ```
@@ -68,7 +68,7 @@ libdoc [options] library_or_resource list|show|version [names]
 The easiest way to run Libdoc is using the `libdoc` command created as part of
 the normal installation:
 
-```
+```text
 libdoc ExampleLibrary ExampleLibrary.html
 ```
 
@@ -76,14 +76,14 @@ Alternatively it is possible to execute the `robot.libdoc` module directly.
 This approach is especially useful if you have installed Robot Framework using
 multiple Python versions and want to use a specific version with Libdoc:
 
-```
+```text
 python -m robot.libdoc ExampleLibrary ExampleLibrary.html
 python3.9 -m robot.libdoc ExampleLibrary ExampleLibrary.html
 ```
 
 Yet another alternative is running the `robot.libdoc` module as a script:
 
-```
+```text
 python path/to/robot/libdoc.py ExampleLibrary ExampleLibrary.html
 ```
 
@@ -98,7 +98,7 @@ When documenting libraries implemented with Python or that use the
 [dynamic library API](../extending/dynamic-library-api.md#dynamic-library-api), it is possible to specify the library either by
 using just the library name or path to the library source code:
 
-```
+```text
 libdoc ExampleLibrary ExampleLibrary.html
 libdoc src/ExampleLibrary.py docs/ExampleLibrary.html
 ```
@@ -117,7 +117,7 @@ provides or otherwise alter its documentation, it might be a good idea to use
 
 Resource files must always be specified using a path:
 
-```
+```text
 libdoc example.resource example.html
 ```
 
@@ -130,7 +130,7 @@ Earlier generated Libdoc XML or JSON spec files can also be used as inputs.
 This works if spec files use either `*.xml`{.file}, `*.libspec`{.file} or
 `*.json`{.file} extension:
 
-```
+```text
 libdoc Example.xml Example.html
 libdoc Example.libspec Example.html
 libdoc Example.json Example.html
@@ -158,10 +158,9 @@ in HTML format. This format is thus familiar for most people who have used
 Robot Framework. A simple example can be seen below, and it has been generated
 based on the example found a [bit later in this section](#python-libraries).
 
-![The HTML documentation starts with general library introduction, continues](ExampleLibrary.png)
+![Figure](ExampleLibrary.png)
 
-*The HTML documentation starts with general library introduction, continues*
-
+The HTML documentation starts with general library introduction, continues
 with a section about configuring the library when it is imported (when
 applicable), and finally has shortcuts to all keywords and the keywords
 themselves. The magnifying glass icon on the lower right corner opens the
@@ -178,7 +177,7 @@ See the `README.rst` file in `src/web/libodc` directory in the project
 repository for up to date information about how to add new languages
 for the localisation.
 
-```
+```text
 libdoc OperatingSystem OperatingSystem.html
 libdoc --name MyLibrary Remote::http://10.0.0.42:8270 MyLibrary.html
 libdoc --format HTML test/resource.robot doc/resource.htm
@@ -204,7 +203,7 @@ extension, Libdoc automatically enables the options `-f XML -s HTML` which means
 creating an XML output file where keyword documentation is converted to HTML.
 If needed, the format can be explicitly set with the `--format`{.option} option.
 
-```
+```text
 libdoc OperatingSystem OperatingSystem.xml
 libdoc test/resource.robot doc/resource.libspec
 libdoc --format xml MyLibrary MyLibrary.spec
@@ -259,19 +258,19 @@ also take additional arguments.
     limited to show only certain keywords by passing optional patterns
     as arguments. Keyword is listed if its name contains given pattern.
 `show`
-    Show library/resource documentation. Can be limited to show only
+: Show library/resource documentation. Can be limited to show only
     certain keywords by passing names as arguments. Keyword is shown if
     its name matches any given name. Special argument `intro` will show
     only the library introduction and importing sections.
 `version`
-    Show library version
+: Show library version
 
 Optional patterns given to `list` and `show` are case and space
 insensitive. Both also accept `*` and `?` as wildcards.
 
 Examples:
 
-```
+```text
 libdoc Dialogs list
 libdoc SeleniumLibrary list browser
 libdoc Remote::10.0.0.42:8270 show
@@ -279,6 +278,53 @@ libdoc Dialogs show PauseExecution execute*
 libdoc SeleniumLibrary show intro
 libdoc SeleniumLibrary version
 ```
+
+When showing documentation of a whole library or some keywords, the overall
+structure is formatted using [Markdown](https://en.wikipedia.org/wiki/Markdown). This is especially convenient with
+libraries that use [Markdown documentation syntax](#markdown-documentation-syntax) themselves, because then
+the whole output is in Markdown format. This is demonstrated by the following
+example from the beginning of the Dialogs library documentation:
+
+```text
+# Dialogs
+
+* Version: 7.5
+* Scope: GLOBAL
+
+## Introduction
+
+A library providing dialogs for interacting with users.
+
+`Dialogs` is Robot Framework's standard library that provides means
+for pausing the test or task execution and getting input from users.
+
+Long lines in the provided messages are wrapped automatically. If you want
+to wrap lines manually, you can add newlines using the `\n` character sequence.
+
+## Keywords
+
+### Execute Manual Step
+
+**Arguments:**
+
+* `message` (type: `str`) -
+  The instruction shown in the initial dialog.
+* `default_error` (type: `str`, default: ``) -
+  The default value shown in the possible error message dialog.
+
+Pauses execution until user sets the keyword status.
+
+User can press either `PASS` or `FAIL` button. In the latter case execution
+fails and an additional dialog is opened for defining the error message.
+```
+
+!!! note
+    Prior to Robot Framework 7.5 console output used custom formatting.
+
+!!! note
+    The console output format is not guaranteed to stay stable between
+    Robot Framework versions. If you need a stable, machine readable format,
+    use [Libdoc spec files](#libdoc-spec-files) instead.
 
 ## Writing documentation
 
@@ -304,6 +350,7 @@ the end of this chapter.
 ```python
 src/SupportingTools/ExampleLibrary.py
 ```
+
 !!! tip
     If you library does some initialization work that should not be done
     when using Libdoc, you can [easily detect is Robot Framework running](../extending/creating-test-libraries.md#detecting-is-robot-framework-running)
@@ -346,6 +393,7 @@ class TestLibrary:
         if self.mode == 'secret':
              # ...
 ```
+
 ### Resource file documentation
 
 Keywords in resource files can have documentation using
@@ -392,7 +440,7 @@ values are `ROBOT` (default), `MARKDOWN`, `reST`, `HTML` and `TEXT`.
 
 Robot Framework's own documentation syntax is thoroughly documented in the
 [Robot Framework format](../appendices/documentation-formatting.md#robot-framework-format) appendix. Its most important features are
-formatting using `*bold*[and](../extending/creating-test-libraries.md#detecting-is-robot-framework-running)italics_`, custom links and
+formatting using `*bold*` and `_italics_`, custom links and
 automatic conversion of URLs to links, and the possibility to create tables and
 pre-formatted text blocks (useful for examples). If documentation gets longer,
 support for section titles can be handy as well.
@@ -411,6 +459,7 @@ Some of the most important formatting features are illustrated in this example:
 def my_keyword():
     """Nothing more to see here."""
 ```
+
 Notice that because this is the default documentation format, there is no need
 to use the `ROBOT_LIBRARY_DOC_FORMAT` attribute nor give the format from
 the command line. It is possible that the default format is changed to Markdown
@@ -456,6 +505,7 @@ Third level headers are not included.
 def my_keyword():
     """Nothing more to see here."""
 ```
+
 !!! note
     Generating table of contents is a special feature in Libdoc.
     It is not supported in other places where the Robot Framework
@@ -501,6 +551,7 @@ ROBOT_LIBRARY_DOC_FORMAT = 'Markdown'
 def my_keyword():
     """Nothing more to see here."""
 ````
+
 Robot Framework uses the Python-[Markdown](https://en.wikipedia.org/wiki/Markdown) module as its underling Markdown
 engine and it needs to be installed separately. If syntax highlighting is
 needed, the [Pygments](http://pygments.org/) module must be installed as well.
@@ -551,6 +602,7 @@ ROBOT_LIBRARY_DOC_FORMAT = 'reST'
 def my_keyword():
     """Nothing more to see here."""
 ```
+
 ### HTML documentation syntax
 
 When using HTML format, you can create documentation pretty much freely using
@@ -579,6 +631,7 @@ ROBOT_LIBRARY_DOC_FORMAT = 'HTML'
 def my_keyword():
     """Nothing more to see here."""
 ```
+
 ### Plain text documentation syntax
 
 When the plain text format is used, Libdoc uses the documentation as-is.
@@ -600,6 +653,7 @@ ROBOT_LIBRARY_DOC_FORMAT = 'text'
 def my_keyword():
     """Nothing more to see here."""
 ```
+
 <a id="internal-linking"></a>
 ## Internal linking
 
@@ -648,6 +702,7 @@ def another_keyword(argument, log_level="INFO"):
     """
     # ...
 ```
+
 !!! note
     When using [reStructuredText documentation syntax](../creating-test-data/index.md#syntax), backticks must
     be escaped like `` \`Keyword Name\` ``{.codesc}.
@@ -706,6 +761,7 @@ def keyword(a: int, b: float):
     """This keyword gets `int` and `float` as arguments."""
     return a + b
 ```
+
 !!! note
     Prior to Robot Framework 7.5, the target name to use with some of
     the standard types was a generic name like `integer` and not
@@ -733,6 +789,7 @@ def keyword():
     """
     pass
 ```
+
 ## Arguments, return values, exceptions and tags
 
 Libdoc shows some information about arguments and return values automatically
@@ -784,6 +841,7 @@ def example(first: int, second: float, third: float) -> float:
     """
     return a + b
 ```
+
 As the example above demonstrates, arguments are documented under the `Args:` header
 that must be followed with an indented block. The [specification](../creating-test-data/test-data-syntax.md#style)
 mandates that the indentation should be two or four spaces, but Robot Framework only
@@ -817,14 +875,14 @@ As the example in the previous section already demonstrated, return values can
 be documented under the `Returns:` header as an indented block. The block can
 span multiple lines and paragraphs and extra indentation is preserved:
 
-```
+```text
 Returns:
     Data as a dictionary in the following format:
+
+        {"name": "Robot", "id": 42, "children": []}
+
+    `children` is a list of dictionaries in the same format.
 ```
-
-            {"name": "Robot", "id": 42, "children": []}
-
-        `children` is a list of dictionaries in the same format.
 
 Robot Framework allows the documentation to start already on the header row
 as long as there is at least one space after the colon. This means that
@@ -840,7 +898,7 @@ Also raised exceptions can be documented. This is done under the `Raises:` heade
 using `ExceptionType: Documentation` syntax that works the same way as the
 `name: Documentation` syntax with arguments:
 
-```
+```text
 Raises:
     ValueError: Input value could not be converted.
     IOError: Output file could not be accessed. Either it does not
@@ -856,7 +914,7 @@ keywords support them via the `@keyword` decorator. With both kind of
 keywords it is also possible to list tags as part of the documentation.
 This is done under the `Tags:` header so that tags are separate with a comma:
 
-```
+```text
 Tags:
     first, second
 ```
@@ -879,38 +937,61 @@ Possible unrecognized sections are left to the documentation without modificatio
 
 ### Supported formatting
 
-There are often needs to process keyword documentation also using other tools
-than Libdoc. If the whole documentation is to be rendered as Markdown or
-reStructuredText, an empty line should be added after a header like `Args:`
-to avoid the header and following block to be rendered as a single paragraph:
+There are some times needs to process keyword documentation also using other
+tools than Libdoc. Such tools can support Markdown or reStructuredText, but
+all tools do not understand [Google style](../creating-test-data/test-data-syntax.md#style) documentation conventions.
 
-```
+If the whole documentation is to be rendered as Markdown or reStructuredText,
+an empty line can be added after a block header to avoid the header and the
+following block to be rendered as a single paragraph:
+
+```text
 Args:
-```
 
-        first: Documentation of the first argument.
-        second: If documentation gets long, it can be split to multiple
-            lines. Wrapped lines should be indented consistently.
+    first: Documentation of the first argument.
+    second: If documentation gets long, it can be split to multiple
+        lines. Wrapped lines should be indented consistently.
+```
 
 The above is enough to get arguments rendered as a [code block](https://daringfireball.net/projects/markdown/syntax#precode) in Markdown.
 This syntax still would not work too well with reStructuredText, but Robot Framework
-allows headers to end with two colons like `Args::` and that would turn the above
-into a [literal block](https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#literal-blocks)-
+allows headers to end with two colons like `Args::` and then arguments would
+be rendered as a [literal block](https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#literal-blocks)-
 
-Robot Framework also supports formatting section headers using the asterisk (`*[)
-and underscore (](#and-underscore)`) characters that are typically used for bold and italics in
-different documentation formats. The colon can be either inside (e.g. `**Args:**`)
-or outside (e.g. `*Returns*:`) formatting.
+An alternative to the above is using a list:
+
+```text
+Args:
+
+  - first: Documentation of the first argument.
+  - second: If documentation gets long, it can be split to multiple
+    lines. Wrapped lines should be indented consistently.
+```
+
+Robot Framework supports `-`, `+` and `*`, followed by a space, as list markers
+in this context. The whole list also needs to indented with two or more spaces
+the same way as other blocks.
+
+Robot Framework also supports formatting section headers using the asterisk (`*`)
+and underscore (`_`) characters that are typically used for bold and italics in
+different documentation formats. The colon can be either inside or outside
+formatting so, for example, both `*Args:*` and `*Args*:` are supported.
 
 Argument names can be formatted using the backtick character (`` ` ``{.codesc})
-that is typically used for inline code. In this case the colon must not be
-formatted, so only something like `` `first`: The doc of the first argument ``{.codesc}
-is supported.
+that is typically used for inline code. It is possible to use both single
+backticks like `` `name` ``{.codesc} and double backticks like ``` ``name`` ```{.codesc}.
+In this case the colon must not be formatted, so only something like
+`` `name`: Documentation ``{.codesc} is supported.
 
 Possible header and argument name formatting is totally ignored by Robot Framework
 and thus has an effect only if the documentation is processed using other tools.
-Actual argument and return value documentation can also contain formatting
+Actual argument, return value and exception documentation can also contain formatting
 and that is handled the same way as [formatting elsewhere in the documentation](#documentation-syntax).
+
+!!! note
+    External tools that understand [Google style](../creating-test-data/test-data-syntax.md#style) documentation conventions
+    may not accept extra formatting that Robot Framework supports. Test the
+    used formatting with all the used tools if interoperability is important.
 
 ## Libdoc examples
 
@@ -922,6 +1003,7 @@ The following examples illustrates how to use the most important
 ```python
 src/SupportingTools/LoggingLibrary.py
 ```
+
 [Click here](#srcsupportingtoolslogginglibraryhtml) to see how the generated documentation looks like.
 
 
@@ -930,6 +1012,7 @@ src/SupportingTools/LoggingLibrary.py
 ```python
 src/SupportingTools/LoggingLibraryMarkdown.py
 ```
+
 [Click here](#srcsupportingtoolslogginglibrarymarkdownhtml) to see how the generated documentation looks like.
 
 
