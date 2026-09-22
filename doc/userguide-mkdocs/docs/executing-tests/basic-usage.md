@@ -156,7 +156,7 @@ normal status rc.
 ### Simple patterns
 
 Many command line options take arguments as *simple patterns*. These
-[glob-like patterns](http://en.wikipedia.org/wiki/Glob_(programming)) are matched according to the following rules:
+[glob-like patterns](https://en.wikipedia.org/wiki/Glob_(programming)) are matched according to the following rules:
 
 - `*` matches any string, even an empty string.
 - `?` matches any single character.
@@ -671,12 +671,12 @@ you can enable showing internal traces by setting environment variable
 If the log file still does not have enough information, it is a good
 idea to enable the [syslog](result-files.md#system-log) and see what information it provides. It is
 also possible to add some keywords to the test cases to see what is
-going on. Especially [BuiltIn](../creating-test-data/using-test-libraries.md#builtin) keywords *Log*{.name} and *Log Variables*{.name} are useful. If nothing else works, it is always possible to
-search help from [mailing lists](../getting-started/introduction.md#mailing-lists) or elsewhere.
+going on. Especially [BuiltIn](https://robotframework.org/robotframework/latest/libraries/BuiltIn.html) keywords *Log*{.name} and *Log Variables*{.name} are useful. If nothing else works, it is always possible to
+ask help on [support forums](../getting-started/introduction.md#support-forums).
 
 ### Using the Python debugger (pdb)
 
-It is also possible to use the [pdb](http://docs.python.org/library/pdb.html) module from the Python standard
+It is also possible to use the [pdb](https://docs.python.org/library/pdb.html) module from the Python standard
 library to set a break point and interactively debug a running test.
 The typical way of invoking pdb by inserting:
 

@@ -123,6 +123,10 @@ class RstToMarkdownConverter:
         self.stats = ConversionStats()
         self.anchor_map: Dict[str, str] = {}  # RST label -> MD anchor
         self.link_targets: Dict[str, str] = {}  # Reference name -> URL/anchor
+        # Names defined only by an embedded-URI reference (`Name <URL>`_).
+        # Kept separate so an explicit `.. _Name:` definition always wins,
+        # regardless of the order files happen to be scanned in.
+        self.embedded_targets: Dict[str, str] = {}
         # Indirect targets: `.. _A: `B`_` — reference name -> the name it points
         # to (another section/ref). Resolved by following the chain to a section.
         self.indirect_targets: Dict[str, str] = {}
@@ -410,6 +414,21 @@ class RstToMarkdownConverter:
         content = re.sub(pattern, replace_code_block, content)
         return content
 
+    # Relative target bodies are written for the published User Guide's directory
+    # depth, so passing them through verbatim resolves differently depending on
+    # how deep the consuming page sits. Map known families to canonical absolute
+    # URLs so the link is correct in every layout.
+    RELATIVE_TARGET_BASES = {
+        '../libraries/': 'https://robotframework.org/robotframework/latest/libraries/',
+    }
+
+    def _normalize_target_url(self, url: str) -> str:
+        """Return a layout-independent URL for a target body."""
+        for prefix, base in self.RELATIVE_TARGET_BASES.items():
+            if url.startswith(prefix):
+                return base + url[len(prefix):]
+        return url
+
     def extract_link_targets(self, content: str) -> str:
         """
         Extract RST link targets and store them for later reference resolution.
@@ -442,12 +461,35 @@ class RstToMarkdownConverter:
         self.anonymous_target_index = 0
 
         # External link targets: .. _name: URL
-        ext_pattern = r'\.\.\s+_([^:]+):\s+(https?://[^\s]+)\s*\n'
+        # A target body counts as a URL when it carries a scheme, starts with a
+        # path prefix (../, ./, /), or is a document reference ending in .html.
+        # Relative bodies matter: the standard-library targets are written as
+        # `.. _BuiltIn: ../libraries/BuiltIn.html`, and classifying those as
+        # internal made every standard-library link collapse into a same-page
+        # anchor that resolved to the wrong place instead of the library docs.
+        ext_pattern = (
+            r'\.\.\s+_([^:]+):\s+'
+            r'((?:https?|ftp|mailto):[^\s]+'
+            r'|\.{1,2}/[^\s]+'
+            r'|/[^\s]+'
+            r'|[\w.\-]+\.html?(?:[#?][^\s]*)?)\s*\n'
+        )
 
         for match in re.finditer(ext_pattern, content):
             name = match.group(1).strip()
-            url = match.group(2).strip()
+            url = self._normalize_target_url(match.group(2).strip())
             self.link_targets[name.lower()] = url
+
+        # An embedded-URI reference also *defines* a reusable named target:
+        # `JSON <https://json.org>`_ in one file makes a later bare `JSON_` in
+        # another file resolve to the same URL, because docutils treats the
+        # guide's included files as a single document. Collected separately so
+        # explicit targets take precedence at merge time.
+        embedded_pattern = r'`([^`<]+?)\s*<((?:https?|ftp|mailto):[^>]+)>`_'
+        for match in re.finditer(embedded_pattern, content):
+            ename = match.group(1).strip().lower()
+            if ename:
+                self.embedded_targets.setdefault(ename, match.group(2).strip())
 
         # Remove link target definitions from content
         content = re.sub(ext_pattern, '', content)
@@ -1881,6 +1923,10 @@ class RstToMarkdownConverter:
                 continue  # Skip utility files
             content = rst_file.read_text(encoding='utf-8')
             self.extract_link_targets(content)
+
+        # Explicit targets win; embedded-URI definitions fill the gaps.
+        for ename, eurl in self.embedded_targets.items():
+            self.link_targets.setdefault(ename, eurl)
 
         print(f"  Found {len(self.link_targets)} external link targets")
         print(f"  Found {len(self.anchor_map)} internal anchors")

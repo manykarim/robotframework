@@ -191,7 +191,7 @@ containing Robot Framework data are ignored as well.
 
 ### Resource files using JSON format
 
-Resource files can be created using [JSON](#json) the [same way as suite files](test-data-syntax.md#json-data-format).
+Resource files can be created using [JSON](https://json.org) the [same way as suite files](test-data-syntax.md#json-data-format).
 Such JSON resource files must use either the standard `.json`{.file} extension
 or the custom `.rsrc`{.file} extension. They are otherwise imported exactly as
 normal resource files:

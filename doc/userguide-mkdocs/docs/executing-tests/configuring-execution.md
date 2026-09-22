@@ -543,7 +543,7 @@ Examples:
 ### Configuring `sys.path` programmatically
 
 Python interpreters store the module search path they use as a list of strings
-in [sys.path](http://docs.python.org/library/sys.html#sys.path)
+in [sys.path](https://docs.python.org/library/sys.html#sys.path)
 attribute. This list can be updated dynamically during execution, and changes
 are taken into account next time when something is imported.
 
@@ -637,7 +637,7 @@ a so called *pre-run modifier* and activating it using the
 
 Pre-run modifiers should be implemented as visitors that can traverse through
 the executable test suite structure and modify it as needed. The visitor
-interface is explained as part of the [Robot Framework API documentation](http://robot-framework.readthedocs.org/en/master/autodoc/robot.model.html#module-robot.model.visitor), and it possible to modify executed [test suites](http://robot-framework.readthedocs.org/en/master/autodoc/robot.running.html#robot.running.model.TestSuite), [test cases](http://robot-framework.readthedocs.org/en/master/autodoc/robot.running.html#robot.running.model.TestCase) and [keywords](http://robot-framework.readthedocs.org/en/master/autodoc/robot.running.html#robot.running.model.Keyword) using it. The examples below ought to give an idea of
+interface is explained as part of the [Robot Framework API documentation](https://robot-framework.readthedocs.org/en/master/autodoc/robot.model.html#module-robot.model.visitor), and it possible to modify executed [test suites](https://robot-framework.readthedocs.org/en/master/autodoc/robot.running.html#robot.running.model.TestSuite), [test cases](https://robot-framework.readthedocs.org/en/master/autodoc/robot.running.html#robot.running.model.TestCase) and [keywords](https://robot-framework.readthedocs.org/en/master/autodoc/robot.running.html#robot.running.model.Keyword) using it. The examples below ought to give an idea of
 how pre-run modifiers can be used and how powerful this functionality is.
 
 When a pre-run modifier is taken into use on the command line using the
@@ -918,7 +918,7 @@ The default width is 78 characters.
 
 The `--consolecolors (-C)`{.option} option is used to control whether
 colors should be used in the console output. Colors are implemented
-using [ANSI escape codes](http://en.wikipedia.org/wiki/ANSI_escape_code) with a backup mechanism for older Windows
+using [ANSI escape codes](https://en.wikipedia.org/wiki/ANSI_escape_code) with a backup mechanism for older Windows
 versions that do not support ANSI codes.
 
 This option supports the following case-insensitive values:

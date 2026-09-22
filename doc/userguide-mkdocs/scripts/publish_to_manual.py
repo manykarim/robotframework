@@ -122,6 +122,71 @@ def rewrite_links(text: str, src_rel: str, dst_rel: str, files: dict,
     return "\n".join(out_lines)
 
 
+def _slugify(text: str) -> str:
+    """Approximate the toc extension's heading slug."""
+    text = re.sub(r"`[^`]*`", "", text)
+    text = re.sub(r"\{[^}]*\}", "", text)
+    text = re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", text)
+    text = re.sub(r"<[^>]*>", "", text)
+    text = text.strip().lower()
+    text = re.sub(r"[^a-z0-9 \-_]", "", text)
+    return re.sub(r"[ ]+", "-", text).strip("-")
+
+
+def check_downstream_references(manual_docs_dir: Path, file_map: dict) -> int:
+    """Verify downstream-authored pages only reference anchors we publish.
+
+    The manual hand-writes reference-style links (resolved by mkdocs-autorefs)
+    that point into generated pages. Nothing otherwise guarantees those anchors
+    exist, so a renamed heading breaks them silently. Fail loudly instead.
+    """
+    generated = {str(v) for v in file_map.values()}
+    anchors, pages = set(), []
+    for md in sorted(manual_docs_dir.rglob("*.md")):
+        rel = md.relative_to(manual_docs_dir).as_posix()
+        text = md.read_text(encoding="utf-8", errors="ignore")
+        in_fence = False
+        for line in text.split("\n"):
+            if re.match(r"^\s*(`{3,}|~{3,})", line):
+                in_fence = not in_fence
+                continue
+            if in_fence:
+                continue
+            h = re.match(r"^#{1,6}\s+(.*\S)", line)
+            if h:
+                anchors.add(_slugify(h.group(1)))
+        for m in re.finditer(r'<a\s+id="([^"]+)"', text):
+            anchors.add(m.group(1))
+        for m in re.finditer(r"\{#([^}\s]+)", text):
+            anchors.add(m.group(1))
+        if rel not in generated:
+            pages.append((rel, md, text))
+
+    unresolved = []
+    for rel, md, text in pages:
+        defined = set(re.findall(r"^\[([^\]]+)\]:\s", text, re.MULTILINE))
+        for m in re.finditer(r"\[([^\]\n]+)\]\[([^\]\n]*)\]", text):
+            ref = (m.group(2) or m.group(1)).strip()
+            if not ref or ref in defined:
+                continue
+            # Dotted identifiers (robot.api, robot.run) are resolved by
+            # mkdocstrings against Python objects, not by autorefs against
+            # heading anchors, so they are outside this contract.
+            if re.match(r"^[A-Za-z_][\w]*(\.[A-Za-z_][\w]*)+$", ref):
+                continue
+            if ref.lower() not in {a.lower() for a in anchors}:
+                unresolved.append((rel, ref))
+
+    print(f"\nDownstream reference check: {len(pages)} downstream-authored page(s)")
+    if unresolved:
+        print(f"  FAIL: {len(unresolved)} unresolved reference(s)")
+        for rel, ref in unresolved:
+            print(f"    {rel}: [{ref}] does not resolve to any published anchor")
+        return 1
+    print("  OK: all downstream references resolve")
+    return 0
+
+
 def publish(docs_dir: Path, manual_docs_dir: Path, file_map: dict,
             section_dirs: dict, do_rewrite: bool) -> int:
     copied = []
@@ -171,7 +236,7 @@ def publish(docs_dir: Path, manual_docs_dir: Path, file_map: dict,
             print(f"  {path}")
     print('='*60)
 
-    return 0
+    return check_downstream_references(manual_docs_dir, file_map)
 
 
 def main():

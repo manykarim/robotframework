@@ -1,5 +1,7 @@
 
 <a id="library-api"></a>
+
+<a id="library-interface"></a>
 # Creating test libraries
 
 Robot Framework's actual testing capabilities are provided by test
@@ -16,8 +18,8 @@ and straightforward.
 Robot Framework itself is written with [Python](../executing-tests/basic-usage.md#python-example) and naturally test
 libraries extending it can be implemented using the same
 language. It is also possible to implement libraries with C
-using [Python C API](http://docs.python.org/c-api/index.html), although it is often easier to interact with
-C code from Python libraries using [ctypes](http://docs.python.org/library/ctypes.html) module.
+using [Python C API](https://docs.python.org/c-api/index.html), although it is often easier to interact with
+C code from Python libraries using [ctypes](https://docs.python.org/library/ctypes.html) module.
 
 Libraries implemented using Python can
 also act as wrappers to functionality implemented using other
@@ -907,7 +909,7 @@ Named and kwargs
 
 For a real world example of using a signature exactly like in the above
 example, see *Run Process*{.name} and *Start Keyword*{.name} keywords in the
-[Process](../creating-test-data/using-test-libraries.md#process) library.
+[Process](https://robotframework.org/robotframework/latest/libraries/Process.html) library.
 
 ### Keyword-only arguments
 
@@ -1220,7 +1222,7 @@ Other types cause conversion failures.
 | [str](https://docs.python.org/library/functions.html#func-str) |  | string, unicode | Anything | All arguments are converted to Unicode strings.<br>Most values are converted simply by using `str(value)`. An exception is that bytes are mapped directly to Unicode code points with same ordinals. This means that, for example, `b"hyv\xe4"` becomes `"hyvä"`. Another exception is that [Secret](https://robot-framework.readthedocs.io/en/master/autodoc/robot.utils.html#robot.utils.secret.Secret) objects are explicitly rejected.<br>New in Robot Framework 4.0. Converting bytes specially and rejecting `Secret` objects are new in Robot Framework 7.4. |  |
 | [bytes](https://docs.python.org/library/functions.html#func-bytes) |  |  | [str](https://docs.python.org/library/functions.html#func-str), [bytearray](https://docs.python.org/library/functions.html#func-bytearray) | Strings are converted to bytes so that each Unicode code point below 256 is directly mapped to a matching byte. Higher code points are not allowed.<br>Integers and sequences of integers are converted to matching bytes directly. They must be in range 0-255.<br>Support for integers and sequences of integers is new in Robot Framework 7.4. | Strings:<br>`good`<br>`hyvä` (converted to `hyv\xe4`)<br>`\x00` (converted to the null byte)<br>Integers and sequences of integers:<br>`0` (converted to the null byte)<br>`[82, 70, 33]` (converted to `RF!`) |
 | [bytearray](https://docs.python.org/library/functions.html#func-bytearray) |  |  | [str](https://docs.python.org/library/functions.html#func-str), [bytes](https://docs.python.org/library/functions.html#func-bytes) | Same conversion as with [bytes](https://docs.python.org/library/functions.html#func-bytes), but the result is a [bytearray](https://docs.python.org/library/functions.html#func-bytearray). |  |
-| [datetime](https://docs.python.org/library/datetime.html#datetime.datetime) |  |  | [str](https://docs.python.org/library/functions.html#func-str), [int](https://docs.python.org/library/functions.html#int), [float](https://docs.python.org/library/functions.html#float) | String timestamps are expected to be in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) like format `YYYY-MM-DD hh:mm:ss.mmmmmm`, where any non-digit character can be used as a separator or separators can be omitted altogether. Additionally, only the date part is mandatory, all possibly missing time components are considered to be zeros.<br>Special values `NOW` and `TODAY` (case-insensitive) can be used to get the current local `datetime`. This is new in Robot Framework 7.3.<br>Integers and floats are considered to represent seconds since the [Unix epoch](http://en.wikipedia.org/wiki/Unix_time). | `2022-02-09T16:39:43.632269`<br>`20220209 16:39`<br>`2022-02-09`<br>`now` (current local date and time)<br>`TODAY` (same as above)<br>`${1644417583.632269}` (Epoch time) |
+| [datetime](https://docs.python.org/library/datetime.html#datetime.datetime) |  |  | [str](https://docs.python.org/library/functions.html#func-str), [int](https://docs.python.org/library/functions.html#int), [float](https://docs.python.org/library/functions.html#float) | String timestamps are expected to be in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) like format `YYYY-MM-DD hh:mm:ss.mmmmmm`, where any non-digit character can be used as a separator or separators can be omitted altogether. Additionally, only the date part is mandatory, all possibly missing time components are considered to be zeros.<br>Special values `NOW` and `TODAY` (case-insensitive) can be used to get the current local `datetime`. This is new in Robot Framework 7.3.<br>Integers and floats are considered to represent seconds since the [Unix epoch](https://en.wikipedia.org/wiki/Unix_time). | `2022-02-09T16:39:43.632269`<br>`20220209 16:39`<br>`2022-02-09`<br>`now` (current local date and time)<br>`TODAY` (same as above)<br>`${1644417583.632269}` (Epoch time) |
 | [date](https://docs.python.org/library/datetime.html#datetime.date) |  |  | [str](https://docs.python.org/library/functions.html#func-str) | Same timestamp conversion as with [datetime](https://docs.python.org/library/datetime.html#datetime.datetime), but all time components are expected to be omitted or to be zeros.<br>Special values `NOW` and `TODAY` (case-insensitive) can be used to get the current local `date`. This is new in Robot Framework 7.3. | `2018-09-12`<br>`20180912`<br>`today` (current local date)<br>`NOW` (same as above) |
 | [timedelta](https://docs.python.org/library/datetime.html#datetime.timedelta) |  |  | [str](https://docs.python.org/library/functions.html#func-str), [int](https://docs.python.org/library/functions.html#int), [float](https://docs.python.org/library/functions.html#float) | Strings are expected to represent a time interval in one of the time formats Robot Framework supports: [time as number](../appendices/time-format.md#time-as-number), [time as time string](../appendices/time-format.md#time-as-time-string) or [time as "timer" string](../appendices/time-format.md#time-as-timer-string). Integers and floats are considered to be seconds. | `42` (42 seconds)<br>`1 minute 2 seconds`<br>`01:02` (same as above) |
 | [Path](https://docs.python.org/library/pathlib.html) | [PathLike](https://docs.python.org/library/os.html#os.PathLike) |  | [str](https://docs.python.org/library/functions.html#func-str) | Strings are converted to [pathlib.Path](https://docs.python.org/library/pathlib.html) objects. On Windows `/` is converted to `\`{.codesc} automatically.<br>New in Robot Framework 6.0. | `/tmp/absolute/path`<br>`relative/path/to/file.ext`<br>`name.txt` |
@@ -1421,7 +1423,7 @@ with different generic types works according to these rules:
 - With sets there can be exactly one type like `set[float]`. Conversion logic
   is the same as with lists.
 
-Using the native `list[int]` syntax requires [Python 3.9](#supported-conversions) or newer. If there
+Using the native `list[int]` syntax requires [Python 3.9](https://typing.python.org/en/latest/spec/aliases.html) or newer. If there
 is a need to support also earlier Python versions, it is possible to either use
 matching types from the [typing](https://docs.python.org/library/typing.html) module like `List[int]` or use the "stringly typed"
 syntax like `'list[int]'`.
@@ -1435,6 +1437,57 @@ syntax like `'list[int]'`.
 !!! note
     Support for "stringly typed" parameterized generics is new in
     Robot Framework 7.0.
+
+#### Type aliases
+
+Type aliases can be used for giving custom names to types and type expressions.
+This makes it possible to use domain specific names like `ID` instead of
+generic names like `int`. It also allows using simple names like `Locator`
+instead of complex type expressions like `WebElement | str | list[WebElement | str]`.
+
+Python has two ways to create [type aliases](#supported-conversions). The old approach is simply assigning
+types or type expressions to variables:
+
+```python
+ID = int
+Locator = WebElement | str | list[WebElement | str]
+
+def find_user(id: ID):
+    ...
+
+def find_element(locator: Locator):
+    ...
+```
+
+The above has a problem that it is not clear are these type alias declarations
+or just normal variable assignments. Another problems is that when type information
+is inspected after the library has been imported, the type alias has already
+been resolved and Robot Framework only sees its value. This is fine during
+execution, but library documentation generated with [Libdoc](../supporting-tools/libdoc.md#libdoc) also shows
+the underlying types like `int` instead of the type alias name like `ID`.
+
+Both of the above problems can be resolved by using `type` statements introduced
+in Python 3.12:
+
+```python
+type ID = int
+type Locator = WebElement | str | list[WebElement | str]
+
+def find_user(id: ID):
+    ...
+
+def find_element(locator: Locator):
+    ...
+```
+
+Now it is explicit that `ID` and `Locator` are type aliases. Robot Framework
+also sees the type alias names and Libdoc can show them in generated library
+documentation. Argument conversion works the same way with both approaches.
+
+!!! note
+    Support for `type` statements is new in Robot Framework 7.5. With
+    earlier versions these types are not recognized, which means that
+    there is not argument conversion based on them.
 
 #### Secret type
 
@@ -1658,7 +1711,7 @@ ValueError: Argument 'arg' got value '42' (integer) that cannot be converted to 
 
 If the converter can accept multiple types, it is possible to specify types
 as a [Union](https://docs.python.org/3/library/typing.html#typing.Union). For example, if we wanted to enhance our keyword to accept also
-integers so that they would be considered seconds since the [Unix epoch](http://en.wikipedia.org/wiki/Unix_time),
+integers so that they would be considered seconds since the [Unix epoch](https://en.wikipedia.org/wiki/Unix_time),
 we could change the converter like this:
 
 ```python
@@ -2255,7 +2308,7 @@ longer running keywords can be problematic.
 
 Keywords have a possibility to add an accurate timestamp to the messages
 they log if there is a need. The timestamp must be given as milliseconds
-since the [Unix epoch](http://en.wikipedia.org/wiki/Unix_time) and it must be placed after the [log level](https://robot-framework.readthedocs.io/en/master/autodoc/robot.api.html#module-robot.api.logger)
+since the [Unix epoch](https://en.wikipedia.org/wiki/Unix_time) and it must be placed after the [log level](https://robot-framework.readthedocs.io/en/master/autodoc/robot.api.html#module-robot.api.logger)
 separated from it with a colon:
 
 ```text
@@ -2407,7 +2460,7 @@ through the standard output like `print('*INFO* My message')`. In
 addition to a programmatic interface being a lot cleaner to use, this
 API has a benefit that the log messages have accurate [timestamps](#timestamps).
 
-The public logging API [is thoroughly documented](http://docs.python.org/library/logging.html) as part of the API
+The public logging API [is thoroughly documented](https://docs.python.org/library/logging.html) as part of the API
 documentation at https://robot-framework.readthedocs.org. Below is
 a simple usage example:
 
@@ -2423,7 +2476,7 @@ def my_keyword(arg):
 
 An obvious limitation is that test libraries using this logging API have
 a dependency to Robot Framework. If Robot Framework is not running,
-the messages are redirected automatically to Python's standard [logging](http://docs.python.org/library/logging.html)
+the messages are redirected automatically to Python's standard [logging](https://docs.python.org/library/logging.html)
 module.
 
 #### Using Python's standard `logging` module
@@ -2600,7 +2653,7 @@ A test library without documentation about what keywords it
 contains and what those keywords do is rather useless. To ease
 maintenance, it is highly recommended that library documentation is
 included in the source code and generated from it. Basically, that
-means using [docstrings](http://www.python.org/dev/peps/pep-0257) as in the example below.
+means using [docstrings](https://www.python.org/dev/peps/pep-0257) as in the example below.
 
 ```python
 class MyLibrary:
@@ -2668,7 +2721,7 @@ them anyway.
 
 It is also easy to use Robot Framework itself for testing libraries
 and that way have actual end-to-end acceptance tests for them. There are
-plenty of useful keywords in the [BuiltIn](../creating-test-data/using-test-libraries.md#builtin) library for this
+plenty of useful keywords in the [BuiltIn](https://robotframework.org/robotframework/latest/libraries/BuiltIn.html) library for this
 purpose. One worth mentioning specifically is *Run Keyword And Expect Error*{.name}, which is useful for testing that keywords report errors
 correctly.
 
@@ -2849,15 +2902,12 @@ versions.
 
 ### Available APIs
 
-[API documentation](http://robot-framework.readthedocs.org) is hosted separately
-at the excellent [Read the Docs](http://readthedocs.org) service. If you are unsure how to use
-certain API or is using them forward compatible, please send a question
-to [mailing list](../getting-started/introduction.md#mailing-lists).
+[API documentation](https://robot-framework.readthedocs.org) is hosted separately at [Read the Docs](https://readthedocs.org).
 
 ### Using BuiltIn library
 
 The safest API to use are methods implementing keywords in the
-[BuiltIn](../creating-test-data/using-test-libraries.md#builtin) library. Changes to keywords are rare and they are always
+[BuiltIn](https://robotframework.org/robotframework/latest/libraries/BuiltIn.html) library. Changes to keywords are rare and they are always
 done so that old usage is first deprecated. One of the most useful
 methods is `replace_variables` which allows accessing currently
 available variables. The following example demonstrates how to get
@@ -2964,7 +3014,7 @@ an access to the same library instance that the framework uses.
 
 ### Getting active library instance from Robot Framework
 
-[BuiltIn](../creating-test-data/using-test-libraries.md#builtin) keyword *Get Library Instance*{.name} can be used to get the
+[BuiltIn](https://robotframework.org/robotframework/latest/libraries/BuiltIn.html) keyword *Get Library Instance*{.name} can be used to get the
 currently active library instance from the framework itself. The
 library instance returned by this keyword is the same as the framework
 itself uses, and thus there is no problem seeing the correct library

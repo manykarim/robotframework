@@ -2,10 +2,10 @@
 # Library documentation tool (Libdoc)
 
 Libdoc is Robot Framework's built-in tool that can generate documentation for
-Robot Framework libraries and resource files. It can generate HTML documentation
-for humans as well as machine readable spec files in XML and JSON formats.
-Libdoc also has few special commands to show library or resource information
-on the console.
+Robot Framework libraries and resource files. It can generate HTML and Markdown
+documentation for humans as well as machine readable spec files in XML and JSON
+formats. Libdoc also has few special commands to show library or resource
+information on the console.
 
 Documentation can be created for:
 
@@ -33,20 +33,20 @@ libdoc [options] library_or_resource list|show|version [names]
 
 ### Options
 
-`-f, --format <html|xml|json|libspec>`{.option}
-:   Specifies whether to generate an HTML output for humans or a machine readable spec file in XML or JSON format. The `libspec` format means XML spec with documentations converted to HTML. The default format is got from the output file extension.
+`-f, --format <html|xml|json|libspec|markdown>`{.option}
+:   Specifies whether to generate an HTML output for humans, a machine readable spec file in XML or JSON format, or a Markdown file. The `libspec` format means XML spec with documentations converted to HTML. The default format is got from the output file extension. The `markdown` format is new in Robot Framework 7.5.
 
 `-s, --specdocformat <raw|html>`{.option}
-:   Specifies the documentation format used with XML and JSON spec files. `raw` means preserving the original documentation format and `html` means converting documentation to HTML. The default is `raw` with XML spec files and `html` with JSON specs and when using the special `libspec` format.
+:   Specifies the documentation format used with XML and JSON spec files. `raw` means preserving the original documentation format and `html` means converting documentation to HTML. The default is `raw` with XML spec files and `html` with JSON specs and when using the special `libspec` format. Not applicable with `html` or `markdown` outputs.
 
-`-F, --docformat <robot|html|text|rest>`{.option}
-:   Specifies the source documentation format. Possible values are Robot Framework's documentation format, HTML, plain text, and reStructuredText. Default value can be specified in test library source code and the initial default value is `robot`.
+`-F, --docformat <robot|markdown|html|text|rest>`{.option}
+:   Specifies the source documentation format. Possible values are Robot Framework's documentation format, Markdown, HTML, plain text, and reStructuredText. Default value can be specified in test library source code and the initial default value is `robot`. Markdown support is new in Robot Framework 7.5.
 
 `--theme <dark|light|none>`{.option}
 :   Use dark or light HTML theme. If this option is not used, or the value is `none`, the theme is selected based on the browser color scheme. Only applicable with HTML outputs. New in Robot Framework 6.0.
 
 `--language <lang>`{.option}
-:   Set the default language in documentation. `lang` must be a code of a built-in language, which are `en` and `fi`. New in Robot Framework 7.2.
+:   Set the default language in documentation. `lang` must be a code of a built-in language, which are `en` and `fi`. Only applicable with HTML outputs. New in Robot Framework 7.2.
 
 `-N, --name <newname>`{.option}
 :   Sets the name of the documented library or resource.
@@ -146,10 +146,10 @@ libdoc Example.json Example.html
 
 ### Generating documentation
 
-Libdoc can generate documentation in HTML (for humans) and XML or JSON (for tools)
-formats. The file where to write the documentation is specified as the second
-argument after the library/resource name or path, and the output format is
-got from the output file extension by default.
+Libdoc can generate documentation in HTML, Markdown, XML or JSON formats.
+The file where to write the documentation is specified as the second argument
+after the library/resource name or path, and the output format is got from the
+output file extension by default.
 
 #### Libdoc HTML documentation
 
@@ -247,6 +247,34 @@ The exact JSON spec file format is documented with an [JSON schema](https://json
 at https://github.com/robotframework/robotframework/tree/master/doc/schema.
 The spec file format may change between Robot Framework major releases.
 
+#### Libdoc Markdown documentation
+
+Starting from Robot Framework 7.5, Libdoc can also write documentation into
+a [Markdown](https://en.wikipedia.org/wiki/Markdown) file. Markdown files are human readable plain text files, but they
+can also be converted to HTML or otherwise processed by external tools.
+
+Libdoc automatically uses the Markdown format if the output file extension is
+`*.md`{.file}. The format can also be set explicitly with the `--format`{.option}
+option:
+
+```text
+libdoc OperatingSystem OperatingSystem.md
+libdoc test/resource.robot doc/resource.md
+libdoc --format markdown MyLibrary MyLibrary.markdown
+```
+
+Documentation is taken from the library or resource as-is without converting it
+to any other format. The result is thus proper Markdown only if the library uses
+the [Markdown documentation syntax](#markdown-documentation-syntax) itself.
+
+The `--specdocformat`{.option}, `--theme`{.option} and `--language`{.option} options
+are not applicable with Markdown outputs.
+
+!!! note
+    The Markdown output format is not guaranteed to stay stable between
+    Robot Framework versions. If you need a stable, machine readable format,
+    use [Libdoc spec files](#libdoc-spec-files) instead.
+
 ### Viewing information on console
 
 Libdoc has three special commands to show information on the console.
@@ -280,10 +308,11 @@ libdoc SeleniumLibrary version
 ```
 
 When showing documentation of a whole library or some keywords, the overall
-structure is formatted using [Markdown](https://en.wikipedia.org/wiki/Markdown). This is especially convenient with
-libraries that use [Markdown documentation syntax](#markdown-documentation-syntax) themselves, because then
-the whole output is in Markdown format. This is demonstrated by the following
-example from the beginning of the Dialogs library documentation:
+structure is formatted using [Markdown](https://en.wikipedia.org/wiki/Markdown). This is the same formatting that is
+used with [Libdoc Markdown documentation](#libdoc-markdown-documentation) outputs. It is especially convenient
+with libraries that use [Markdown documentation syntax](#markdown-documentation-syntax) themselves, because
+then the whole output is in Markdown format. This is demonstrated by the
+following example from the beginning of the Dialogs library documentation:
 
 ```text
 # Dialogs
@@ -305,12 +334,14 @@ to wrap lines manually, you can add newlines using the `\n` character sequence.
 
 ### Execute Manual Step
 
-**Arguments:**
+#### Arguments
 
 * `message` (type: `str`) -
   The instruction shown in the initial dialog.
 * `default_error` (type: `str`, default: ``) -
   The default value shown in the possible error message dialog.
+
+#### Documentation
 
 Pauses execution until user sets the keyword status.
 
@@ -324,7 +355,8 @@ fails and an additional dialog is opened for defining the error message.
 !!! note
     The console output format is not guaranteed to stay stable between
     Robot Framework versions. If you need a stable, machine readable format,
-    use [Libdoc spec files](#libdoc-spec-files) instead.
+    use [Libdoc spec files](#libdoc-spec-files) instead. If you want to save the documentation
+    in this format, use [Libdoc Markdown documentation](#libdoc-markdown-documentation) outputs.
 
 ## Writing documentation
 
@@ -356,7 +388,7 @@ src/SupportingTools/ExampleLibrary.py
     when using Libdoc, you can [easily detect is Robot Framework running](../extending/creating-test-libraries.md#detecting-is-robot-framework-running)
 
 !!! tip
-    For more information on Python documentation strings, see [PEP-257](http://www.python.org/dev/peps/pep-0257).
+    For more information on Python documentation strings, see [PEP-257](https://www.python.org/dev/peps/pep-0257).
 
 ### Dynamic libraries
 
@@ -554,7 +586,7 @@ def my_keyword():
 
 Robot Framework uses the Python-[Markdown](https://en.wikipedia.org/wiki/Markdown) module as its underling Markdown
 engine and it needs to be installed separately. If syntax highlighting is
-needed, the [Pygments](http://pygments.org/) module must be installed as well.
+needed, the [Pygments](https://pygments.org/) module must be installed as well.
 
 All other documentation formats supported by Libdoc support [internal linking](#internal-linking)
 using backticks like ``Linking to `My Keyword` works``{.codesc}. This kind
@@ -580,7 +612,7 @@ reStructuredText, [linking to keywords](#linking-to-keywords) requires them to b
 
 One of the nice features that reStructured supports is the ability to mark code
 blocks that can be syntax highlighted.
-Syntax highlight requires additional [Pygments](http://pygments.org/) module and supports all the
+Syntax highlight requires additional [Pygments](https://pygments.org/) module and supports all the
 languages that Pygments supports.
 
 ```python

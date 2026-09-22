@@ -38,6 +38,21 @@ from typing import Dict, List, Tuple, Optional
 # }
 
 ANCHOR_MAPPINGS = {
+    # Cross-repo anchor contract. The manual hand-writes reference-style links to
+    # these identifiers, which differ from our current page titles (our Extend
+    # chapter is titled "Extend", not "Extending Robot Framework"). Emitting the
+    # anchors here keeps the contract on our side, so renaming a page title does
+    # not silently break inbound references from the manual.
+    'extending-robot-framework': {
+        'file': 'extending/index.md',
+        'heading': 'Extend',
+        'aliases': []
+    },
+    'library-interface': {
+        'file': 'extending/creating-test-libraries.md',
+        'heading': 'Creating test libraries',
+        'aliases': []
+    },
     # Getting Started
     'Introduction': {
         'file': 'getting-started/introduction.md',

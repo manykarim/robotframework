@@ -44,7 +44,7 @@ Also extensions containing multiple parts like `.example.ext`{.file} or
 
 The mandatory `parse` method is responsible for parsing [suite files](../creating-test-data/creating-test-suites.md#suite-files). It is
 called with each parsed file that has an extension that the parser supports.
-The method must return a [TestSuite](http://robot-framework.readthedocs.org/en/master/autodoc/robot.running.html#robot.running.model.TestSuite) object.
+The method must return a [TestSuite](https://robot-framework.readthedocs.org/en/master/autodoc/robot.running.html#robot.running.model.TestSuite) object.
 
 In simple cases `parse` can be implemented so that it accepts just a single
 argument that is a [pathlib.Path](https://docs.python.org/library/pathlib.html) object pointing to the file to
@@ -57,7 +57,7 @@ accept two arguments. In that case the second argument is a [TestDefaults](https
 
 The optional `parse_init` method is responsible for parsing [suite initialization
 files](../creating-test-data/creating-test-suites.md#suite-initialization-files) i.e. files in format `__init__.ext` where `.ext` is an extension
-supported by the parser. The method must return a [TestSuite](http://robot-framework.readthedocs.org/en/master/autodoc/robot.running.html#robot.running.model.TestSuite)
+supported by the parser. The method must return a [TestSuite](https://robot-framework.readthedocs.org/en/master/autodoc/robot.running.html#robot.running.model.TestSuite)
 object representing the whole directory. Suites created from child suite files
 and directories will be added to its child suites.
 

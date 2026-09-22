@@ -47,7 +47,7 @@ files using them.
 ### Using `Import Library` keyword
 
 Another possibility to take a test library into use is using the
-keyword *Import Library*{.name} from the [BuiltIn](#builtin) library. This keyword
+keyword *Import Library*{.name} from the [BuiltIn](https://robotframework.org/robotframework/latest/libraries/BuiltIn.html) library. This keyword
 takes the library name or path and possible arguments similarly as the
 *Library*{.setting} setting. Keywords from the imported library are
 available in the test suite where the *Import Library*{.name} keyword was
@@ -172,7 +172,7 @@ library in the Setting section and when using the *Import Library*{.name} keywor
 ## Standard libraries
 
 Some test libraries are distributed with Robot Framework and these
-libraries are called *standard libraries*. The [BuiltIn](#builtin) library is special,
+libraries are called *standard libraries*. The [BuiltIn](https://robotframework.org/robotframework/latest/libraries/BuiltIn.html) library is special,
 because it is taken into use automatically and thus its keywords are always
 available. Other standard libraries need to be imported in the same way
 as any other libraries, but there is no need to install them.
@@ -182,28 +182,17 @@ as any other libraries, but there is no need to install them.
 The available normal standard libraries are listed below with links to their
 documentations:
 
-  - [BuiltIn](#builtin)
-  - [Collections](#collections)
-  - [DateTime](#datetime)
-  - [Dialogs](../supporting-tools/libdoc.md#dialogs)
-  - [OperatingSystem](#operatingsystem)
-  - [Process](#process)
-  - [Screenshot](#screenshot)
-  - [String](#string)
-  - [Telnet](#telnet)
-  - [XML](#xml)
+  - [BuiltIn](https://robotframework.org/robotframework/latest/libraries/BuiltIn.html)
+  - [Collections](https://robotframework.org/robotframework/latest/libraries/Collections.html)
+  - [DateTime](https://robotframework.org/robotframework/latest/libraries/DateTime.html)
+  - [Dialogs](https://robotframework.org/robotframework/latest/libraries/Dialogs.html)
+  - [OperatingSystem](https://robotframework.org/robotframework/latest/libraries/OperatingSystem.html)
+  - [Process](https://robotframework.org/robotframework/latest/libraries/Process.html)
+  - [Screenshot](https://robotframework.org/robotframework/latest/libraries/Screenshot.html)
+  - [String](https://robotframework.org/robotframework/latest/libraries/String.html)
+  - [Telnet](https://robotframework.org/robotframework/latest/libraries/Telnet.html)
+  - [XML](https://robotframework.org/robotframework/latest/libraries/XML.html)
 
-
-<a id="xml"></a>
-<a id="telnet"></a>
-<a id="screenshot"></a>
-<a id="string"></a>
-<a id="process"></a>
-<a id="operatingsystem"></a>
-<a id="dialogs"></a>
-<a id="datetime"></a>
-<a id="collections"></a>
-<a id="builtin"></a>
 ### Remote library
 
 In addition to the normal standard libraries listed above, there is
@@ -223,7 +212,7 @@ Any test library that is not one of the standard libraries is, by
 definition, *an external library*. The Robot Framework open source community
 has implemented several generic libraries, such as [SeleniumLibrary](https://github.com/robotframework/SeleniumLibrary) and
 [SwingLibrary](https://github.com/robotframework/SwingLibrary), which are not packaged with the core framework. A list of
-publicly available libraries can be found from http://robotframework.org.
+publicly available libraries can be found from https://robotframework.org.
 
 Generic and custom libraries can obviously also be implemented by teams using
 Robot Framework. See [Creating test libraries](../extending/creating-test-libraries.md#creating-test-libraries) section for more information

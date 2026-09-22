@@ -455,7 +455,7 @@ always possible to access dictionary values using syntax like
 `${DICT}[with spaces]` syntax.
 
 !!! note
-    Using YAML files with Robot Framework requires [PyYAML](http://pyyaml.org) module to be installed. You can typically
+    Using YAML files with Robot Framework requires [PyYAML](https://pyyaml.org) module to be installed. You can typically
     install it with [pip](#pip) like `pip install pyyaml`.
 
 ### Variable file as JSON

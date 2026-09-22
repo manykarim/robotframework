@@ -8,7 +8,7 @@ Variables are an integral feature of Robot Framework, and they can be
 used in most places in test data. Most commonly, they are used in
 arguments for keywords in Test Case and Keyword sections, but
 also all settings allow variables in their values. A normal keyword
-name *cannot* be specified with a variable, but the [BuiltIn](using-test-libraries.md#builtin) keyword
+name *cannot* be specified with a variable, but the [BuiltIn](https://robotframework.org/robotframework/latest/libraries/BuiltIn.html) keyword
 *Run Keyword*{.name} can be used to get the same effect.
 
 Robot Framework has its own variables that can be used as [scalars](#scalar-variables), [lists](#list-variables)
@@ -161,7 +161,7 @@ than other variables containing non-string values:
   and the prefix are omitted, and each byte is mapped to a Unicode code point
   with the same ordinal. In practice this is same as converting bytes to strings
   using the Latin-1 encoding. This format has a big benefit that the resulting
-  string can be converted back to bytes, for example, by using the [BuiltIn](using-test-libraries.md#builtin)
+  string can be converted back to bytes, for example, by using the [BuiltIn](https://robotframework.org/robotframework/latest/libraries/BuiltIn.html)
   keyword *Convert To Bytes*{.name} or by automatic [argument conversion](../extending/creating-test-libraries.md#argument-conversion).
 
 The following examples demonstrates using bytes and bytearrays would work
@@ -451,7 +451,7 @@ Environment variables set in the operating system before the test execution are
 available during it, and it is possible to create new ones with the keyword
 *Set Environment Variable*{.name} or delete existing ones with the
 keyword *Delete Environment Variable*{.name}, both available in the
-[OperatingSystem](using-test-libraries.md#operatingsystem) library. Because environment variables are global,
+[OperatingSystem](https://robotframework.org/robotframework/latest/libraries/OperatingSystem.html) library. Because environment variables are global,
 environment variables set in one test case can be used in other test
 cases executed after it. However, changes to environment variables are
 not effective after the test execution.
@@ -849,7 +849,7 @@ value is hidden.
 
 The reason the value is not logged fully is that it could be really
 big. If you always want to see a certain value fully, it is possible
-to use the [BuiltIn](using-test-libraries.md#builtin) *Log*{.name} keyword to log it after the assignment.
+to use the [BuiltIn](https://robotframework.org/robotframework/latest/libraries/BuiltIn.html) *Log*{.name} keyword to log it after the assignment.
 
 !!! note
     The `--maxassignlength`{.option} option is new in Robot Framework 5.0.
@@ -863,7 +863,7 @@ and it must be followed by a variable name and value. Other than the mandatory
 in the [Variable section](#variable-section).
 
 The new syntax aims to make creating variables simpler and more uniform. It is
-especially indented to replace the [BuiltIn](using-test-libraries.md#builtin) keywords *Set Variable*{.name},
+especially indented to replace the [BuiltIn](https://robotframework.org/robotframework/latest/libraries/BuiltIn.html) keywords *Set Variable*{.name},
 *Set Local Variable*{.name}, *Set Test Variable*{.name}, *Set Suite Variable*{.name}
 and *Set Global Variable*{.name}, but it can be used instead of *Catenate*{.name},
 *Create List*{.name} and *Create Dictionary*{.name} as well.
@@ -1037,7 +1037,7 @@ Dynamic name
     The `VAR` syntax is recommended over these keywords when using
     Robot Framework 7.0 or newer.
 
-The [BuiltIn](using-test-libraries.md#builtin) library has keywords *Set Test Variable*{.name},
+The [BuiltIn](https://robotframework.org/robotframework/latest/libraries/BuiltIn.html) library has keywords *Set Test Variable*{.name},
 *Set Suite Variable*{.name} and *Set Global Variable*{.name} which can
 be used for setting variables dynamically during the test
 execution. If a variable already exists within the new scope, its
@@ -1069,7 +1069,7 @@ everywhere, it should be used with care.
 !!! note
     *Set Test/Suite/Global Variable*{.name} keywords set named
     variables directly into [test, suite or global variable scope](#variable-scopes)
-    and return nothing. On the other hand, another [BuiltIn](using-test-libraries.md#builtin) keyword
+    and return nothing. On the other hand, another [BuiltIn](https://robotframework.org/robotframework/latest/libraries/BuiltIn.html) keyword
     *Set Variable*{.name} sets local variables using [return values](#return-values-from-keywords).
 
 ### Variable type conversion
@@ -1468,7 +1468,7 @@ Override
 ```
 
 !!! note
-    `${SPACE}` represents the ASCII space (`\x20`) and [other spaces](http://jkorpela.fi/chars/spaces.html)
+    `${SPACE}` represents the ASCII space (`\x20`) and [other spaces](https://jkorpela.fi/chars/spaces.html)
     should be specified using the [escape sequences](test-data-syntax.md#escaping) like `\xA0`
     (NO-BREAK SPACE) and `\u3000` (IDEOGRAPHIC SPACE).
 
@@ -1482,7 +1482,7 @@ Some automatic variables can also be used in the test data. These
 variables can have different values during the test execution and some
 of them are not even available all the time. Altering the value of
 these variables does not affect the original values, but some values
-can be changed dynamically using keywords from the [BuiltIn](using-test-libraries.md#builtin) library.
+can be changed dynamically using keywords from the [BuiltIn](https://robotframework.org/robotframework/latest/libraries/BuiltIn.html) library.
 
 | Variable | Explanation | Available |
 | --- | --- | --- |

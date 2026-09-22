@@ -9,7 +9,8 @@ corresponding MD files, and injects `<a id="slug"></a>` tags.
 Three types of RST labels are handled:
   1. Simple labels: `.. _name:` → anchor before next heading
   2. Reference labels: ``.. _name: `Target`_`` → anchor at target heading
-  3. External labels: ``.. _name: http://...`` → already handled as links (skip)
+  3. External labels: ``.. _name: <url>`` (scheme, ../path, or *.html)
+     → already handled as links (skip)
 
 This script is IDEMPOTENT - running it multiple times produces the same result.
 It skips anchors that already exist (from headings or previous `<a id>` tags).
@@ -53,6 +54,21 @@ def load_file_map() -> Dict[str, str]:
             if not k.startswith("_")}
 
 
+# A label body counts as an external URL when it carries a scheme, starts with a
+# path prefix (../, ./, /), or is a document reference ending in .html. Relative
+# bodies such as `.. _BuiltIn: ../libraries/BuiltIn.html` must count as external
+# too: otherwise an anchor is injected here and the reference silently resolves
+# to that same-page anchor instead of the library documentation.
+_URL_TARGET_RE = re.compile(
+    r'^(?:(?:https?|ftp|mailto):|\.{1,2}/|/|[\w.\-]+\.html?(?:[#?]|$))'
+)
+
+
+def _is_url_target(value: str) -> bool:
+    """True when an RST label body points at a URL rather than a section."""
+    return bool(_URL_TARGET_RE.match(value.strip()))
+
+
 def extract_rst_labels(rst_file: Path) -> List[dict]:
     """Extract all label definitions from an RST file.
 
@@ -74,7 +90,7 @@ def extract_rst_labels(rst_file: Path) -> List[dict]:
         label_slug = slugify(label_name)
 
         # Classify label type
-        if label_value and (label_value.startswith('http://') or label_value.startswith('https://')):
+        if label_value and _is_url_target(label_value):
             label_type = 'external'
             target = label_value
         elif label_value and label_value.endswith('_'):

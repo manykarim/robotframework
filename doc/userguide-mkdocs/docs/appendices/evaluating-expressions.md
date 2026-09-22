@@ -6,7 +6,7 @@ contexts and how variables in expressions are handled.
 ## Introduction
 
 Constructs such as [IF/ELSE structures](../creating-test-data/control-structures.md#ifelse-structures), [WHILE loops](../creating-test-data/control-structures.md#while-loops) and [inline Python evaluation](../creating-test-data/variables.md#inline-python-evaluation)
-as well as several [BuiltIn](../creating-test-data/using-test-libraries.md#builtin) keywords accept an expression that is evaluated in Python:
+as well as several [BuiltIn](https://robotframework.org/robotframework/latest/libraries/BuiltIn.html) keywords accept an expression that is evaluated in Python:
 
 ```robotframework
 *** Test Cases ***
@@ -34,7 +34,7 @@ That typically eases maintenance and also enhances execution speed.
 
 ## Evaluation namespace
 
-Expressions are evaluated using Python's [eval](http://docs.python.org/library/functions.html#eval) function so that normal Python
+Expressions are evaluated using Python's [eval](https://docs.python.org/library/functions.html#eval) function so that normal Python
 constructs like `'${x}' == 'expected'`, `${x} > 0` and
 `'${x}'.upper() not in ('FAIL', 'BAD')` can be used and all
 builtin functions like `len()` and `int()` are available.
@@ -45,7 +45,7 @@ modules.
 
 The following examples demonstrate using Python builtins as well as modules
 using the [inline Python evaluation](../creating-test-data/variables.md#inline-python-evaluation) syntax, but same expressions would also
-work with [IF/ELSE structures](../creating-test-data/control-structures.md#ifelse-structures) and [BuiltIn](../creating-test-data/using-test-libraries.md#builtin) keywords without the need to use
+work with [IF/ELSE structures](../creating-test-data/control-structures.md#ifelse-structures) and [BuiltIn](https://robotframework.org/robotframework/latest/libraries/BuiltIn.html) keywords without the need to use
 the `${{}}` decoration around the expression:
 
 ```robotframework
@@ -75,7 +75,7 @@ implemented, at least at the time of this writing, so that just importing
 `selenium` does not import the `selenium.webdriver` submodule.
 Another limitation is that modules cannot be used in the expression part of
 a list comprehension. A workaround to both of these problems
-is using the [BuiltIn](../creating-test-data/using-test-libraries.md#builtin) keyword *Evaluate*{.name} that accepts modules to be imported
+is using the [BuiltIn](https://robotframework.org/robotframework/latest/libraries/BuiltIn.html) keyword *Evaluate*{.name} that accepts modules to be imported
 and added to the evaluation namespace as an argument:
 
 ```robotframework
@@ -96,7 +96,7 @@ Evaluate keyword with list comprehension
 ```
 
 The *Evaluate*{.name} keyword also supports custom evaluation namespaces if further
-customization is needed. See its documentation in the [BuiltIn](../creating-test-data/using-test-libraries.md#builtin) library for more details.
+customization is needed. See its documentation in the [BuiltIn](https://robotframework.org/robotframework/latest/libraries/BuiltIn.html) library for more details.
 
 ## Using variables
 

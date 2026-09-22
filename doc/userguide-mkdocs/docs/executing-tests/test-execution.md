@@ -134,7 +134,7 @@ A test gets the PASS status if it is executed and none of the keywords it contai
 #### Prematurely passing tests
 
 Normally all keywords are executed, but it is also possible to use
-[BuiltIn](../creating-test-data/using-test-libraries.md#builtin) keywords *Pass Execution*{.name} and *Pass Execution If*{.name} to stop
+[BuiltIn](https://robotframework.org/robotframework/latest/libraries/BuiltIn.html) keywords *Pass Execution*{.name} and *Pass Execution If*{.name} to stop
 execution with the PASS status and not run the remaining keywords.
 
 How *Pass Execution*{.name} and *Pass Execution If*{.name} behave
@@ -153,7 +153,7 @@ in different situations is explained below:
 - It is mandatory to give an explanation message
   why execution was interrupted, and it is also possible to
   modify test case tags. For more details, and usage examples, see the
-  [documentation of these keywords](../creating-test-data/using-test-libraries.md#builtin).
+  [documentation of these keywords](../extending/creating-test-libraries.md#using-builtin-library).
 
 Passing execution in the middle of a test, setup or teardown should be
 used with care. In the worst case it leads to tests that skip all the
@@ -231,12 +231,12 @@ executed, and they will be visible in logs and reports.
 
 Tests can get the skip status during execution in various ways:
 
-- Using the [BuiltIn](../creating-test-data/using-test-libraries.md#builtin) keyword *Skip*{.name} anywhere in the test case, including setup or
+- Using the [BuiltIn](https://robotframework.org/robotframework/latest/libraries/BuiltIn.html) keyword *Skip*{.name} anywhere in the test case, including setup or
   teardown. Using *Skip*{.name} keyword has two effects: the test gets the SKIP status
   and rest of the test is not executed. However, if the test has a teardown, it will be
   run.
 
-- Using the [BuiltIn](../creating-test-data/using-test-libraries.md#builtin) keyword *Skip If*{.name} which takes a condition and skips the test
+- Using the [BuiltIn](https://robotframework.org/robotframework/latest/libraries/BuiltIn.html) keyword *Skip If*{.name} which takes a condition and skips the test
   if the condition is true.
 
 - [Library keywords](../creating-test-data/using-test-libraries.md#using-test-libraries) may also trigger skip behavior by using a special exceptions.
@@ -381,7 +381,7 @@ variable, is always the Python `None`.
 
 ### *Run Keyword And Continue On Failure*{.name} keyword
 
-[BuiltIn](../creating-test-data/using-test-libraries.md#builtin) keyword *Run Keyword And Continue On Failure*{.name} allows
+[BuiltIn](https://robotframework.org/robotframework/latest/libraries/BuiltIn.html) keyword *Run Keyword And Continue On Failure*{.name} allows
 converting any failure into a continuable failure. These failures are
 handled by the framework exactly the same way as continuable failures
 originating from library keywords discussed above.
@@ -555,7 +555,7 @@ For more details see the separate [TRY/EXCEPT syntax](../creating-test-data/cont
 
 ### BuiltIn keywords
 
-There are several [BuiltIn](../creating-test-data/using-test-libraries.md#builtin) keywords that can be used to execute other keywords
+There are several [BuiltIn](https://robotframework.org/robotframework/latest/libraries/BuiltIn.html) keywords that can be used to execute other keywords
 so that execution can continue after possible failures:
 
 - *Run Keyword And Expect Error*{.name} executes a keyword and expects it to fail
@@ -608,7 +608,7 @@ also be easily automated.
 ### Using keywords
 
 The execution can be stopped also by the executed keywords. There is a
-separate *Fatal Error*{.name} [BuiltIn](../creating-test-data/using-test-libraries.md#builtin) keyword for this purpose, and
+separate *Fatal Error*{.name} [BuiltIn](https://robotframework.org/robotframework/latest/libraries/BuiltIn.html) keyword for this purpose, and
 custom keywords can use [fatal exceptions](../extending/creating-test-libraries.md#stopping-test-execution) when they fail.
 
 ### Stopping when first test case fails

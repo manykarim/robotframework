@@ -192,7 +192,7 @@ be escaped.
 .. note:: Support for brackets like `[abc]` and `[!a-z]` is new in
           Robot Framework 3.1.
 
-__ http://en.wikipedia.org/wiki/Glob_(programming)
+__ https://en.wikipedia.org/wiki/Glob_(programming)
 
 Tag patterns
 ~~~~~~~~~~~~
@@ -675,7 +675,7 @@ idea to enable the syslog_ and see what information it provides. It is
 also possible to add some keywords to the test cases to see what is
 going on. Especially BuiltIn_ keywords :name:`Log` and :name:`Log
 Variables` are useful. If nothing else works, it is always possible to
-search help from `mailing lists`_ or elsewhere.
+ask help on `support forums`_.
 
 __ `Communicating with Robot Framework`_
 
@@ -706,4 +706,4 @@ from within a python library or alternatively:
 
 can be used directly in a test case.
 
-__ http://docs.python.org/library/pdb.html
+__ https://docs.python.org/library/pdb.html

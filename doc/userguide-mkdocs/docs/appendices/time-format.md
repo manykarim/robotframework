@@ -1,8 +1,8 @@
 # Time format
 
 Robot Framework has its own time format that is both flexible to use and easy
-to understand. It is used by several keywords (for example, [BuiltIn](../creating-test-data/using-test-libraries.md#builtin) keywords
-*Sleep*{.name} and *Wait Until Keyword Succeeds*{.name}), [DateTime](../creating-test-data/using-test-libraries.md#datetime) library, and
+to understand. It is used by several keywords (for example, [BuiltIn](https://robotframework.org/robotframework/latest/libraries/BuiltIn.html) keywords
+*Sleep*{.name} and *Wait Until Keyword Succeeds*{.name}), [DateTime](https://robotframework.org/robotframework/latest/libraries/DateTime.html) library, and
 [timeouts](../creating-test-data/advanced-features.md#timeouts).
 
 ## Time as number

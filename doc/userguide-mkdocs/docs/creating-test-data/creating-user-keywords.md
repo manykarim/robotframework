@@ -779,7 +779,7 @@ and libraries.
 ### Using custom regular expressions
 
 When keywords with embedded arguments are called, the values are matched
-internally using [regular expressions](http://en.wikipedia.org/wiki/Regular_expression) (regexps for short). The default
+internally using [regular expressions](https://en.wikipedia.org/wiki/Regular_expression) (regexps for short). The default
 logic goes so that every argument in the name is replaced with a pattern `.*?`
 that matches any string and tries to match as little as possible. This logic works
 fairly well normally, but as discussed above, sometimes keywords
@@ -845,7 +845,7 @@ Select ${animal:(?i)cat|dog}
 #### Supported regular expression syntax
 
 Being implemented with Python, Robot Framework naturally uses Python's
-[re module](http://docs.python.org/library/re.html) that has pretty standard regular expressions syntax.
+[re module](https://docs.python.org/library/re.html) that has pretty standard regular expressions syntax.
 This syntax is otherwise fully supported with embedded arguments, but
 regexp extensions in format `(?...)` cannot be used. If the regular
 expression syntax is invalid, creating the keyword fails with an error
@@ -990,7 +990,7 @@ Result should be ${expected}
 Similarly as library keywords, also user keywords can return values.
 When using Robot Framework 5.0 or newer, the recommended approach is
 using the native [RETURN](#return) statement. The old *[Return]*{.setting}
-setting was deprecated in Robot Framework 7.0 and also [BuiltIn](using-test-libraries.md#builtin) keywords
+setting was deprecated in Robot Framework 7.0 and also [BuiltIn](https://robotframework.org/robotframework/latest/libraries/BuiltIn.html) keywords
 *Return From Keyword*{.name} and *Return From Keyword If*{.name} are considered
 deprecated.
 
@@ -1100,7 +1100,7 @@ Return Three Values
 
 ### Using special keywords to return
 
-[BuiltIn](using-test-libraries.md#builtin) keywords *Return From Keyword*{.name} and *Return From Keyword If*{.name}
+[BuiltIn](https://robotframework.org/robotframework/latest/libraries/BuiltIn.html) keywords *Return From Keyword*{.name} and *Return From Keyword If*{.name}
 allow returning from a user keyword conditionally in the middle of the keyword.
 Both of them also accept optional return values that are handled exactly like
 with the `RETURN` statement and the *[Return]*{.setting} setting discussed above.

@@ -138,9 +138,9 @@ automatically created unless `NONE` is used as a value, the default value is
 <a id="xunit-file"></a>
 ### XUnit compatible result file
 
-XUnit result files contain the test execution summary in [xUnit](http://en.wikipedia.org/wiki/XUnit) compatible
+XUnit result files contain the test execution summary in [xUnit](https://en.wikipedia.org/wiki/XUnit) compatible
 XML format. These files can thus be used as an input for external tools that
-understand xUnit reports. For example, [Jenkins](http://jenkins-ci.org) continuous integration server
+understand xUnit reports. For example, [Jenkins](https://jenkins-ci.org) continuous integration server
 supports generating statistics based on xUnit compatible
 results.
 
@@ -281,7 +281,7 @@ log files for normal viewing later with the `INFO` level. By default
 all the messages included during execution will be included also with
 Rebot. Messages ignored during the execution cannot be recovered.
 
-Another possibility to change the log level is using the [BuiltIn](../creating-test-data/using-test-libraries.md#builtin)
+Another possibility to change the log level is using the [BuiltIn](https://robotframework.org/robotframework/latest/libraries/BuiltIn.html)
 keyword *Set Log Level*{.name} in the test data. It takes the same
 arguments as the `--loglevel`{.option} option, and it also returns the
 old level so that it can be restored later, for example, in a [test
@@ -498,7 +498,7 @@ or warnings](../extending/creating-test-libraries.md#errors-and-warnings) are no
 : Remove all passed iterations from [WHILE loops](../creating-test-data/control-structures.md#while-loops) except the last one.
 
 `WUKS`
-: Remove all failing keywords inside [BuiltIn](../creating-test-data/using-test-libraries.md#builtin) keyword
+: Remove all failing keywords inside [BuiltIn](https://robotframework.org/robotframework/latest/libraries/BuiltIn.html) keyword
     *Wait Until Keyword Succeeds*{.name} except the last one.
 
 `NAME:<pattern>`
@@ -668,7 +668,7 @@ activating it using the `--prerebotmodifier`{.option} option.
 This functionality works nearly exactly like [programmatic modification of
 test data](configuring-execution.md#programmatic-modification-of-test-data) that can be enabled with the `--prerunmodifier`{.option} option.
 The obvious difference is that this time modifiers operate with the
-[result model](http://robot-framework.readthedocs.org/en/master/autodoc/robot.result.html#module-robot.result.model), not the [running model](http://robot-framework.readthedocs.org/en/master/autodoc/robot.running.html#module-robot.running.model). For example, the following modifier
+[result model](https://robot-framework.readthedocs.org/en/master/autodoc/robot.result.html#module-robot.result.model), not the [running model](https://robot-framework.readthedocs.org/en/master/autodoc/robot.running.html#module-robot.running.model). For example, the following modifier
 marks all passed tests that have taken more time than allowed as failed:
 
 ```python

@@ -190,7 +190,7 @@ be same in all outputs.
 
 ## JSON output files
 
-Rebot can create and process output files also in the [JSON](../creating-test-data/test-data-syntax.md#json-structure) format.
+Rebot can create and process output files also in the [JSON](https://json.org) format.
 Creating JSON output files is done using the normal `--output`{.option} option
 so that the specified file has a `.json`{.file} extension:
 

@@ -233,7 +233,7 @@ source control systems.
 When using Robot Framework with reStructuredText files, normal Robot Framework
 data is embedded to so called code blocks. In standard reST code blocks are
 marked using the `code` directive, but Robot Framework supports also
-`code-block` or `sourcecode` directives used by the [Sphinx](http://sphinx-doc.org/) tool.
+`code-block` or `sourcecode` directives used by the [Sphinx](https://sphinx-doc.org/) tool.
 
 ```rst
 reStructuredText example
@@ -423,7 +423,7 @@ Scenario 2
 
 ### JSON data format
 
-Robot Framework supports data also in the [JSON](#json) format. This format is designed
+Robot Framework supports data also in the [JSON](https://json.org) format. This format is designed
 more for tool developers than for regular Robot Framework users and it is not
 meant to be edited manually. Its most important use cases are:
 
@@ -437,7 +437,7 @@ meant to be edited manually. Its most important use cases are:
     The JSON data support is new in Robot Framework 6.1 and it can be
     enhanced in future Robot Framework versions. If you have an enhancement
     idea or believe you have encountered a bug, please submit an [issue](https://issues.robotframework.org)
-    or start a discussion thread on the `#devel` channel on our [Slack](http://slack.robotframework.org).
+    or start a discussion thread on the `#devel` channel on our [Slack](https://slack.robotframework.org).
 
 #### Converting suite to JSON
 
@@ -544,7 +544,7 @@ When Robot Framework ignores some data, this data is not available in
 any resulting reports and, additionally, most tools used with Robot
 Framework also ignore them. To add information that is visible in
 Robot Framework outputs, place it to the documentation or other metadata of
-test cases or suites, or log it with the [BuiltIn](using-test-libraries.md#builtin) keywords *Log*{.name} or
+test cases or suites, or log it with the [BuiltIn](https://robotframework.org/robotframework/latest/libraries/BuiltIn.html) keywords *Log*{.name} or
 *Comment*{.name}.
 
 ### Escaping
@@ -592,7 +592,7 @@ in the test data.
     `\x02`, are Unicode and must be explicitly converted to
     byte strings if needed. This can be done, for example, using
     *Convert To Bytes*{.name} or *Encode String To Bytes*{.name} keywords
-    in [BuiltIn](using-test-libraries.md#builtin) and [String](using-test-libraries.md#string) libraries, respectively, or with
+    in [BuiltIn](https://robotframework.org/robotframework/latest/libraries/BuiltIn.html) and [String](https://robotframework.org/robotframework/latest/libraries/String.html) libraries, respectively, or with
     something like `value.encode('UTF-8')` in Python code.
 
 !!! note
@@ -878,7 +878,7 @@ language definitions.
 If you want to add translation for a new language or enhance existing, head
 to [Crowdin](https://robotframework.crowdin.com) that we use for collaboration. For more details, see the
 separate [Localization](https://github.com/MarketSquare/localization) project, and for questions and free discussion join
-the `#localization` channel on our [Slack](http://slack.robotframework.org).
+the `#localization` channel on our [Slack](https://slack.robotframework.org).
 
 ## Style
 

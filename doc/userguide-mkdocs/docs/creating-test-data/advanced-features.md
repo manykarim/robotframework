@@ -44,7 +44,7 @@ and a dot is used as a separator.
 
 With library keywords, the full name means using format
 *LibraryName.Keyword Name*{.name}. For example, the keyword *Get File*{.name}
-from the [OperatingSystem](using-test-libraries.md#operatingsystem) library can be used as
+from the [OperatingSystem](https://robotframework.org/robotframework/latest/libraries/OperatingSystem.html) library can be used as
 *OperatingSystem.Get File*{.name}, even if there was another *Get File*{.name}
 keyword somewhere else. If the library is implemented in a nested module, the
 full name must contain the full module name like *root.sub.Library.Keyword*{.name}.
@@ -73,7 +73,7 @@ in the long format can be quite a lot work. Using the long format also makes it
 impossible to create dynamic test cases or user keywords that work differently
 depending on which libraries or resources are available. A solution to both of
 these problems is specifying the keyword priorities explicitly using the keyword
-*Set Library Search Order*{.name} from the [BuiltIn](using-test-libraries.md#builtin) library.
+*Set Library Search Order*{.name} from the [BuiltIn](https://robotframework.org/robotframework/latest/libraries/BuiltIn.html) library.
 
 !!! note
     Although the keyword has the word *library* in its name, it works
@@ -214,5 +214,5 @@ level so that the library executes the code on background. Typically this
 means that the library needs a keyword like *Start Something*{.name} that
 starts the execution and returns immediately, and another keyword like
 *Get Results From Something*{.name} that waits until the result is available
-and returns it. See [Process](using-test-libraries.md#process) library keywords *Start Process*{.name}
+and returns it. See [Process](https://robotframework.org/robotframework/latest/libraries/Process.html) library keywords *Start Process*{.name}
 and *Wait For Process*{.name} for an example.
